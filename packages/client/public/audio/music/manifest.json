@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "tracks": [
+    {
+      "id": "fountain-groove",
+      "title": "Fountain Groove",
+      "file": "/audio/music/fountain-groove.ogg",
+      "fallbackFile": "/audio/music/fountain-groove.mp3",
+      "durationSeconds": 31.768,
+      "bpm": 110,
+      "loop": true,
+      "mood": "gameplay"
+    },
+    {
+      "id": "cooler-lights",
+      "title": "Cooler Lights",
+      "file": "/audio/music/cooler-lights.ogg",
+      "fallbackFile": "/audio/music/cooler-lights.mp3",
+      "durationSeconds": 31.768,
+      "bpm": 110,
+      "loop": true,
+      "mood": "lobby"
+    }
+  ]
+}

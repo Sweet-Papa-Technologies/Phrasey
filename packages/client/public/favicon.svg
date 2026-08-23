@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Phrasey">
+  <title>Phrasey</title>
+  <defs>
+    <clipPath id="phraseyBottleClip">
+      <path d="M27 13 H37 V19 C37 25 46 26.5 46 34 V53 C46 56.3 43.3 59 40 59 H24 C20.7 59 18 56.3 18 53 V34 C18 26.5 27 25 27 19 Z"/>
+    </clipPath>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#14121F"/>
+  <path d="M27 13 H37 V19 C37 25 46 26.5 46 34 V53 C46 56.3 43.3 59 40 59 H24 C20.7 59 18 56.3 18 53 V34 C18 26.5 27 25 27 19 Z" fill="#FF5C1A"/>
+  <!-- the liquid line: the pressure gauge, in one stroke -->
+  <rect x="16" y="41" width="32" height="5" fill="#B8FF3C" clip-path="url(#phraseyBottleClip)"/>
+  <!-- crimped cap, wider than the neck so the silhouette reads as a soda bottle -->
+  <rect x="22.5" y="4" width="19" height="9" rx="2" fill="#FF5C1A"/>
+</svg>
