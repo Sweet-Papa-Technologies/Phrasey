@@ -130,3 +130,60 @@ and you get the click you were trying to remove. Try `1.5`, then move it.
   own slider in the top bar; it persists under `phrasey.audio.v1`.
 - Resolves `false` instead of throwing when autoplay is blocked, the manifest is
   missing, or the id is unknown.
+
+## Looping: bake it, don't fade it
+
+**The loop period must be a whole number of bars.** This is the thing that
+actually matters, and it is easy to miss.
+
+The original placeholders were 31.768s at ~110 BPM — 14.54 bars. Every loop the
+downbeat arrived roughly half a bar early, so the bed stumbled. A longer
+crossfade does not help: a fade can hide a *click*, it cannot hide a *beat in
+the wrong place*. Lengthening the fade just smears the stumble.
+
+So the shipped tracks are **pre-baked**: cut to exactly 12 bars (26.2176s at
+109.85 BPM) with a 2-bar equal-power crossfade mixed into the head of the file.
+They loop correctly with plain back-to-back playback and need no runtime
+crossfade, which is why they carry `"bakedLoop": true` and
+`"loopCrossfadeSeconds": 0`.
+
+### Re-cutting a track (this is the tuning knob)
+
+`scripts/bake-music-loop.py` does the analysis and the bake:
+
+```bash
+# What are my options? Prints tempo and every whole-bar loop with a
+# head/tail match score. Writes nothing.
+python3 scripts/bake-music-loop.py mytrack.ogg --analyse-only
+
+# Bake it. Longer --crossfade-bars = more runway over the join.
+python3 scripts/bake-music-loop.py mytrack.ogg -o ./mytrack \
+    --bars 12 --crossfade-bars 2
+```
+
+Then copy the printed `bpm` / `durationSeconds` into the manifest row.
+
+Tuning guidance:
+
+| Knob | Effect |
+|---|---|
+| `--bars` | Loop length. Longer = less repetitive but a longer wait to notice a bad join. Under ~8 bars gets obviously loopy on a lobby screen. |
+| `--crossfade-bars` | Runway over the join. 1 is tight, 2 is comfortable, 4 is very soft but eats more of the source. |
+| `--bpm` | Override if the detector picks half or double time. |
+
+The source must be at least `bars + crossfade-bars` long — the crossfade is
+drawn from the audio *past* the loop point, so a 12-bar loop with a 2-bar fade
+needs 14 bars of material.
+
+### Dropping in a Suno track
+
+1. Export at 48kHz. Ask for a specific BPM and a whole number of bars if you can.
+2. `--analyse-only` first and read the match scores; pick a bar count that is
+   both long enough and scores well.
+3. Bake, copy the two files in here, add a manifest row.
+4. Keep `loopCrossfadeSeconds: 0` and `bakedLoop: true` for a baked file. Set a
+   non-zero `loopCrossfadeSeconds` only for a track you did *not* bake — the
+   runtime scheduler will then overlap passes itself, which fixes a click but
+   still cannot fix bar misalignment.
+
+No rebuild is needed — the client reads this manifest at load.
