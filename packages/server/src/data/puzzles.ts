@@ -94,3 +94,88 @@ export async function loadPuzzles(db: Firestore | null, log: Logger): Promise<Pu
   log.info({ loaded: TEST_PUZZLES.length }, 'puzzle corpus loaded from engine fixtures');
   return makeSource([...TEST_PUZZLES], 'fixtures');
 }
+
+/**
+ * A `PuzzleSource` that re-reads Firestore in the background when it goes
+ * stale.
+ *
+ * Puzzles really are static *per puzzle*, which is why the base loader reads
+ * once — but the corpus itself grows. Topping it up (`corpus-gen seed`) used to
+ * require a redeploy before the running server would see a single new phrase,
+ * and the only symptom was that nothing changed, which is the worst kind of
+ * bug to chase. Now a seed shows up on its own within the refresh window.
+ *
+ * The swap is atomic and off the hot path: `pick()` never awaits, it just
+ * notices staleness and kicks off a reload that replaces the inner source when
+ * it lands. A failed refresh keeps the current corpus rather than emptying it.
+ */
+export interface RefreshingPuzzleSource extends PuzzleSource {
+  /** Force a reload now. Resolves when the swap has happened (or failed). */
+  refresh(): Promise<void>;
+  readonly lastLoadedAt: number;
+}
+
+export function refreshing(
+  initial: PuzzleSource,
+  db: Firestore | null,
+  log: Logger,
+  opts: { refreshMs?: number; now?: () => number } = {},
+): RefreshingPuzzleSource {
+  const refreshMs = opts.refreshMs ?? 5 * 60_000;
+  const now = opts.now ?? Date.now;
+
+  let current = initial;
+  let lastLoadedAt = now();
+  let inFlight: Promise<void> | null = null;
+
+  async function reload(): Promise<void> {
+    if (!db) return;
+    try {
+      const next = await loadPuzzles(db, log);
+      // Never trade a working corpus for the fixture fallback: that would
+      // silently shrink a live game's puzzle pool on one bad read.
+      if (next.origin === 'firestore' && next.size > 0) {
+        const before = current.size;
+        current = next;
+        if (before !== next.size) {
+          log.info({ before, after: next.size }, 'puzzle corpus refreshed');
+        }
+      }
+    } catch (err) {
+      log.warn({ err: String(err) }, 'puzzle refresh failed; keeping the current corpus');
+    } finally {
+      lastLoadedAt = now();
+      inFlight = null;
+    }
+  }
+
+  function maybeRefresh(): void {
+    if (inFlight || !db) return;
+    if (now() - lastLoadedAt < refreshMs) return;
+    inFlight = reload();
+  }
+
+  return {
+    get size() {
+      return current.size;
+    },
+    get origin() {
+      return current.origin;
+    },
+    get all() {
+      return current.all;
+    },
+    get lastLoadedAt() {
+      return lastLoadedAt;
+    },
+    byId: (id) => current.byId(id),
+    pick(usedIds, rand) {
+      maybeRefresh();
+      return current.pick(usedIds, rand);
+    },
+    refresh() {
+      inFlight ??= reload();
+      return inFlight;
+    },
+  };
+}

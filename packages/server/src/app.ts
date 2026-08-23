@@ -13,7 +13,7 @@ import type { ServerConfig } from './config.js';
 import { createLogger, type Logger } from './logger.js';
 import { getFirestore } from './data/firestore.js';
 import { loadBalance } from './data/balance.js';
-import { loadPuzzles, type PuzzleSource } from './data/puzzles.js';
+import { loadPuzzles, refreshing, type PuzzleSource } from './data/puzzles.js';
 import { createRoomStore, type RoomStore } from './data/rooms.js';
 import { createSessionStore, type SessionStore } from './data/sessions.js';
 import { resolveBotPolicies, type BotPolicies } from './bots/policies.js';
@@ -52,7 +52,8 @@ export async function buildApp(opts: BuildOptions): Promise<App> {
 
   const db = opts.puzzles && opts.balance ? null : getFirestore(cfg, log);
   const balance = opts.balance ?? (await loadBalance(db, log));
-  const puzzles = opts.puzzles ?? (await loadPuzzles(db, log));
+  // Wrapped so a `corpus-gen seed` reaches a running server without a deploy.
+  const puzzles = opts.puzzles ?? refreshing(await loadPuzzles(db, log), db, log);
   const roomStore = opts.roomStore ?? createRoomStore(db, log);
   const sessionStore = opts.sessionStore ?? createSessionStore(db, log);
   const botPolicies =

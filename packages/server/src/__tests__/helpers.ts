@@ -141,12 +141,12 @@ export class TestClient {
     });
   }
 
-  call(event: string, payload: unknown): Promise<{ ok: boolean; data?: any; error?: { code: string } }> {
+  call(event: string, payload: unknown): Promise<{ ok: boolean; data?: any; error?: { code: string; message?: string } }> {
     return new Promise((resolve) => {
       const t = setTimeout(() => resolve({ ok: false, error: { code: 'ACK_TIMEOUT' } }), 8000);
-      this.socket.emit(event, payload, (res: { ok: boolean; data?: unknown; error?: { code: string } }) => {
+      this.socket.emit(event, payload, (res: { ok: boolean; data?: unknown; error?: { code: string; message?: string } }) => {
         clearTimeout(t);
-        resolve(res as { ok: boolean; data?: any; error?: { code: string } });
+        resolve(res as { ok: boolean; data?: any; error?: { code: string; message?: string } });
       });
     });
   }
