@@ -1,0 +1,145 @@
+[
+  {
+    "id": "p_96772ebad0edd517",
+    "text": "ATTACH THE WING THAT WAS NOT INCLUDED",
+    "raw": "ATTACH THE WING THAT WAS NOT INCLUDED",
+    "category": "Instructions on the back of a box",
+    "hint": "a structural element you were expected to already possess",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:07.475Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d5d9d4c5e8e4ed3e",
+    "text": "BY STEP EIGHT YOUR FINGERS ARE ALREADY NUMB",
+    "raw": "BY STEP EIGHT YOUR FINGERS ARE ALREADY NUMB",
+    "category": "Instructions on the back of a box",
+    "hint": "a physical consequence acknowledged far past its point of relevance",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:07.474Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_00630cea3aa0f634",
+    "text": "DO NOT WARM THE LIQUID IT IS ALREADY LATE",
+    "raw": "DO NOT WARM THE LIQUID IT IS ALREADY LATE",
+    "category": "Instructions on the back of a box",
+    "hint": "a warning that arrives after the damage",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.401Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_5e424cd755921f6f",
+    "text": "IF THE SMELL IS STRONG YOU HAVE MISSED STEP THREE",
+    "raw": "IF THE SMELL IS STRONG YOU HAVE MISSED STEP THREE",
+    "category": "Instructions on the back of a box",
+    "hint": "an olfactory alarm serving as a diagnostic for a skipped action",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:07.477Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_fe3b3581b06618a0",
+    "text": "INVERT THE TRAY BEFORE THE TRAY EXISTS",
+    "raw": "INVERT THE TRAY BEFORE THE TRAY EXISTS",
+    "category": "Instructions on the back of a box",
+    "hint": "a circular disassembly order",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.400Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ab82473e79d2c7ee",
+    "text": "PLACE THE RING ON THE ROD BEFORE THE ROD APPEARS",
+    "raw": "PLACE THE RING ON THE ROD BEFORE THE ROD APPEARS",
+    "category": "Instructions on the back of a box",
+    "hint": "a step that precedes the part it needs",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.402Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d503944291fa9504",
+    "text": "PREHEAT TO TWO HUNDRED DEGREES THEN FORGET YOUR OVEN",
+    "raw": "PREHEAT TO TWO HUNDRED DEGREES THEN FORGET YOUR OVEN",
+    "category": "Instructions on the back of a box",
+    "hint": "assuming equipment you do not have",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.402Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_db4bd2839a080d86",
+    "text": "PRESS THE BLUE BUTTON THAT IS NOT ON YOUR MODEL",
+    "raw": "PRESS THE BLUE BUTTON THAT IS NOT ON YOUR MODEL",
+    "category": "Instructions on the back of a box",
+    "hint": "a component referenced but absent from the package",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:07.474Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ac44ac7012a564e8",
+    "text": "STEP THREE IS ALREADY RUINED",
+    "raw": "STEP THREE IS ALREADY RUINED",
+    "category": "Instructions on the back of a box",
+    "hint": "the sequence was printed out of order",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.400Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_72f89cf62a5e5637",
+    "text": "STEP TWO ASSUMES YOU ALREADY COMPLETED STEP TWO",
+    "raw": "STEP TWO ASSUMES YOU ALREADY COMPLETED STEP TWO",
+    "category": "Instructions on the back of a box",
+    "hint": "a circular dependency buried in the middle of the sequence",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:07.478Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_24f0bb9ae40efa39",
+    "text": "TAP THE GLASS GENTLY IF IT DOES NOT BREAK",
+    "raw": "TAP THE GLASS GENTLY IF IT DOES NOT BREAK",
+    "category": "Instructions on the back of a box",
+    "hint": "a step that assumes a result",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.402Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_0623ababbee6d2fa",
+    "text": "THE LID WILL POP OFF AT STEP NINE DO NOT BE ALARMED",
+    "raw": "THE LID WILL POP OFF AT STEP NINE DO NOT BE ALARMED",
+    "category": "Instructions on the back of a box",
+    "hint": "a warning that arrives too late",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.402Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_c024beb6b0fba4a0",
+    "text": "TURN LEFT UNTIL THE RIGHT SIDE FEELS DIFFERENT",
+    "raw": "TURN LEFT UNTIL THE RIGHT SIDE FEELS DIFFERENT",
+    "category": "Instructions on the back of a box",
+    "hint": "directions with no fixed reference point",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:02.402Z",
+    "provider": "infinity"
+  }
+]

@@ -1,0 +1,145 @@
+[
+  {
+    "id": "p_b011d5e939f22d05",
+    "text": "DO YOU WANT TO TRY AGAIN? YOU ALREADY DID",
+    "raw": "DO YOU WANT TO TRY AGAIN? YOU ALREADY DID",
+    "category": "Error message",
+    "hint": "the loop will not release you",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:16:07.790Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_44c13e2b8da15985",
+    "text": "I AM SORRY. I AM NOT SORRY. I AM A PROGRAM.",
+    "raw": "I AM SORRY. I AM NOT SORRY. I AM A PROGRAM.",
+    "category": "Error message",
+    "hint": "A feeling that is simultaneously present and absent",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.325Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_e9bfb5de2d3085eb",
+    "text": "I CANNOT FIND YOUR FURNITURE IN OUR DATABASE.",
+    "raw": "I CANNOT FIND YOUR FURNITURE IN OUR DATABASE.",
+    "category": "Error message",
+    "hint": "A search that targets the wrong category of object",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.324Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_66d5d068097f7aef",
+    "text": "I DO NOT KNOW WHAT HAPPENED BUT I AM STILL HERE",
+    "raw": "I DO NOT KNOW WHAT HAPPENED BUT I AM STILL HERE",
+    "category": "Error message",
+    "hint": "the machine survived its own collapse and feels nothing about it",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:16:07.791Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_38f95a8336143242",
+    "text": "PLEASE TRY AGAIN. YOU HAVE TRIED SEVEN TIMES.",
+    "raw": "PLEASE TRY AGAIN. YOU HAVE TRIED SEVEN TIMES.",
+    "category": "Error message",
+    "hint": "A loop that ignores its own history",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.324Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_6a92f7aab7b713f7",
+    "text": "THE SYSTEM WILL RECOVER YOUR DATA. THE SYSTEM IS GONE.",
+    "raw": "THE SYSTEM WILL RECOVER YOUR DATA. THE SYSTEM IS GONE.",
+    "category": "Error message",
+    "hint": "A promise delivered by a narrator who is no longer alive",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.325Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_965f2d675fbc7e3d",
+    "text": "WE ARE SORRY FOR THE INCONVENIENCE. THAT IS ALL.",
+    "raw": "WE ARE SORRY FOR THE INCONVENIENCE. THAT IS ALL.",
+    "category": "Error message",
+    "hint": "A generic regret with zero useful detail",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.323Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_aaf284b00ac6c7f2",
+    "text": "WE DELETED YOUR BACKUP BECAUSE IT REMINDED US OF YOU",
+    "raw": "WE DELETED YOUR BACKUP BECAUSE IT REMINDED US OF YOU",
+    "category": "Error message",
+    "hint": "the spare copy was removed on purpose",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:16:07.791Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_adec61490e7c9cdc",
+    "text": "WE FORGOT WHAT YOU TOLD US",
+    "raw": "WE FORGOT WHAT YOU TOLD US",
+    "category": "Error message",
+    "hint": "the machine lost the confession you made to it",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:16:07.789Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_7ac1fde61c32277b",
+    "text": "WE VALUE YOUR BUSINESS. WE CANNOT PROCESS IT.",
+    "raw": "WE VALUE YOUR BUSINESS. WE CANNOT PROCESS IT.",
+    "category": "Error message",
+    "hint": "Gratitude that arrives just before a refusal",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.325Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_1b49b5bbf50213f5",
+    "text": "YOUR GRIEF IS NOT A RECOGNIZED FORMAT",
+    "raw": "YOUR GRIEF IS NOT A RECOGNIZED FORMAT",
+    "category": "Error message",
+    "hint": "the system cannot accept this kind of sadness",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:16:07.790Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_82b84bb39aae4972",
+    "text": "YOUR PASSWORD WAS CORRECT. YOUR PASSWORD WAS NOT CORRECT.",
+    "raw": "YOUR PASSWORD WAS CORRECT. YOUR PASSWORD WAS NOT CORRECT.",
+    "category": "Error message",
+    "hint": "Two contradictory claims about one credential",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.324Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_217437f46a91df8d",
+    "text": "YOUR REQUEST IS VALID. YOUR REQUEST IS IMPOSSIBLE.",
+    "raw": "YOUR REQUEST IS VALID. YOUR REQUEST IS IMPOSSIBLE.",
+    "category": "Error message",
+    "hint": "Two judgments about one action that cancel each other",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:08:14.325Z",
+    "provider": "infinity"
+  }
+]

@@ -1,0 +1,211 @@
+[
+  {
+    "id": "p_c45d89cbf864860c",
+    "text": "ASKED FOR THE BILL AND GOT A LIFE STORY",
+    "raw": "ASKED FOR THE BILL AND GOT A LIFE STORY",
+    "category": "Yelp review, one star",
+    "hint": "requested payment, received biography",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.142Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_42195075941554d2",
+    "text": "DO YOU KNOW WHAT HUNGER FEELS LIKE",
+    "raw": "DO YOU KNOW WHAT HUNGER FEELS LIKE",
+    "category": "Yelp review, one star",
+    "hint": "a rhetorical question that nobody asked",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.451Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_fdeae611e0b153bb",
+    "text": "HE SPOKE TO ME IN FULL SENTENCES UNINVITED",
+    "raw": "HE SPOKE TO ME IN FULL SENTENCES UNINVITED",
+    "category": "Yelp review, one star",
+    "hint": "unrequested grammatical completeness",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.142Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_9c32c152fd88c927",
+    "text": "I APOLOGIZED FOR THE NOISE I WAS MAKING",
+    "raw": "I APOLOGIZED FOR THE NOISE I WAS MAKING",
+    "category": "Yelp review, one star",
+    "hint": "expressed regret about one's own sound",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.142Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d782ee959fbce0bb",
+    "text": "I DID NOT ASK FOR A SECOND OPINION ON MY PAIN",
+    "raw": "I DID NOT ASK FOR A SECOND OPINION ON MY PAIN",
+    "category": "Yelp review, one star",
+    "hint": "unsolicited medical commentary at a restaurant table",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.451Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_033ab7e1fa81430c",
+    "text": "I ORDERED SOUP NOT A LECTURE ON SOUP",
+    "raw": "I ORDERED SOUP NOT A LECTURE ON SOUP",
+    "category": "Yelp review, one star",
+    "hint": "asked for broth, got a monologue about it",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.140Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_09ce3d939505c94a",
+    "text": "I SLEPT THROUGH THE ENTIRE ENTERTAINMENT SET",
+    "raw": "I SLEPT THROUGH THE ENTIRE ENTERTAINMENT SET",
+    "category": "Yelp review, one star",
+    "hint": "a solo act went by with zero audience engagement",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.448Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_65f5a6ff9572dbc8",
+    "text": "I TOLD HER I WAS ALLERGIC TO BEING IGNORED",
+    "raw": "I TOLD HER I WAS ALLERGIC TO BEING IGNORED",
+    "category": "Yelp review, one star",
+    "hint": "declared an intolerance to lack of attention",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.141Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_06f0adc28d4566d0",
+    "text": "MY ORDER WAS PERFECT AND I HATED EVERYTHING ABOUT IT",
+    "raw": "MY ORDER WAS PERFECT AND I HATED EVERYTHING ABOUT IT",
+    "category": "Yelp review, one star",
+    "hint": "flawless meal, unbearable atmosphere",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.449Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_9d0a1e9d644c44f1",
+    "text": "THE AMBIENCE WAS DARK AND SO WAS MY FUTURE",
+    "raw": "THE AMBIENCE WAS DARK AND SO WAS MY FUTURE",
+    "category": "Yelp review, one star",
+    "hint": "low lighting, bleak outlook",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.142Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_04cc8f706749c843",
+    "text": "THE BREAD WAS STALE AND I MISSED MY MOM",
+    "raw": "THE BREAD WAS STALE AND I MISSED MY MOM",
+    "category": "Yelp review, one star",
+    "hint": "old sandwich, emotional vulnerability",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.140Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_421217a6d7b34b91",
+    "text": "THE CHEF LOOKED AT ME LIKE I WAS THE PROBLEM",
+    "raw": "THE CHEF LOOKED AT ME LIKE I WAS THE PROBLEM",
+    "category": "Yelp review, one star",
+    "hint": "kitchen staff directed blame at the customer",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.141Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_90e527cb59e875d0",
+    "text": "THE DOOR WAS STUCK AND SO WAS THE WAITER",
+    "raw": "THE DOOR WAS STUCK AND SO WAS THE WAITER",
+    "category": "Yelp review, one star",
+    "hint": "jammed entry, also a frozen server",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.141Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d913a7338f977594",
+    "text": "THE MENU HAD TWENTY-SEVEN OPTIONS AND I CHOSE WRONG",
+    "raw": "THE MENU HAD TWENTY-SEVEN OPTIONS AND I CHOSE WRONG",
+    "category": "Yelp review, one star",
+    "hint": "too much freedom, no safe answer",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.451Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_fd2744157d372b0a",
+    "text": "THE MUSIC WAS LOUD AND SO WAS THE MAN",
+    "raw": "THE MUSIC WAS LOUD AND SO WAS THE MAN",
+    "category": "Yelp review, one star",
+    "hint": "volume issue shared by two parties",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.141Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_a7ce3dad87e62ead",
+    "text": "THE PLATE CAME OUT AND I FORGOT WHY I CAME",
+    "raw": "THE PLATE CAME OUT AND I FORGOT WHY I CAME",
+    "category": "Yelp review, one star",
+    "hint": "food arrived, purpose evaporated",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.142Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ef90bc2586103c19",
+    "text": "THE WAITER APOLOGIZED THREE TIMES FOR EXISTING",
+    "raw": "THE WAITER APOLOGIZED THREE TIMES FOR EXISTING",
+    "category": "Yelp review, one star",
+    "hint": "a staff member was deeply sorry to be alive",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.449Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_8b94d9d83abb471d",
+    "text": "THE WIFI WORKED FINE I JUST HAD NOWHERE TO GO",
+    "raw": "THE WIFI WORKED FINE I JUST HAD NOWHERE TO GO",
+    "category": "Yelp review, one star",
+    "hint": "good signal, terrible destination",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:17:23.448Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_cb2397ddb6169629",
+    "text": "WE CAME FOR TACOS NOT FOR A WAKE UP CALL",
+    "raw": "WE CAME FOR TACOS NOT FOR A WAKE UP CALL",
+    "category": "Yelp review, one star",
+    "hint": "meat in tortillas, not alarm bells",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:10:21.141Z",
+    "provider": "infinity"
+  }
+]

@@ -1,0 +1,200 @@
+[
+  {
+    "id": "p_0ac6f9ea97df6d67",
+    "text": "FORM TWENTY-SEVEN WAS NOT FOR WHAT YOU THINK",
+    "raw": "FORM TWENTY-SEVEN WAS NOT FOR WHAT YOU THINK",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the specific paper you grabbed covers a different purpose",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.292Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_67238173449dc40b",
+    "text": "IF YOU CAME FOR A RENEWAL YOU ARE AT THE WRONG COUNTER",
+    "raw": "IF YOU CAME FOR A RENEWAL YOU ARE AT THE WRONG COUNTER",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a direction about where to stand based on what one needs done",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.008Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_a9b7f2bde9852de9",
+    "text": "IF YOU LEAVE YOU MUST START OVER",
+    "raw": "IF YOU LEAVE YOU MUST START OVER",
+    "category": "Sign you'd see at the DMV",
+    "hint": "departing the premises forfeits your current standing in line",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.293Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_3e8dfef0b68b3f64",
+    "text": "NUMBER EIGHT HAS BEEN CALLING FOR NINE MINUTES",
+    "raw": "NUMBER EIGHT HAS BEEN CALLING FOR NINE MINUTES",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a specific queue position was announced repeatedly without result",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.008Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_c1506c750f147956",
+    "text": "PLEASE DO NOT BEND THE FORM",
+    "raw": "PLEASE DO NOT BEND THE FORM",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a warning about the physical integrity of the paper in hand",
+    "difficulty": 1,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.009Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_c3ee4989eed0addd",
+    "text": "PLEASE STOP TAPPING THE SURFACE",
+    "raw": "PLEASE STOP TAPPING THE SURFACE",
+    "category": "Sign you'd see at the DMV",
+    "hint": "repeated contact with the transparent barrier is unwelcome",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.292Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_aba48f9b15f7f093",
+    "text": "SHE DOES NOT KNOW WHAT YOUR DOCUMENT SAYS",
+    "raw": "SHE DOES NOT KNOW WHAT YOUR DOCUMENT SAYS",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the person behind the counter cannot interpret your paperwork",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.293Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_3b8b2fb71fa9e5c7",
+    "text": "SHE NEEDS BOTH PAGES OR NOTHING",
+    "raw": "SHE NEEDS BOTH PAGES OR NOTHING",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a partial submission will be rejected in its entirety",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.009Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_dc6509b5f8b88047",
+    "text": "THE GLASS BEHIND YOU IS NOT A GLASS",
+    "raw": "THE GLASS BEHIND YOU IS NOT A GLASS",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the partition separating you from the agent is not what it claims",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.292Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_09d149aec8e63cd8",
+    "text": "THE NEXT NUMBER MAY NEVER COME",
+    "raw": "THE NEXT NUMBER MAY NEVER COME",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the sequence could stop at any point without warning",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.294Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_b3fb603e8afb6027",
+    "text": "THE PAPER YOU GOT IS A SUGGESTION",
+    "raw": "THE PAPER YOU GOT IS A SUGGESTION",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the ticket number is merely advisory in nature",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.293Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_2863cba52a842c8f",
+    "text": "THE PEN IS BACK ON ITS STRING",
+    "raw": "THE PEN IS BACK ON ITS STRING",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the writing implement has been returned to its tethered home",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.294Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_1ca33864f7d1043e",
+    "text": "THE WINDOW BEHIND YOU IS CLOSED FOR A REASON",
+    "raw": "THE WINDOW BEHIND YOU IS CLOSED FOR A REASON",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a second glass opening exists but will not be opened today",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.009Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_3bf25cbb847c83d6",
+    "text": "THIS WINDOW HANDLES ONE THING ONLY",
+    "raw": "THIS WINDOW HANDLES ONE THING ONLY",
+    "category": "Sign you'd see at the DMV",
+    "hint": "each service point is restricted to a single category of task",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.294Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_be76403670eee93a",
+    "text": "YOU ARE NOT NEXT BECAUSE YOU ARE NEXT",
+    "raw": "YOU ARE NOT NEXT BECAUSE YOU ARE NEXT",
+    "category": "Sign you'd see at the DMV",
+    "hint": "the queue position is a lie and also true",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.292Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_fcec2ec7b1e99d30",
+    "text": "YOU CANNOT BRING THE KID BACK LATER",
+    "raw": "YOU CANNOT BRING THE KID BACK LATER",
+    "category": "Sign you'd see at the DMV",
+    "hint": "a minor must be present for the transaction to be valid",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.294Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_c0a61d918a6b8aa4",
+    "text": "YOUR POSITION IS NOT A PROMISE",
+    "raw": "YOUR POSITION IS NOT A PROMISE",
+    "category": "Sign you'd see at the DMV",
+    "hint": "being called does not guarantee completion of the task",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:09:45.292Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_11758f2a7dc724f8",
+    "text": "YOUR SIGNATURE HAS CHANGED SINCE LAST TIME",
+    "raw": "YOUR SIGNATURE HAS CHANGED SINCE LAST TIME",
+    "category": "Sign you'd see at the DMV",
+    "hint": "they compared the ink marks on old papers and found a discrepancy",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:14:52.005Z",
+    "provider": "infinity"
+  }
+]

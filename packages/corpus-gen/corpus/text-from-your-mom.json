@@ -1,0 +1,200 @@
+[
+  {
+    "id": "p_3679fd4381f81fc1",
+    "text": "ARE YOU EATING ENOUGH FOOD. I AM ASKING FOR THE BIRD",
+    "raw": "ARE YOU EATING ENOUGH FOOD. I AM ASKING FOR THE BIRD",
+    "category": "Text from your mom",
+    "hint": "a check-in disguised as a question about a small creature",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.992Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_11ce6273c96d2d8b",
+    "text": "DID I TELL YOU ABOUT THE THUNDER LAST NIGHT",
+    "raw": "DID I TELL YOU ABOUT THE THUNDER LAST NIGHT",
+    "category": "Text from your mom",
+    "hint": "a weather event from the previous evening, asked as a question but stated flatly",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.595Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_90eb0dc526f4d653",
+    "text": "I BOILED AN EGG AND IT RAN OUT OF WATER.",
+    "raw": "I BOILED AN EGG AND IT RAN OUT OF WATER.",
+    "category": "Text from your mom",
+    "hint": "a kitchen task failed due to a missing ingredient",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.597Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d1c110c874ae981f",
+    "text": "I FOUND YOUR OLD SHOE IN THE TRASH AND KEPT IT",
+    "raw": "I FOUND YOUR OLD SHOE IN THE TRASH AND KEPT IT",
+    "category": "Text from your mom",
+    "hint": "an item from the past was almost lost but was saved",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.993Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_d6826caddc1b89a5",
+    "text": "I PUT THE JACKET IN THE CAR. IT IS COLD OUT.",
+    "raw": "I PUT THE JACKET IN THE CAR. IT IS COLD OUT.",
+    "category": "Text from your mom",
+    "hint": "clothing was relocated to a vehicle because of temperature",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.596Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ba39bcbb852930f4",
+    "text": "I SLEPT TWELVE HOURS. YOU SHOULD TRY THAT SOMETIMES",
+    "raw": "I SLEPT TWELVE HOURS. YOU SHOULD TRY THAT SOMETIMES",
+    "category": "Text from your mom",
+    "hint": "an extended rest was taken and advice is being given",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.994Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_165ad2dee591796e",
+    "text": "I WENT TO THE STORE. I DID NOT NEED ANYTHING.",
+    "raw": "I WENT TO THE STORE. I DID NOT NEED ANYTHING.",
+    "category": "Text from your mom",
+    "hint": "a trip to a shop that was completely unnecessary",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.598Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_11d5cc8017fcc207",
+    "text": "IT IS GOING TO RAIN AND I AM NOT READY FOR IT.",
+    "raw": "IT IS GOING TO RAIN AND I AM NOT READY FOR IT.",
+    "category": "Text from your mom",
+    "hint": "precipitation is coming and the sender is unprepared",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.595Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_5a4f7d8a5d59ac6a",
+    "text": "THE CAT DID SOMETHING TO THE CURTAIN AGAIN.",
+    "raw": "THE CAT DID SOMETHING TO THE CURTAIN AGAIN.",
+    "category": "Text from your mom",
+    "hint": "a feline damaged a window covering, and it is a recurring event",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.596Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_5314f254c40c0057",
+    "text": "THE CLOUDS LOOKED LIKE YOUR FATHER TODAY.",
+    "raw": "THE CLOUDS LOOKED LIKE YOUR FATHER TODAY.",
+    "category": "Text from your mom",
+    "hint": "sky formations resembled a parent, mentioned in passing",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.596Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_689e2dd1f04017ee",
+    "text": "THE DOG IS YELLING AGAIN. ANYWAY EAT SOMETHING.",
+    "raw": "THE DOG IS YELLING AGAIN. ANYWAY EAT SOMETHING.",
+    "category": "Text from your mom",
+    "hint": "a noisy complaint about a pet, then a food command",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.591Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_fc1890704659f942",
+    "text": "THE GARDEN IS ALIVE AGAIN AND I DO NOT KNOW WHY",
+    "raw": "THE GARDEN IS ALIVE AGAIN AND I DO NOT KNOW WHY",
+    "category": "Text from your mom",
+    "hint": "plants have started growing and the cause is unclear",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.995Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_e3106cd1d125b686",
+    "text": "THE HEAT IS COMING BACK. DO YOU HAVE A BLANKET",
+    "raw": "THE HEAT IS COMING BACK. DO YOU HAVE A BLANKET",
+    "category": "Text from your mom",
+    "hint": "warmth is returning and a question about staying cozy",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.994Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ef17544f73f7b918",
+    "text": "THE KITCHEN FLOOR IS WET AND I DO NOT KNOW WHY.",
+    "raw": "THE KITCHEN FLOOR IS WET AND I DO NOT KNOW WHY.",
+    "category": "Text from your mom",
+    "hint": "a household surface is soaked, cause unknown, stated as fact",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.595Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_6782e5b6b187f554",
+    "text": "THE NEIGHBOR HAS A NEW DOG AND IT SOUNDS LIKE CRYING",
+    "raw": "THE NEIGHBOR HAS A NEW DOG AND IT SOUNDS LIKE CRYING",
+    "category": "Text from your mom",
+    "hint": "someone next door got a puppy but the barking is unsettling",
+    "difficulty": 3,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:15:08.991Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_e108709ce87cbfc2",
+    "text": "THE SUN IS BACK. WE ARE ALL SURPRISED.",
+    "raw": "THE SUN IS BACK. WE ARE ALL SURPRISED.",
+    "category": "Text from your mom",
+    "hint": "daylight returned after absence and the household is shocked",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.597Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_ac893462a18e8c2b",
+    "text": "THE WIND IS DOING IT AGAIN. I CAN NOT SLEEP.",
+    "raw": "THE WIND IS DOING IT AGAIN. I CAN NOT SLEEP.",
+    "category": "Text from your mom",
+    "hint": "air movement is recurring and causing insomnia",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.598Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_09ecf3bbc94888c1",
+    "text": "YOUR BROTHER CALLED TWICE. I DID NOT ANSWER.",
+    "raw": "YOUR BROTHER CALLED TWICE. I DID NOT ANSWER.",
+    "category": "Text from your mom",
+    "hint": "a sibling reached out repeatedly, the sender ignored it on purpose",
+    "difficulty": 2,
+    "source": "generated",
+    "generatedAt": "2026-08-23T20:06:38.595Z",
+    "provider": "infinity"
+  }
+]

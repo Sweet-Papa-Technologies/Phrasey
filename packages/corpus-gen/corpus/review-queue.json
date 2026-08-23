@@ -1,0 +1,110 @@
+[
+  {
+    "raw": "CALL ME WHEN YOU CAN. NOT TONIGHT. NEXT WEEK.",
+    "hint": "three contradictory time instructions about a phone call",
+    "category": "Text from your mom",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): call"
+    ],
+    "rejectedAt": "2026-08-23T20:06:38.596Z"
+  },
+  {
+    "raw": "i think the closet door has been open since tuesday",
+    "hint": "a person suspects a wardrobe panel has been ajar for several days and they only just noticed",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "HINT_LENGTH"
+    ],
+    "details": [
+      "HINT_LENGTH: hint is 92 chars, need 10-90"
+    ],
+    "rejectedAt": "2026-08-23T20:07:56.250Z"
+  },
+  {
+    "raw": "i wonder if the fan is spinning or if i just feel like it",
+    "hint": "a person is not certain whether an overhead device is actually moving or it is just their imagination",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "HINT_LENGTH"
+    ],
+    "details": [
+      "HINT_LENGTH: hint is 101 chars, need 10-90"
+    ],
+    "rejectedAt": "2026-08-23T20:07:56.251Z"
+  },
+  {
+    "raw": "I AM PUTTING ON YOUR FATHERS JACKET. IT STILL FITS.",
+    "hint": "borrowing a garment and discovering it still works",
+    "category": "Text from your mom",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): still"
+    ],
+    "rejectedAt": "2026-08-23T20:15:08.995Z"
+  },
+  {
+    "raw": "YOUR SORROW IS BEING PROCESSED. PLEASE WAIT. YOUR SORROW IS NOT BEING PROCESSED.",
+    "hint": "one status line promises handling, the next admits it never started",
+    "category": "Error message",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 80 chars, need 12-60"
+    ],
+    "rejectedAt": "2026-08-23T20:16:07.791Z"
+  },
+  {
+    "raw": "THE SECOND TRANSLATION IS THE CORRECT ONE",
+    "hint": "two versions exist and one was prioritized over the other",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): one"
+    ],
+    "rejectedAt": "2026-08-23T20:17:07.475Z"
+  },
+  {
+    "raw": "I WOULD THANK YOU BUT I AM TOO BUSY BEING FURIOUS",
+    "hint": "the writer is too consumed by rage to perform the polite act of expressing gratitude",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): too"
+    ],
+    "rejectedAt": "2026-08-23T20:18:03.129Z"
+  },
+  {
+    "raw": "I AM NOT MAD I JUST NEED A MINUTE WITH THE POMEGRANATES",
+    "hint": "a calm declaration of needing private time near a tart fruit",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): needing"
+    ],
+    "rejectedAt": "2026-08-23T20:18:19.140Z"
+  },
+  {
+    "raw": "THIS IS NOT A COMPLAINCE DESK",
+    "hint": "a denial that the window handles frustration about the system",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "MANUAL_REVIEW"
+    ],
+    "details": [
+      "MANUAL_REVIEW: misspelling — COMPLAINCE should be COMPLIANCE. An unsolvable board; the deterministic validator has no dictionary and cannot catch this, so it was pulled by hand during the M5 corpus review."
+    ],
+    "rejectedAt": "2026-08-23T20:22:02.959311Z"
+  }
+]

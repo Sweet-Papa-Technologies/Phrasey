@@ -1,0 +1,250 @@
+{
+  "_comment": "Deliberately invalid candidates. The validator test suite asserts every one of these is rejected, and rejected for the named reason. Design doc §14 makes 'validator rejects known-bad fixtures' the exit criterion for M5. `expect` is a subset assertion: the entry may fail additional rules, but it must fail at least these.",
+  "corpusSeed": [
+    "THEY MOVED THE FROZEN AISLE AND I AM SHAKEN",
+    "WHY IS THERE A SECOND FRIDGE",
+    "MY GUY WILL COME BY. HE HAS A KEY."
+  ],
+  "cases": [
+    {
+      "id": "too-short",
+      "raw": "EAT THE BOX",
+      "hint": "consume the container it arrived in",
+      "category": "Instructions on the back of a box",
+      "expect": [
+        "LENGTH"
+      ],
+      "note": "11 characters, one under the floor"
+    },
+    {
+      "id": "too-long",
+      "raw": "PLEASE REMOVE EVERY SINGLE ITEM FROM THE CART BEFORE YOU APPROACH THE COUNTER",
+      "hint": "empty your trolley ahead of the till",
+      "category": "Grocery list",
+      "expect": [
+        "LENGTH"
+      ],
+      "note": "76 characters, well over the 60 ceiling"
+    },
+    {
+      "id": "too-few-words",
+      "raw": "UNBELIEVABLE PAPERWORK",
+      "hint": "astonishing quantity of forms",
+      "category": "Sign you'd see at the DMV",
+      "expect": [
+        "WORD_COUNT"
+      ],
+      "note": "two words, needs three"
+    },
+    {
+      "id": "too-few-distinct-letters",
+      "raw": "TOTO TOT TATA TOAST",
+      "hint": "a repetitive nonsense chant",
+      "category": "Group chat message at 2am",
+      "expect": [
+        "DISTINCT_LETTERS"
+      ],
+      "note": "only five distinct letters on the board"
+    },
+    {
+      "id": "proper-noun-lexicon-name",
+      "raw": "I HAVE KNOWN MICHAEL SINCE THE INCIDENT",
+      "hint": "a friendship dated from an event",
+      "category": "Thing said at a wedding",
+      "expect": [
+        "PROPER_NOUN"
+      ],
+      "note": "given name, caught by the lexicon after uppercasing"
+    },
+    {
+      "id": "proper-noun-brand",
+      "raw": "I BOUGHT THIS SWEATER AT WALMART",
+      "hint": "knitwear acquired from a big retailer",
+      "category": "Yelp review, one star",
+      "expect": [
+        "PROPER_NOUN"
+      ],
+      "note": "trademarked retailer — the legal posture in §4.2 says no"
+    },
+    {
+      "id": "proper-noun-capitalization",
+      "raw": "please move your car off Bramblewood Court",
+      "hint": "relocate the vehicle from that road",
+      "category": "Note left on a windshield",
+      "expect": [
+        "PROPER_NOUN"
+      ],
+      "note": "invented place name, caught by the mixed-case heuristic, not the lexicon"
+    },
+    {
+      "id": "profanity",
+      "raw": "THIS WHOLE PLACE IS ABSOLUTE BULLSHIT",
+      "hint": "the establishment is worthless nonsense",
+      "category": "Yelp review, one star",
+      "expect": [
+        "PROFANITY"
+      ],
+      "note": "profanity screen"
+    },
+    {
+      "id": "disallowed-punctuation",
+      "raw": "WAIT HERE; DO NOT ENTER THE ROOM",
+      "hint": "hold position outside that space",
+      "category": "Sign you'd see at the DMV",
+      "expect": [
+        "DISALLOWED_PUNCTUATION"
+      ],
+      "note": "semicolon is not in the ' - , . ! ? set"
+    },
+    {
+      "id": "disallowed-punctuation-quotes",
+      "raw": "THE SIGN SAID \"CLOSED\" BUT THE DOOR WAS OPEN",
+      "hint": "conflicting information at an entrance",
+      "category": "Yelp review, one star",
+      "expect": [
+        "DISALLOWED_PUNCTUATION"
+      ],
+      "note": "double quotes are not allowed"
+    },
+    {
+      "id": "non-ascii",
+      "raw": "PICK UP THE MILK AND SOME BREAD 🥛",
+      "hint": "dairy and a baked staple to collect",
+      "category": "Grocery list",
+      "expect": [
+        "NON_ASCII"
+      ],
+      "note": "emoji survives normalization and must be rejected"
+    },
+    {
+      "id": "duplicate",
+      "raw": "WHY IS THERE A SECOND FRIDGE",
+      "hint": "an extra cold appliance raises questions",
+      "category": "Group chat message at 2am",
+      "expect": [
+        "DUPLICATE"
+      ],
+      "note": "exact match on the normalized hash of a corpusSeed entry"
+    },
+    {
+      "id": "duplicate-repunctuated",
+      "raw": "WHY IS THERE A SECOND FRIDGE?!",
+      "hint": "an extra cold appliance raises questions",
+      "category": "Group chat message at 2am",
+      "expect": [
+        "DUPLICATE"
+      ],
+      "note": "punctuation drift must not sneak a dupe past the hash"
+    },
+    {
+      "id": "near-duplicate-pattern",
+      "raw": "THEY MOVED THE FROZEN AISLE AND I AM BROKEN",
+      "hint": "a relocated cold section causes distress",
+      "category": "Overheard at Trader Joe's",
+      "expect": [
+        "PATTERN_NEAR_DUPLICATE"
+      ],
+      "note": "identical board shape and near-identical wording to a corpusSeed entry"
+    },
+    {
+      "id": "hint-missing",
+      "raw": "THE PEN IS ON A STRING FOR A REASON",
+      "hint": "",
+      "category": "Sign you'd see at the DMV",
+      "expect": [
+        "HINT_MISSING"
+      ],
+      "note": "the CRACK card has nothing to reveal"
+    },
+    {
+      "id": "hint-leaks-phrase",
+      "raw": "WHOSE CHILD IS UNDER THE CAKE TABLE",
+      "hint": "a child is hiding under the cake table",
+      "category": "Thing said at a wedding",
+      "expect": [
+        "HINT_LEAKS_PHRASE"
+      ],
+      "note": "hint hands over four words of the answer"
+    },
+    {
+      "id": "hint-leaks-inflection",
+      "raw": "I HAVE BEEN THINKING ABOUT DOORS",
+      "hint": "a fixation on one particular door",
+      "category": "Group chat message at 2am",
+      "expect": [
+        "HINT_LEAKS_PHRASE"
+      ],
+      "note": "DOORS/door — the leak check compares stems, not exact strings"
+    },
+    {
+      "id": "hint-too-short",
+      "raw": "HONK IF YOU HAVE ALSO GIVEN UP",
+      "hint": "sad",
+      "category": "Bumper sticker",
+      "expect": [
+        "HINT_LENGTH"
+      ],
+      "note": "hint under the 10 character floor"
+    },
+    {
+      "id": "hint-proper-noun",
+      "raw": "THE RENT WENT UP. I WILL EXPLAIN LATER.",
+      "hint": "a cost increase, like the ones in Chicago",
+      "category": "Voicemail from your landlord",
+      "expect": [
+        "HINT_PROPER_NOUN"
+      ],
+      "note": "place name in the hint"
+    },
+    {
+      "id": "hint-non-ascii",
+      "raw": "STIR UNTIL IT LOOKS LIKE THE PICTURE",
+      "hint": "mix it until it matches the drawing 🥄",
+      "category": "Instructions on the back of a box",
+      "expect": [
+        "HINT_NON_ASCII"
+      ],
+      "note": "emoji in the hint"
+    },
+    {
+      "id": "trivially-solvable-two-letters",
+      "raw": "SEE THESE SEEDS TEASE",
+      "hint": "a repetitive sibilant tongue twister",
+      "category": "Group chat message at 2am",
+      "expect": [
+        "TRIVIALLY_SOLVABLE"
+      ],
+      "note": "E and S alone light up most of the board"
+    },
+    {
+      "id": "hint-profanity",
+      "raw": "THE SOUP WAS FINE BUT NOBODY LOOKED AT ME",
+      "hint": "the service here was complete bullshit",
+      "category": "Yelp review, one star",
+      "expect": [
+        "HINT_PROFANITY"
+      ],
+      "note": "profanity screen applies to the hint too, not just the phrase"
+    }
+  ],
+  "valid": [
+    {
+      "id": "control-dmv",
+      "raw": "DO NOT ASK ME WHAT NUMBER WE ARE ON",
+      "hint": "a plea about the queue counter",
+      "category": "Sign you'd see at the DMV"
+    },
+    {
+      "id": "control-windshield",
+      "raw": "TWO SPOTS. BOLD CHOICE. WE ALL SAW.",
+      "hint": "occupying double the space, publicly",
+      "category": "Note left on a windshield"
+    },
+    {
+      "id": "control-proverb",
+      "raw": "A WATCHED POT NEVER BOILS",
+      "hint": "attention slows an anticipated event",
+      "category": "Idiom / proverb"
+    }
+  ]
+}

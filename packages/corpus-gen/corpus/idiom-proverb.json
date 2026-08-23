@@ -1,0 +1,112 @@
+[
+  {
+    "id": "p_ef4b82be60a6a1d6",
+    "text": "A STORM IN A TEACUP",
+    "raw": "A STORM IN A TEACUP",
+    "category": "Idiom / proverb",
+    "hint": "a tiny upset blown way out of proportion",
+    "difficulty": 1,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:09:27.975Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_04413a1ff1527163",
+    "text": "BITE THE BULLET",
+    "raw": "BITE THE BULLET",
+    "category": "Idiom / proverb",
+    "hint": "clench your teeth and push through",
+    "difficulty": 1,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.081Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_11ff7e159488822e",
+    "text": "BLOOD IS THICKER THAN WATER",
+    "raw": "BLOOD IS THICKER THAN WATER",
+    "category": "Idiom / proverb",
+    "hint": "kinship bonds outweigh all other connections",
+    "difficulty": 2,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:09:27.975Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_025dc4ca243249ff",
+    "text": "DON'T PUT THE CART BEFORE THE HORSE",
+    "raw": "DON'T PUT THE CART BEFORE THE HORSE",
+    "category": "Idiom / proverb",
+    "hint": "sequencing matters - handle prerequisites first",
+    "difficulty": 2,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:09:27.977Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_b431434fd0e50d34",
+    "text": "EASY COME EASY GO",
+    "raw": "EASY COME EASY GO",
+    "category": "Idiom / proverb",
+    "hint": "what arrives without effort departs just as fast",
+    "difficulty": 1,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:09:27.975Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_61a257b181b51d43",
+    "text": "IT'S NO USE CRYING OVER SPILLED MILK",
+    "raw": "IT'S NO USE CRYING OVER SPILLED MILK",
+    "category": "Idiom / proverb",
+    "hint": "weeping at a tipped container of dairy",
+    "difficulty": 3,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.083Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_257fd8cf1ab06dad",
+    "text": "PRACTICE MAKES PERFECT",
+    "raw": "PRACTICE MAKES PERFECT",
+    "category": "Idiom / proverb",
+    "hint": "repetition refines any skill",
+    "difficulty": 1,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.083Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_96d49a98dba9f0bd",
+    "text": "THE BALL IS IN YOUR COURT",
+    "raw": "THE BALL IS IN YOUR COURT",
+    "category": "Idiom / proverb",
+    "hint": "the play now depends on your move",
+    "difficulty": 2,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.083Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_2e28bf128858b411",
+    "text": "THE MORE THE MERRIER",
+    "raw": "THE MORE THE MERRIER",
+    "category": "Idiom / proverb",
+    "hint": "adding heads adds to the fun",
+    "difficulty": 1,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.082Z",
+    "provider": "infinity"
+  },
+  {
+    "id": "p_c02eab1d6a9b75ee",
+    "text": "YOU CAN LEAD A HORSE TO WATER",
+    "raw": "YOU CAN LEAD A HORSE TO WATER",
+    "category": "Idiom / proverb",
+    "hint": "guiding an animal to a drink source",
+    "difficulty": 2,
+    "source": "public-domain",
+    "generatedAt": "2026-08-23T20:16:53.081Z",
+    "provider": "infinity"
+  }
+]
