@@ -27,7 +27,7 @@ import type {
   ServerToClientEvents,
 } from '@phrasey/shared';
 import { playerView, roundPublic, type GameState } from '@phrasey/engine';
-import { assertNoLeak, eventsFor, secretsOf, type Secrets } from '../leakGuard.js';
+import { assertNoLeak, eventsFor, forRecipient, secretsOf, type Secrets } from '../leakGuard.js';
 import type { Logger } from '../logger.js';
 
 export type EmitFn = <E extends keyof ServerToClientEvents>(
@@ -106,20 +106,23 @@ export class Fanout {
     }
 
     for (const to of recipients) {
-      const mine = eventsFor(to.playerId, events);
-      if (round && board && (mine.length > 0 || events.length === 0)) {
-        this.send(to, 'board:update', { board, round, events: mine }, secrets);
-      }
-
       // PRIVATE. `playerView` is the only sanctioned source of per-player state
-      // and it is the only thing that ever carries `peeks`.
+      // and the only thing that ever carries `peeks`.
       let view;
       try {
         view = playerView(state, to.playerId);
       } catch {
         continue; // seat removed mid-step
       }
-      this.send(to, 'hand:update', { cards: view.hand, peeks: view.peeks }, secrets);
+      // This recipient's own PEEKs are not secrets FROM THIS RECIPIENT.
+      const mySecrets = forRecipient(secrets, view.peeks);
+
+      const mine = eventsFor(to.playerId, events);
+      if (round && board && (mine.length > 0 || events.length === 0)) {
+        this.send(to, 'board:update', { board, round, events: mine }, mySecrets);
+      }
+
+      this.send(to, 'hand:update', { cards: view.hand, peeks: view.peeks }, mySecrets);
 
       if (view.window) {
         this.send(
@@ -132,7 +135,7 @@ export class Fanout {
             expiresAt: view.window.expiresAt,
             playableCardIds: view.window.playableCardIds,
           },
-          secrets,
+          mySecrets,
         );
       }
     }

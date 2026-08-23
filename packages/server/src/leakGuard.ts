@@ -37,15 +37,40 @@ export interface Secrets {
   hint: string | null;
 }
 
+/**
+ * Narrow a secret set for ONE recipient.
+ *
+ * A tile this player bought with PEEK is theirs by the rules (§3.5), and the
+ * protocol carries it in two sanctioned places: `hand:update.peeks` and the
+ * `peek` event routed to that socket alone. Both would otherwise trip the
+ * hidden-letter check, so the letters this player legitimately knows come out
+ * of their own guard — and out of nobody else's.
+ */
+export function forRecipient(secrets: Secrets | null, peeks: Record<number, string>): Secrets | null {
+  if (!secrets) return null;
+  const known = new Set(Object.values(peeks));
+  if (known.size === 0) return secrets;
+  return { ...secrets, hidden: secrets.hidden.filter((l) => !known.has(l)) };
+}
+
 /** Snapshot what must not escape, given the state at emit time. */
 export function secretsOf(state: GameState): Secrets | null {
   const round = state.round;
   // Round over: the answer is public by design and every tile is face-up.
   if (!round || round.endedReason !== null) return null;
+  const hidden = hiddenDistinctLetters(round);
+  // Every tile is already face-up but nobody has claimed the solve yet. The
+  // answer is legitimately readable straight off the board — `accessibleText`
+  // spells it out, which is required by §10 — so there is nothing left to keep.
+  // Guarding here would be a false positive that drops real board updates.
+  if (hidden.length === 0) return null;
   return {
     answer: normalizeGuess(round.answer),
-    hidden: hiddenDistinctLetters(round),
-    hint: round.hintRevealed ? null : round.puzzle.hint,
+    hidden,
+    // A short or empty hint is not a secret worth matching on — `''` would
+    // make `String.includes` true for every string in the payload and drop the
+    // whole game. Corpus hints are sentences; anything shorter is not one.
+    hint: !round.hintRevealed && round.puzzle.hint.trim().length >= 8 ? round.puzzle.hint : null,
   };
 }
 
@@ -166,5 +191,12 @@ export function privateOwner(e: GameEvent): string | null {
  * `GameEvent[]` is prepared for a socket.
  */
 export function eventsFor(playerId: string | null, events: readonly GameEvent[]): GameEvent[] {
-  return events.filter((e) => (PUBLIC_EVENT_KINDS.has(e.t) ? true : privateOwner(e) === playerId));
+  return events.filter((e) => {
+    if (PUBLIC_EVENT_KINDS.has(e.t)) return true;
+    const owner = privateOwner(e);
+    // `owner === null` means "unclassified", not "belongs to nobody in
+    // particular" — an event with no owner reaches no one, including a caller
+    // that passed a null playerId.
+    return owner !== null && owner === playerId;
+  });
 }

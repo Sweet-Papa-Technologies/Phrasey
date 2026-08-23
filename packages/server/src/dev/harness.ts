@@ -234,6 +234,9 @@ class Player {
     if (!move) return;
     const res = await this.emit(move.event, move.payload as never);
     if (!res.ok) {
+      if (this.verbose) {
+        log(this.label, `DBG move=${move.what} guessed=[${board.guessedLetters.join('')}] hand=${JSON.stringify(this.hand.map((c) => (c.kind === 'letter' ? c.letter : c.action)))}`);
+      }
       this.onRejected(res.error);
       return;
     }
@@ -246,9 +249,12 @@ class Player {
   private onRejected(err: SocketError | undefined): void {
     // A rejection normally means an interrupt window owns the table, or the
     // turn moved on under us. Back off and re-read the board.
-    if (this.retries++ > 12) return;
-    if (this.verbose) log(this.label, `rejected (${err?.code}); retrying`);
-    this.schedule(600);
+    if (this.retries++ > 20) {
+      log(this.label, `giving up after repeated rejections (${err?.code})`);
+      return;
+    }
+    log(this.label, `rejected (${err?.code}); retrying`);
+    this.schedule(300);
   }
 
   private chooseMove(

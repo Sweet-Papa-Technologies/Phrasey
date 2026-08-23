@@ -6,7 +6,7 @@
  * call sites log ids and event kinds, never `name`, `text`, `answer`, `hint`
  * or `guess`. `logger.test.ts` asserts the backstop actually fires.
  */
-import { pino, type Logger } from 'pino';
+import { pino, type DestinationStream, type Logger } from 'pino';
 
 /** Field names that must never reach a log sink, wherever they appear. */
 export const REDACTED_KEYS = [
@@ -31,15 +31,21 @@ function redactPaths(): string[] {
   return paths;
 }
 
-export function createLogger(opts: { level: string; pretty: boolean }): Logger {
-  return pino({
+export function createLogger(opts: {
+  level: string;
+  pretty: boolean;
+  /** Test seam: capture output instead of writing to stdout. */
+  destination?: DestinationStream;
+}): Logger {
+  const options = {
     level: opts.level,
     base: { svc: 'phrasey-server' },
     redact: { paths: redactPaths(), censor: '[redacted]' },
-    ...(opts.pretty
+    ...(opts.pretty && !opts.destination
       ? { transport: { target: 'pino-pretty', options: { colorize: true, translateTime: 'HH:MM:ss.l' } } }
       : {}),
-  });
+  };
+  return opts.destination ? pino(options, opts.destination) : pino(options);
 }
 
 export type { Logger };

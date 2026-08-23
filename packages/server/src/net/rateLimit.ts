@@ -16,13 +16,24 @@ export interface BucketSpec {
   refillPerSec: number;
 }
 
-export const GLOBAL_BUCKET: BucketSpec = { capacity: 30, refillPerSec: 10 };
+/**
+ * Sized for a fast round, not for a human's reflexes: one turn is up to four
+ * client→server calls (play, decline-to-solve, decline-an-interrupt, and a
+ * retry), and an 8-player table can cycle several times a second when everyone
+ * is quick. Too tight a bucket does not stop an attacker, it stops the game.
+ */
+export const GLOBAL_BUCKET: BucketSpec = { capacity: 60, refillPerSec: 25 };
 
 export const EVENT_BUCKETS: Record<string, BucketSpec> = {
   'room:create': { capacity: 3, refillPerSec: 0.2 },
   'room:join': { capacity: 6, refillPerSec: 0.5 },
-  'turn:solve': { capacity: 4, refillPerSec: 0.5 },
+  // NOT tight, deliberately. `turn:solve` doubles as "decline to solve" (the
+  // missing `turn:pass`), so it fires every single turn. Guessing is already
+  // rate-limited by the rules: one wrong solve locks you out of solving for the
+  // rest of the round (§3.3), which is a far harder cap than a token bucket.
+  'turn:solve': { capacity: 12, refillPerSec: 4 },
   'chat:emote': { capacity: 5, refillPerSec: 1 },
+  'interrupt:play': { capacity: 12, refillPerSec: 4 },
   'game:start': { capacity: 4, refillPerSec: 0.5 },
   'room:settings': { capacity: 8, refillPerSec: 2 },
 };

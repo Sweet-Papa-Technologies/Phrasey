@@ -23,7 +23,9 @@ export interface ServerConfig {
   debugInvariants: boolean;
   /**
    * Deep-scan every outbound payload for the answer before it hits a socket.
-   * On by default outside production; see leakGuard.ts.
+   * ON everywhere by default, production included: §6.2 calls server authority
+   * non-negotiable, and a dropped board update is a recoverable annoyance while
+   * a leaked answer kills the game. `LEAK_GUARD=0` is the escape hatch.
    */
   leakGuard: boolean;
   /** Main loop period. Turn timers and interrupt windows are resolved here. */
@@ -68,7 +70,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
       .filter(Boolean),
     firestoreEnabled: bool(env.FIRESTORE_ENABLED, true),
     debugInvariants: bool(env.DEBUG_INVARIANTS, !isProd),
-    leakGuard: bool(env.LEAK_GUARD, !isProd),
+    leakGuard: bool(env.LEAK_GUARD, true),
     tickMs: num(env.TICK_MS, 200),
     timerEmitMs: num(env.TIMER_EMIT_MS, 1000),
     intermissionMs: num(env.INTERMISSION_MS, 6000),
