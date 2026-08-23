@@ -3,7 +3,7 @@
  * surface of this product: no account, no email, no PII (§8). The name is
  * session-scoped and thrown away.
  */
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { AVATAR_COLORS } from '@phrasey/shared';
 
 export interface IdentityFormProps {
@@ -28,6 +28,7 @@ export function IdentityForm({
   autoFocus = false,
 }: IdentityFormProps) {
   const nameId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [touched, setTouched] = useState(false);
   const trimmed = name.trim();
   const invalid = touched && trimmed.length === 0;
@@ -38,7 +39,10 @@ export function IdentityForm({
       onSubmit={(e) => {
         e.preventDefault();
         setTouched(true);
-        if (trimmed.length === 0) return;
+        if (trimmed.length === 0) {
+          inputRef.current?.focus();
+          return;
+        }
         onSubmit();
       }}
     >
@@ -57,10 +61,22 @@ export function IdentityForm({
           onChange={(e) => onChange({ name: e.target.value })}
           onBlur={() => setTouched(true)}
           placeholder="Who are you today?"
-          className="w-full rounded-card border-2 border-ink/15 bg-white px-3 py-3 text-lg font-semibold"
+          ref={inputRef}
+          className={`w-full rounded-card border-2 bg-white px-3 py-3 text-lg font-semibold ${
+            invalid ? 'border-cherry' : 'border-ink/15'
+          }`}
         />
-        <p id={`${nameId}-help`} className="text-xs opacity-55">
-          {invalid ? 'Pick any name — it is thrown away when the room closes.' : 'Thrown away when the room closes.'}
+        {/*
+          An invalid state has to LOOK different, not just reword itself. The
+          previous copy swapped one grey sentence for another, so submitting an
+          empty name read as the button doing nothing at all.
+        */}
+        <p
+          id={`${nameId}-help`}
+          className={invalid ? 'text-xs font-semibold text-cherry' : 'text-xs opacity-55'}
+          {...(invalid ? { role: 'alert' } : {})}
+        >
+          {invalid ? 'Pick a name first — any name. It is thrown away when the room closes.' : 'Thrown away when the room closes.'}
         </p>
       </div>
 

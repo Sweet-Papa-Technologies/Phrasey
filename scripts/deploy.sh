@@ -22,6 +22,15 @@ SERVICE="${SERVICE:-phrasey-server}"
 REPO="${REPO:-phrasey}"
 HOSTING_TARGET="${HOSTING_TARGET:-phrasey}"
 
+# Baked into the client bundle at build time. Without VITE_SERVER_URL the client
+# silently falls back to its in-memory mock transport — the deployed site would
+# look fine and play a fake game against nobody. Resolved from the live Cloud Run
+# service unless overridden.
+SERVER_URL="${SERVER_URL:-}"
+# GA4 stays unset by default: analytics is inert without it, which is the
+# correct default until a property exists (design doc section 8).
+GA4_ID="${GA4_ID:-}"
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
@@ -42,12 +51,36 @@ tag() {
   fi
 }
 
+resolve_server_url() {
+  if [[ -n "$SERVER_URL" ]]; then return; fi
+  require gcloud
+  SERVER_URL="$(gcloud run services describe "$SERVICE" \
+    --project "$PROJECT_ID" --region "$REGION" \
+    --format 'value(status.url)' 2>/dev/null || true)"
+  if [[ -z "$SERVER_URL" ]]; then
+    echo "error: could not resolve the Cloud Run URL for '$SERVICE'." >&2
+    echo "       Deploy the server first, or pass SERVER_URL=https://..." >&2
+    exit 1
+  fi
+}
+
 deploy_client() {
   require pnpm
   require firebase
+  resolve_server_url
 
   say "Building the client (@phrasey/client -> packages/client/dist)"
-  pnpm --filter @phrasey/client build
+  echo "    VITE_SERVER_URL=${SERVER_URL}"
+  echo "    VITE_GA4_MEASUREMENT_ID=${GA4_ID:-<unset, analytics inert>}"
+  VITE_SERVER_URL="$SERVER_URL" VITE_GA4_MEASUREMENT_ID="$GA4_ID" \
+    pnpm --filter @phrasey/client build
+
+  # The bundle must actually carry the origin, or we just shipped the mock.
+  if ! grep -rqF "$SERVER_URL" packages/client/dist/assets/*.js; then
+    echo "error: built bundle does not contain ${SERVER_URL}." >&2
+    echo "       The client would fall back to the mock transport. Aborting." >&2
+    exit 1
+  fi
 
   if [[ ! -f packages/client/dist/index.html ]]; then
     echo "error: packages/client/dist/index.html missing after build" >&2

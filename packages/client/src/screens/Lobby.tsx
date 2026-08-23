@@ -63,6 +63,13 @@ function Segmented<T extends string | number | null>({
 
 export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps) {
   const s = room.settings;
+
+  /**
+   * Bots are not seated until the match actually starts, so gating on the
+   * current player count alone makes single-player — 1 human + bots, the
+   * default configuration in §3.1 — impossible to launch.
+   */
+  const enoughSeats = room.players.length + s.botCount >= BALANCE.setup.minPlayers;
   const humans = room.players.filter((p) => !p.isBot).length;
   const maxBots = Math.min(BALANCE.setup.maxBots, BALANCE.setup.maxPlayers - humans);
 
@@ -189,13 +196,13 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
 
           <button
             type="button"
-            disabled={!isHost || room.players.length < BALANCE.setup.minPlayers}
+            disabled={!isHost || !enoughSeats}
             onClick={onStart}
             className="mt-1 rounded-full bg-fanta px-6 py-4 font-display text-xl font-extrabold text-ink shadow-pop disabled:opacity-45"
           >
             {isHost ? 'Start the match' : 'Waiting for the host'}
           </button>
-          {room.players.length < BALANCE.setup.minPlayers && (
+          {!enoughSeats && (
             <p className="text-sm text-cherry">Needs at least {BALANCE.setup.minPlayers} players — add a bot.</p>
           )}
         </section>
