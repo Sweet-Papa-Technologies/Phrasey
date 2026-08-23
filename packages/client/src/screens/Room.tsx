@@ -17,11 +17,21 @@ export function Room({ code }: { code: string }) {
   const setCastView = useGameStore((s) => s.setCastView);
   const muted = useGameStore((s) => s.muted);
   const volume = useGameStore((s) => s.volume);
+  const musicVolume = useGameStore((s) => s.musicVolume);
+  const sameRoomLocal = useGameStore((s) => s.sameRoomLocal);
   const setMuted = useGameStore((s) => s.setMuted);
   const setVolume = useGameStore((s) => s.setVolume);
+  const setMusicVolume = useGameStore((s) => s.setMusicVolume);
+  const setSameRoom = useGameStore((s) => s.setSameRoom);
   const updateSettings = useGameStore((s) => s.updateSettings);
   const startGame = useGameStore((s) => s.startGame);
   const isHost = useGameStore(selectIsHost);
+
+  // The switch means different things to the two roles (§9). For the host it
+  // shows the room-level default they are broadcasting; for everyone else it
+  // shows their own choice, falling back to that default until they make one.
+  const roomDefaultSameRoom = room?.settings.sameRoomAudio === true;
+  const sameRoom = isHost ? roomDefaultSameRoom : (sameRoomLocal ?? roomDefaultSameRoom);
 
   // §9 music: the manifest ships lobby and gameplay beds; swap on room status.
   const status = room?.status;
@@ -55,6 +65,12 @@ export function Room({ code }: { code: string }) {
         volume={volume}
         onMuted={setMuted}
         onVolume={setVolume}
+        musicVolume={musicVolume}
+        onMusicVolume={setMusicVolume}
+        sameRoom={sameRoom}
+        sameRoomIsHost={isHost}
+        sameRoomFromRoomDefault={!isHost && sameRoomLocal === null && roomDefaultSameRoom}
+        onSameRoom={setSameRoom}
       />
 
       {!room ? (

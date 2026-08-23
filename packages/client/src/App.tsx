@@ -47,7 +47,7 @@ function renderScreen(route: ReturnType<typeof useRoute>) {
     case 'landing':
       return <Landing />;
     case 'join':
-      return <Join code={route.code} />;
+      return <Join code={route.code} routeKey={route.key} />;
     case 'room':
       return <Room code={route.code} />;
     case 'legal':

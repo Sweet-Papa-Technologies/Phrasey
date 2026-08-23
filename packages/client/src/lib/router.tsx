@@ -3,10 +3,11 @@
  * three-route party game does not justify adding one.
  */
 import { useCallback, useEffect, useState } from 'react';
+import { parseRoomHandle } from '@phrasey/shared';
 
 export type Route =
   | { name: 'landing' }
-  | { name: 'join'; code: string }
+  | { name: 'join'; code: string; key: string | null }
   | { name: 'room'; code: string }
   | { name: 'legal'; page: 'privacy' | 'cookies' | 'terms' }
   | { name: 'notfound'; path: string };
@@ -17,7 +18,13 @@ export function parseRoute(pathname: string): Route {
   const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
   if (parts.length === 0) return { name: 'landing' };
   const [head, tail] = parts;
-  if (head === 'join' && tail) return { name: 'join', code: tail.toUpperCase().slice(0, 4) };
+  if (head === 'join' && tail) {
+    // A share link carries code + key ("KABO-M3XR"); a hand-typed URL may be
+    // code only, in which case the join screen asks for the key.
+    const handle = parseRoomHandle(tail);
+    if (handle) return { name: 'join', code: handle.code, key: handle.key };
+    return { name: 'join', code: tail.toUpperCase().slice(0, 4), key: null };
+  }
   if (head === 'room' && tail) return { name: 'room', code: tail.toUpperCase().slice(0, 4) };
   if (head === 'privacy') return { name: 'legal', page: 'privacy' };
   if (head === 'cookies') return { name: 'legal', page: 'cookies' };

@@ -3,6 +3,7 @@ import { Link } from '../lib/router';
 import type { ConnectionState } from '../net/transport';
 import { Logo } from './Logo';
 import { MuteControl } from './MuteControl';
+import { SameRoomToggle } from './SameRoomToggle';
 
 export interface TopBarProps {
   room: RoomPublic | null;
@@ -14,6 +15,17 @@ export interface TopBarProps {
   volume: number;
   onMuted: (v: boolean) => void;
   onVolume: (v: number) => void;
+  /** Music bus level. Omit to hide the music slider. */
+  musicVolume?: number;
+  onMusicVolume?: (v: number) => void;
+  /**
+   * Same-room switch (§9). Omit `onSameRoom` on screens with no room — there
+   * is nobody to share a room with yet.
+   */
+  sameRoom?: boolean;
+  sameRoomIsHost?: boolean;
+  sameRoomFromRoomDefault?: boolean;
+  onSameRoom?: (v: boolean) => void;
 }
 
 const CONNECTION_COPY: Record<ConnectionState, { text: string; tone: string }> = {
@@ -35,6 +47,12 @@ export function TopBar({
   volume,
   onMuted,
   onVolume,
+  musicVolume,
+  onMusicVolume,
+  sameRoom,
+  sameRoomIsHost,
+  sameRoomFromRoomDefault,
+  onSameRoom,
 }: TopBarProps) {
   const conn = CONNECTION_COPY[connection];
   return (
@@ -76,7 +94,23 @@ export function TopBar({
           </button>
         )}
 
-        <MuteControl muted={muted} volume={volume} onMuted={onMuted} onVolume={onVolume} />
+        {onSameRoom && (
+          <SameRoomToggle
+            on={!!sameRoom}
+            isHost={!!sameRoomIsHost}
+            fromRoomDefault={sameRoomFromRoomDefault}
+            onChange={onSameRoom}
+          />
+        )}
+
+        <MuteControl
+          muted={muted}
+          volume={volume}
+          onMuted={onMuted}
+          onVolume={onVolume}
+          musicVolume={musicVolume}
+          onMusicVolume={onMusicVolume}
+        />
       </span>
     </header>
   );

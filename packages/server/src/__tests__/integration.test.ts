@@ -203,6 +203,30 @@ describe('§7 session flow', () => {
     expect(handAfter).toEqual(handBefore);
   });
 
+  it('lets the host broadcast same-room audio mid-round, unlike real settings', async () => {
+    const host = await client();
+    const guest = await client();
+    const room = await createRoom(host, { botCount: 0, rounds: 3 });
+    await join(guest, room.code);
+
+    const start = await host.call('game:start', {});
+    expect(start.ok, JSON.stringify(start.error)).toBe(true);
+    await waitFor(() => host.of('game:started').length > 0);
+
+    // A real rule change mid-round is refused...
+    const rules = await host.call('room:settings', { settings: { rounds: 9 } });
+    expect(rules.ok).toBe(false);
+    expect(rules.error?.code).toBe('NOT_IN_LOBBY');
+
+    // ...but the comfort setting goes through, because it affects nothing
+    // about play and a table should not wait a round to stop the echo.
+    const comfort = await host.call('room:settings', { settings: { sameRoomAudio: true } });
+    expect(comfort.ok, JSON.stringify(comfort.error)).toBe(true);
+
+    await waitFor(() => (guest.of('room:state').at(-1) as RoomPublic | undefined)?.settings.sameRoomAudio === true);
+    expect((guest.of('room:state').at(-1) as RoomPublic).settings.sameRoomAudio).toBe(true);
+  });
+
   it('refuses a join that has the code but not the key', async () => {
     const host = await client();
     const room = await createRoom(host);

@@ -93,7 +93,7 @@ export function createMockTransport(opts: MockTransportOptions = {}): Transport 
           const p = payload as { name: string; color: string; settings?: Record<string, unknown> };
           g.setSelf(p.name || 'You', p.color);
           if (p.settings) g.updateSettings(p.settings as never);
-          const res = ok({ sessionToken: `mock-${g.code}`, playerId: g.selfId, room: g.roomPublic() });
+          const res = ok({ sessionToken: `mock-${g.code}`, key: 'MOCK', playerId: g.selfId, room: g.roomPublic() });
           setTimeout(() => g.pushRoom(), latency + 5);
           return done(res);
         }

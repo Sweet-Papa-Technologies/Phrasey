@@ -19,6 +19,7 @@ import {
   type RoundPublic,
   type RoundResult,
   type SocketError,
+  type JoinedPayload,
 } from '@phrasey/shared';
 import type { AckResult, ConnectionState, Transport } from '../net/transport';
 import { createMockTransport } from '../net/mockTransport';
@@ -29,7 +30,10 @@ import {
   playRevealCascade,
   playSfx,
   setMuted as setSfxMuted,
+  setMusicVolume as setSoundMusicVolume,
   setPressureLevel,
+  setSameRoomContext,
+  setSameRoomLocal,
   setVolume as setSfxVolume,
 } from '../lib/sound';
 import { feedItemsFor, type FeedItem } from './feed';
@@ -69,6 +73,8 @@ export interface GameStore {
   identity: Identity;
   playerId: string | null;
   sessionToken: string | null;
+  /** The room credential (§6.6 anti-enumeration). Needed to build the share link. */
+  roomKey: string | null;
 
   room: RoomPublic | null;
   round: RoundPublic | null;
@@ -95,6 +101,13 @@ export interface GameStore {
   castView: boolean;
   muted: boolean;
   volume: number;
+  /** Music bus level, independent of `volume` (§9). */
+  musicVolume: number;
+  /**
+   * This player's own Same-room switch. `null` = never touched, so the host's
+   * room-level default (`RoomSettings.sameRoomAudio`) applies.
+   */
+  sameRoomLocal: boolean | null;
   solveOpen: boolean;
 
   // ---- actions ----
@@ -102,7 +115,7 @@ export interface GameStore {
   connect(kind?: TransportKind): Promise<void>;
   disconnect(): void;
   createRoom(settings?: Partial<RoomSettings>): Promise<AckResult<unknown>>;
-  joinRoom(code: string): Promise<AckResult<unknown>>;
+  joinRoom(code: string, key?: string): Promise<AckResult<unknown>>;
   updateSettings(settings: Partial<RoomSettings>): Promise<void>;
   startGame(): Promise<void>;
   playLetterCard(cardId: string): Promise<void>;
@@ -116,6 +129,8 @@ export interface GameStore {
   setCastView(on: boolean): void;
   setMuted(on: boolean): void;
   setVolume(v: number): void;
+  setMusicVolume(v: number): void;
+  setSameRoom(on: boolean): void;
   setSolveOpen(open: boolean): void;
 }
 
@@ -143,23 +158,40 @@ function writeIdentity(id: Identity): void {
   }
 }
 
-function readAudio(): { muted: boolean; volume: number } {
+/**
+ * §9 defaults: sound on at 40%, and the music bed well under it so a cap crack
+ * still lands. `sameRoom: null` means the player has not touched the switch.
+ */
+const AUDIO_DEFAULTS = { muted: false, volume: 0.4, musicVolume: 0.45, sameRoom: null } as const;
+
+type AudioPrefs = {
+  muted: boolean;
+  volume: number;
+  musicVolume: number;
+  sameRoom: boolean | null;
+};
+
+function readAudio(): AudioPrefs {
+  const out: AudioPrefs = { ...AUDIO_DEFAULTS };
   try {
     const raw = localStorage.getItem(AUDIO_KEY);
-    if (raw) {
-      const p = JSON.parse(raw) as { muted?: boolean; volume?: number };
-      return { muted: p.muted ?? false, volume: typeof p.volume === 'number' ? p.volume : 0.4 };
-    }
+    if (!raw) return out;
+    const p = JSON.parse(raw) as Partial<AudioPrefs> | null;
+    if (!p || typeof p !== 'object') return out;
+    if (typeof p.muted === 'boolean') out.muted = p.muted;
+    if (typeof p.volume === 'number') out.volume = p.volume;
+    if (typeof p.musicVolume === 'number') out.musicVolume = p.musicVolume;
+    if (typeof p.sameRoom === 'boolean') out.sameRoom = p.sameRoom;
   } catch {
     /* ignore */
   }
-  // §9: sound on by default, at 40%.
-  return { muted: false, volume: 0.4 };
+  return out;
 }
 
-function writeAudio(a: { muted: boolean; volume: number }): void {
+/** Merge, never overwrite: `src/audio/prefs.ts` owns fields under this key too. */
+function writeAudio(patch: Partial<AudioPrefs>): void {
   try {
-    localStorage.setItem(AUDIO_KEY, JSON.stringify(a));
+    localStorage.setItem(AUDIO_KEY, JSON.stringify({ ...readAudio(), ...patch }));
   } catch {
     /* ignore */
   }
@@ -181,7 +213,7 @@ export function defaultTransportKind(): TransportKind {
 
 // ---------------------------------------------------------------------------
 
-const audio0 = typeof window === 'undefined' ? { muted: false, volume: 0.4 } : readAudio();
+const audio0: AudioPrefs = typeof window === 'undefined' ? { ...AUDIO_DEFAULTS } : readAudio();
 
 export const useGameStore = create<GameStore>((set, get) => {
   let detach: (() => void) | null = null;
@@ -368,6 +400,7 @@ export const useGameStore = create<GameStore>((set, get) => {
     identity: typeof window === 'undefined' ? { name: '', color: '#FF5C1A' } : readIdentity(),
     playerId: null,
     sessionToken: null,
+    roomKey: null,
 
     room: null,
     round: null,
@@ -394,6 +427,8 @@ export const useGameStore = create<GameStore>((set, get) => {
     castView: false,
     muted: audio0.muted,
     volume: audio0.volume,
+    musicVolume: audio0.musicVolume,
+    sameRoomLocal: audio0.sameRoom,
     solveOpen: false,
 
     setIdentity(patch) {
@@ -423,15 +458,15 @@ export const useGameStore = create<GameStore>((set, get) => {
       detach?.();
       detach = null;
       get().transport?.disconnect();
-      set({ transport: null, connection: 'closed', room: null, board: null, round: null, hand: [] });
+      set({ transport: null, connection: 'closed', room: null, roomKey: null, board: null, round: null, hand: [] });
     },
 
     async createRoom(settings) {
       const { name, color } = get().identity;
       const res = await send('room:create', { name, color, settings });
       if (res.ok) {
-        const data = res.data as { sessionToken: string; playerId: string; room: RoomPublic };
-        set({ sessionToken: data.sessionToken, playerId: data.playerId, room: data.room });
+        const data = res.data as JoinedPayload;
+        set({ sessionToken: data.sessionToken, roomKey: data.key, playerId: data.playerId, room: data.room });
         track({
           name: 'room_created',
           params: { match_mode: data.room.settings.matchMode, bot_count: data.room.settings.botCount },
@@ -440,13 +475,20 @@ export const useGameStore = create<GameStore>((set, get) => {
       return res;
     },
 
-    async joinRoom(code) {
+    async joinRoom(code, key) {
       const { name, color } = get().identity;
       const token = get().sessionToken;
-      const res = await send('room:join', { code, name, color, ...(token ? { sessionToken: token } : {}) });
+      const roomKey = key ?? get().roomKey ?? undefined;
+      const res = await send('room:join', {
+        code,
+        name,
+        color,
+        ...(roomKey ? { key: roomKey } : {}),
+        ...(token ? { sessionToken: token } : {}),
+      });
       if (res.ok) {
-        const data = res.data as { sessionToken: string; playerId: string; room: RoomPublic };
-        set({ sessionToken: data.sessionToken, playerId: data.playerId, room: data.room });
+        const data = res.data as JoinedPayload;
+        set({ sessionToken: data.sessionToken, roomKey: data.key, playerId: data.playerId, room: data.room });
         track({ name: 'room_joined', params: { player_count: data.room.players.length } });
       }
       return res;
@@ -532,21 +574,72 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     setMuted(on) {
       setSfxMuted(on);
-      writeAudio({ muted: on, volume: get().volume });
+      writeAudio({ muted: on });
       set({ muted: on });
     },
 
     setVolume(v) {
       const volume = Math.min(1, Math.max(0, v));
       setSfxVolume(volume);
-      writeAudio({ muted: get().muted, volume });
+      writeAudio({ volume });
       set({ volume });
+    },
+
+    setMusicVolume(v) {
+      const musicVolume = Math.min(1, Math.max(0, v));
+      setSoundMusicVolume(musicVolume);
+      writeAudio({ musicVolume });
+      set({ musicVolume });
+    },
+
+    /**
+     * The Same-room switch (§9). It means two different things depending on
+     * who flips it, which is the whole point:
+     *
+     *  - **Host:** "we are all in one room". Broadcast as a room-level default
+     *    so players who join later start quiet without hunting for the toggle.
+     *    The host's own device is unaffected — it is the speaker for the table.
+     *  - **Player:** "keep my device quiet". Local, persisted, and it beats the
+     *    room default in both directions.
+     */
+    setSameRoom(on) {
+      if (selectIsHost(get())) {
+        // For the host the switch is purely a broadcast. Their device is the
+        // speaker, so nothing local changes — not their audio, not their
+        // stored preference for the next room they join as a guest.
+        void get().updateSettings({ sameRoomAudio: on });
+        return;
+      }
+      setSameRoomLocal(on);
+      writeAudio({ sameRoom: on });
+      set({ sameRoomLocal: on });
     },
 
     setSolveOpen(open) {
       set({ solveOpen: open });
     },
   };
+});
+
+// ---- audio slice: keep the sound module in step with the room ---------------
+//
+// Subscribed rather than wired into the room/join handlers so the whole
+// Same-room feature stays in one place: the audio module resolves who is
+// silenced, it just needs to be told the room default and who the host is.
+
+function pushSameRoomContext(s: GameStore): void {
+  setSameRoomContext({
+    roomDefault: s.room?.settings.sameRoomAudio === true,
+    isHost: !!s.room && !!s.playerId && s.room.hostId === s.playerId,
+  });
+}
+
+setSameRoomLocal(useGameStore.getState().sameRoomLocal);
+pushSameRoomContext(useGameStore.getState());
+
+useGameStore.subscribe((s, prev) => {
+  if (s.room === prev.room && s.playerId === prev.playerId) return;
+  pushSameRoomContext(s);
 });
 
 // In dev only, expose the store so a browser console (or an automated

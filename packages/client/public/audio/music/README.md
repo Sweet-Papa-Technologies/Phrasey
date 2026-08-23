@@ -23,7 +23,8 @@ Each entry in `tracks`:
 | `fallbackFile` | string | no | Used when the browser can't decode `file`. Use `.mp3` — Safari does not play Vorbis. |
 | `durationSeconds` | number | yes | Real duration. Used for scheduling and UI, not for playback. |
 | `bpm` | number | yes | Informational; lets motion be beat-matched later. Use `0` if unknown. |
-| `loop` | boolean | yes | `true` sets `HTMLAudioElement.loop`. Only mark `true` for a track whose head and tail actually join. |
+| `loop` | boolean | yes | `true` loops the track for as long as the mood is active. |
+| `loopCrossfadeSeconds` | number | no | **Seconds of overlap at the loop point.** Defaults to `1.5`. This is the knob to turn if a loop sounds jumpy — see below. Ignored when `loop` is `false`. |
 | `mood` | string | yes | Free-form tag. `playMusic()` falls back to matching on this, and the app looks for **`lobby`** and **`gameplay`**. |
 
 ```jsonc
@@ -38,6 +39,7 @@ Each entry in `tracks`:
       "durationSeconds": 128.4,
       "bpm": 112,
       "loop": true,
+      "loopCrossfadeSeconds": 1.5,
       "mood": "gameplay"
     }
   ]
@@ -46,6 +48,32 @@ Each entry in `tracks`:
 
 Unknown fields are ignored and malformed rows are dropped, so an older client
 will not break on a newer manifest.
+
+## Tuning the loop point (`loopCrossfadeSeconds`)
+
+The player does not restart the file at the loop point. It schedules the next
+pass through the track to begin `loopCrossfadeSeconds` **before** the current
+one ends, and crossfades the overlap with an equal-power (sine/cosine) pair of
+curves — the two passes' gains satisfy `in² + out² = 1`, so loudness stays flat
+through the seam instead of dipping the way a straight linear fade would.
+
+**No rebuild, no code change: this is a number in this file.**
+
+| value | when |
+|---|---|
+| `0` | The file's own head and tail already join perfectly (e.g. you baked the crossfade in with the `ffmpeg` recipe below). Plays the file end to end with no overlap. |
+| `0.2`–`0.5` | Tight, percussive material where a long overlap would smear the downbeat. |
+| `1.5` (default) | A general-purpose bed. What the two placeholder tracks use. |
+| `2`–`4` | Pads, drones, anything with a long tail. |
+
+It is clamped to just under half the track's real decoded duration, so an
+absurd value cannot break playback. Set it too long and you will hear the track
+"phasing" against itself; set it to `0` on material that does not actually join
+and you get the click you were trying to remove. Try `1.5`, then move it.
+
+> The two placeholder beds ship with the seam crossfaded into the file **and**
+> `loopCrossfadeSeconds: 1.5`. If a future track is prepared the same way and
+> the doubled overlap sounds soft, drop this field to `0` for that row.
 
 ## Dropping in a Suno track
 
@@ -84,8 +112,21 @@ will not break on a newer manifest.
 `packages/client/src/audio/music.ts` owns playback:
 
 - Picks `file` or `fallbackFile` via `canPlayType`.
-- Crossfades between tracks (`playMusic(id, { crossfadeSeconds })`).
-- Multiplies the element volume by **master volume × mute × music volume**, so
-  the top-bar mute in `sfx.ts` covers music too.
+- **Prefers Web Audio.** The file is fetched and decoded once into an
+  `AudioBuffer` and each pass through the loop is its own
+  `AudioBufferSourceNode`, scheduled on the audio clock so the overlap at the
+  loop point is sample-accurate. If there is no `AudioContext`, no `fetch`, or
+  the decode fails, it falls back to a streaming `<audio>` element with
+  `loop = true` — the old behaviour, seam and all, but never silence and never
+  an error.
+- Crossfades between tracks (`playMusic(id, { crossfadeSeconds })`) as well as
+  across the loop point (`loopCrossfadeSeconds`, above). They are separate
+  fades on separate nodes and both work at once.
+- Multiplies the deck gain by **master volume × mute × Same-room × music
+  volume**, so the top-bar mute in `sfx.ts` covers music too, and so does a
+  player's "Same room" switch.
+- Music has its own bus level (default `0.45`, i.e. ~18% once the 40% master is
+  applied) so the bed sits under the effects. The player can raise it on its
+  own slider in the top bar; it persists under `phrasey.audio.v1`.
 - Resolves `false` instead of throwing when autoplay is blocked, the manifest is
   missing, or the id is unknown.

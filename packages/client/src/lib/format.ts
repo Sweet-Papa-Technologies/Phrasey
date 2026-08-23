@@ -6,13 +6,21 @@ export function clamp(n: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, n));
 }
 
+import { formatRoomHandle } from '@phrasey/shared';
+
 export function pluralize(n: number, one: string, many = `${one}s`): string {
   return `${n} ${n === 1 ? one : many}`;
 }
 
-export function joinUrl(code: string): string {
-  if (typeof window === 'undefined') return `/join/${code}`;
-  return `${window.location.origin}/join/${code}`;
+/**
+ * The share link carries the room key as well as the code, so clicking a link
+ * or scanning the QR stays a one-step join. Typing just the code gets you the
+ * key prompt instead — see §6.6 and the anti-enumeration note in protocol.ts.
+ */
+export function joinUrl(code: string, key?: string | null): string {
+  const path = key ? `/join/${formatRoomHandle(code, key)}` : `/join/${code}`;
+  if (typeof window === 'undefined') return path;
+  return `${window.location.origin}${path}`;
 }
 
 export async function copyText(text: string): Promise<boolean> {

@@ -22,16 +22,29 @@ export {
   toggleMuted,
   getEffectiveGain,
   onAudioSettingsChange,
+  setSameRoomLocal,
+  getSameRoomLocal,
+  setSameRoomContext,
+  getSameRoomContext,
+  isSameRoomSilenced,
+  resolveSameRoomSilence,
   startPressureHiss,
   updatePressureHiss,
   stopPressureHiss,
   getPressureLevel,
 } from './sfx';
-export type { SfxName, SfxOptions, AudioSettings } from './sfx';
+export type { SfxName, SfxOptions, AudioSettings, SameRoomInput } from './sfx';
 
 export {
   DEFAULT_MANIFEST_URL,
   DEFAULT_MUSIC_VOLUME,
+  DEFAULT_LOOP_CROSSFADE_SECONDS,
+  equalPowerFadeCurve,
+  resolveLoopCrossfade,
+  loopPeriod,
+  loopPassStartTime,
+  getMusicBackend,
+  getLoopSchedule,
   loadMusicManifest,
   getTracks,
   findTrack,
@@ -44,3 +57,11 @@ export {
   disposeMusic,
 } from './music';
 export type { MusicTrack, MusicManifest, PlayMusicOptions } from './music';
+
+export {
+  AUDIO_STORAGE_KEY,
+  DEFAULT_AUDIO_PREFS,
+  readAudioPrefs,
+  writeAudioPrefs,
+} from './prefs';
+export type { AudioPrefs } from './prefs';

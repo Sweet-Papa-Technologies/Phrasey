@@ -471,3 +471,164 @@ describe('localStorage', () => {
     expect(sfx.isMuted()).toBe(false);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Same room (§9). Everyone is in one kitchen; one device makes the noise.
+// ---------------------------------------------------------------------------
+
+describe('same room — resolution rules', () => {
+  it('never silences the host, whatever anyone set', async () => {
+    const sfx = await freshSfx();
+    const r = sfx.resolveSameRoomSilence;
+    expect(r({ local: true, roomDefault: true, isHost: true })).toBe(false);
+    expect(r({ local: true, roomDefault: false, isHost: true })).toBe(false);
+    expect(r({ local: null, roomDefault: true, isHost: true })).toBe(false);
+  });
+
+  it('applies the room default only while the player has not chosen', async () => {
+    const sfx = await freshSfx();
+    const r = sfx.resolveSameRoomSilence;
+    expect(r({ local: null, roomDefault: true, isHost: false })).toBe(true);
+    expect(r({ local: null, roomDefault: false, isHost: false })).toBe(false);
+  });
+
+  it('lets a local choice beat the room default in both directions', async () => {
+    const sfx = await freshSfx();
+    const r = sfx.resolveSameRoomSilence;
+    // Opting out of a room the host declared "same room".
+    expect(r({ local: false, roomDefault: true, isHost: false })).toBe(false);
+    // Opting in when the host has not declared anything.
+    expect(r({ local: true, roomDefault: false, isHost: false })).toBe(true);
+  });
+});
+
+describe('same room — what it actually silences', () => {
+  let rec: Recorder;
+
+  beforeEach(() => {
+    rec = makeRecorder();
+    installFakeAudio(rec);
+    setReducedMotion(false);
+  });
+
+  it('takes this device to zero without disturbing the volume setting', async () => {
+    const sfx = await freshSfx();
+    sfx.initAudio();
+    sfx.setMasterVolume(0.7);
+    sfx.setSameRoomContext({ roomDefault: false, isHost: false });
+
+    sfx.setSameRoomLocal(true);
+    expect(sfx.isSameRoomSilenced()).toBe(true);
+    expect(sfx.getEffectiveGain()).toBe(0);
+    // The player's volume is untouched, so unticking restores exactly it.
+    expect(sfx.getMasterVolume()).toBeCloseTo(0.7);
+    expect(sfx.isMuted()).toBe(false);
+
+    sfx.setSameRoomLocal(false);
+    expect(sfx.getEffectiveGain()).toBeCloseTo(0.7);
+  });
+
+  it('stops effects and the pressure hiss from firing at all', async () => {
+    const sfx = await freshSfx();
+    sfx.initAudio();
+    sfx.setSameRoomContext({ roomDefault: false, isHost: false });
+    sfx.setSameRoomLocal(true);
+
+    const before = rec.oscillatorsStarted + rec.sourcesStarted;
+    for (const name of ALL_SFX) sfx.playSfx(name);
+    sfx.startPressureHiss(0.8);
+    expect(rec.oscillatorsStarted + rec.sourcesStarted).toBe(before);
+
+    sfx.setSameRoomLocal(false);
+    sfx.playSfx('capCrack');
+    expect(rec.oscillatorsStarted + rec.sourcesStarted).toBeGreaterThan(before);
+  });
+
+  it('leaves the host making noise even with the room default on', async () => {
+    const sfx = await freshSfx();
+    sfx.initAudio();
+    sfx.setSameRoomContext({ roomDefault: true, isHost: true });
+    expect(sfx.isSameRoomSilenced()).toBe(false);
+    expect(sfx.getEffectiveGain()).toBe(sfx.getMasterVolume());
+
+    const before = rec.oscillatorsStarted + rec.sourcesStarted;
+    sfx.playSfx('capCrack');
+    expect(rec.oscillatorsStarted + rec.sourcesStarted).toBeGreaterThan(before);
+  });
+
+  it('silences a guest the moment the host broadcasts the room default', async () => {
+    const sfx = await freshSfx();
+    sfx.initAudio();
+    sfx.setSameRoomContext({ roomDefault: false, isHost: false });
+    expect(sfx.getEffectiveGain()).toBeGreaterThan(0);
+
+    sfx.setSameRoomContext({ roomDefault: true });
+    expect(sfx.isSameRoomSilenced()).toBe(true);
+    expect(sfx.getEffectiveGain()).toBe(0);
+
+    // ...and a guest who says "no, leave mine on" wins, and keeps winning.
+    sfx.setSameRoomLocal(false);
+    expect(sfx.isSameRoomSilenced()).toBe(false);
+    sfx.setSameRoomContext({ roomDefault: true });
+    expect(sfx.isSameRoomSilenced()).toBe(false);
+  });
+
+  it('is orthogonal to the master mute — either one silences the device', async () => {
+    const sfx = await freshSfx();
+    sfx.initAudio();
+    sfx.setSameRoomContext({ roomDefault: false, isHost: true });
+    sfx.setMuted(true);
+    // The host is exempt from same-room, but never from their own mute.
+    expect(sfx.isSameRoomSilenced()).toBe(false);
+    expect(sfx.getEffectiveGain()).toBe(0);
+    sfx.setMuted(false);
+    expect(sfx.getEffectiveGain()).toBeGreaterThan(0);
+  });
+
+  it('reports itself to subscribers so the music bus follows', async () => {
+    const sfx = await freshSfx();
+    const seen: { sameRoom: boolean; effective: number }[] = [];
+    sfx.onAudioSettingsChange((s) => seen.push({ sameRoom: s.sameRoom, effective: s.effective }));
+    sfx.setSameRoomContext({ roomDefault: false, isHost: false });
+    sfx.setSameRoomLocal(true);
+    expect(seen.at(-1)).toEqual({ sameRoom: true, effective: 0 });
+    sfx.setSameRoomLocal(false);
+    expect(seen.at(-1)!.sameRoom).toBe(false);
+    expect(seen.at(-1)!.effective).toBeGreaterThan(0);
+  });
+
+  it('persists the local choice and restores it on the next load', async () => {
+    let sfx = await freshSfx();
+    sfx.setSameRoomLocal(true);
+    expect(JSON.parse(localStorage.getItem('phrasey.audio.v1')!).sameRoom).toBe(true);
+
+    sfx = await freshSfx();
+    expect(sfx.getSameRoomLocal()).toBe(true);
+    // Restored *before* any room context arrives, so a reload into a room the
+    // host has since un-flagged still respects the player's choice.
+    expect(sfx.isSameRoomSilenced()).toBe(true);
+
+    sfx.setSameRoomLocal(null);
+    sfx = await freshSfx();
+    expect(sfx.getSameRoomLocal()).toBeNull();
+    expect(sfx.isSameRoomSilenced()).toBe(false);
+  });
+
+  it('does not persist the room context — that belongs to the room', async () => {
+    let sfx = await freshSfx();
+    sfx.setSameRoomContext({ roomDefault: true, isHost: true });
+    sfx = await freshSfx();
+    expect(sfx.getSameRoomContext()).toEqual({ local: null, roomDefault: false, isHost: false });
+  });
+
+  it('survives nonsense input without throwing', async () => {
+    const sfx = await freshSfx();
+    expect(() => sfx.setSameRoomLocal(undefined as unknown as boolean)).not.toThrow();
+    expect(sfx.getSameRoomLocal()).toBeNull();
+    expect(() => sfx.setSameRoomContext({})).not.toThrow();
+    expect(() =>
+      sfx.setSameRoomContext({ roomDefault: 'yes' as unknown as boolean }),
+    ).not.toThrow();
+    expect(sfx.getSameRoomContext().roomDefault).toBe(false);
+  });
+});

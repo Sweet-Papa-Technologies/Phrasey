@@ -15,10 +15,10 @@
  *     degrades to a silent no-op.
  */
 
-/** Design-doc default: audio on, but quiet. */
-export const DEFAULT_MASTER_VOLUME = 0.4;
+import { DEFAULT_MASTER_VOLUME, readAudioPrefs, writeAudioPrefs } from './prefs';
 
-const STORAGE_KEY = 'phrasey.audio.v1';
+/** Design-doc default: audio on, but quiet. Re-exported; defined in `prefs.ts`. */
+export { DEFAULT_MASTER_VOLUME };
 
 export type SfxName =
   /** Card played — the crimped cap coming off a glass bottle. */
@@ -75,6 +75,19 @@ let initFailed = false;
 let masterVolume = DEFAULT_MASTER_VOLUME;
 let muted = false;
 
+// ---- Same-room (§9) -------------------------------------------------------
+// When a group is physically together, every phone playing the same bed is a
+// mess. One device — the host's — stays the speaker; everyone else can drop
+// their own device to silence. Three inputs, resolved by
+// `resolveSameRoomSilence` below.
+
+/** This player's own switch. `null` = untouched, so the room default applies. */
+let sameRoomLocal: boolean | null = null;
+/** The host's broadcast room-level default (`RoomSettings.sameRoomAudio`). */
+let sameRoomDefault = false;
+/** True on the host's device. */
+let sameRoomIsHost = false;
+
 interface HissNodes {
   src: AudioBufferSourceNode;
   band: BiquadFilterNode;
@@ -92,7 +105,12 @@ const settingsListeners = new Set<(s: AudioSettings) => void>();
 export interface AudioSettings {
   volume: number;
   muted: boolean;
-  /** volume, or 0 when muted. What anything downstream should actually apply. */
+  /** True when Same-room is silencing this device (see §9 / `setSameRoomLocal`). */
+  sameRoom: boolean;
+  /**
+   * volume, or 0 when muted **or** Same-room silenced. What anything
+   * downstream (the music player) should actually apply.
+   */
   effective: number;
 }
 
@@ -122,31 +140,59 @@ function prefersReducedMotion(): boolean {
 }
 
 function readStored(): void {
-  const raw = safe(() => globalThis.localStorage?.getItem(STORAGE_KEY));
-  if (!raw) return;
-  safe(() => {
-    const parsed = JSON.parse(raw) as { volume?: number; muted?: boolean };
-    if (typeof parsed.volume === 'number' && Number.isFinite(parsed.volume)) {
-      masterVolume = clamp01(parsed.volume);
-    }
-    if (typeof parsed.muted === 'boolean') muted = parsed.muted;
-  });
+  const p = readAudioPrefs();
+  masterVolume = p.volume;
+  muted = p.muted;
+  sameRoomLocal = p.sameRoom;
 }
 
 function writeStored(): void {
-  safe(() =>
-    globalThis.localStorage?.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ volume: masterVolume, muted }),
-    ),
-  );
+  // Merged, not overwritten: `music.ts` owns `musicVolume` under the same key.
+  writeAudioPrefs({ volume: masterVolume, muted, sameRoom: sameRoomLocal });
 }
 
 readStored();
 
+export interface SameRoomInput {
+  /** The player's own switch. `null` = untouched. */
+  local: boolean | null;
+  /** The host's broadcast room-level default. */
+  roomDefault: boolean;
+  /** True on the host's device. */
+  isHost: boolean;
+}
+
+/**
+ * Should *this* device be silent because everyone is in one room?
+ *
+ * Two rules, in order:
+ *  1. The host is the speaker for the table, so Same-room never silences them.
+ *     A host who wants quiet uses the master mute like anyone else.
+ *  2. Otherwise the player's own switch wins — in both directions. A local
+ *     `false` beats a room default of `true`, and it sticks, because the local
+ *     half is the half that gets persisted.
+ */
+export function resolveSameRoomSilence(s: SameRoomInput): boolean {
+  if (s.isHost) return false;
+  return typeof s.local === 'boolean' ? s.local : !!s.roomDefault;
+}
+
+function sameRoomSilenced(): boolean {
+  return resolveSameRoomSilence({
+    local: sameRoomLocal,
+    roomDefault: sameRoomDefault,
+    isHost: sameRoomIsHost,
+  });
+}
+
+/** Master mute OR Same-room. Either one means this device makes no sound. */
+function silenced(): boolean {
+  return muted || sameRoomSilenced();
+}
+
 /** Effective linear gain on the master bus. */
 function effectiveGain(): number {
-  return muted ? 0 : masterVolume;
+  return silenced() ? 0 : masterVolume;
 }
 
 /**
@@ -310,10 +356,54 @@ export function toggleMuted(): boolean {
   return muted;
 }
 
+// ---------------------------------------------------------------------------
+// Same room
+// ---------------------------------------------------------------------------
+
+/**
+ * Set this player's own Same-room switch. `true` drops this device to silence
+ * (music and effects); `null` hands the decision back to the room default.
+ * Persisted — a local choice is meant to stick across reloads.
+ */
+export function setSameRoomLocal(v: boolean | null): void {
+  sameRoomLocal = typeof v === 'boolean' ? v : null;
+  writeStored();
+  applySilence();
+}
+
+export function getSameRoomLocal(): boolean | null {
+  return sameRoomLocal;
+}
+
+/**
+ * Room context, pushed in by the store whenever the roster changes. Not
+ * persisted: it belongs to the room, not to this device.
+ */
+export function setSameRoomContext(ctx: { roomDefault?: boolean; isHost?: boolean }): void {
+  if (typeof ctx.roomDefault === 'boolean') sameRoomDefault = ctx.roomDefault;
+  if (typeof ctx.isHost === 'boolean') sameRoomIsHost = ctx.isHost;
+  applySilence();
+}
+
+export function getSameRoomContext(): SameRoomInput {
+  return { local: sameRoomLocal, roomDefault: sameRoomDefault, isHost: sameRoomIsHost };
+}
+
+/** True when Same-room is currently holding this device quiet. */
+export function isSameRoomSilenced(): boolean {
+  return sameRoomSilenced();
+}
+
+function applySilence(): void {
+  if (silenced()) stopPressureHiss(0.12);
+  applyMasterGain();
+}
+
 function emitSettings(): void {
   const snapshot: AudioSettings = {
     volume: masterVolume,
     muted,
+    sameRoom: sameRoomSilenced(),
     effective: effectiveGain(),
   };
   for (const cb of Array.from(settingsListeners)) safe(() => cb(snapshot));
@@ -325,7 +415,9 @@ function emitSettings(): void {
  */
 export function onAudioSettingsChange(cb: (s: AudioSettings) => void): () => void {
   settingsListeners.add(cb);
-  safe(() => cb({ volume: masterVolume, muted, effective: effectiveGain() }));
+  safe(() =>
+    cb({ volume: masterVolume, muted, sameRoom: sameRoomSilenced(), effective: effectiveGain() }),
+  );
   return () => {
     settingsListeners.delete(cb);
   };
@@ -596,7 +688,7 @@ export function playSfx(name: SfxName, opts: SfxOptions = {}): void {
   const def = SFX_DEFS[name];
   if (!def) return;
   if (def.violent && prefersReducedMotion()) return;
-  if (muted) return;
+  if (silenced()) return;
   if (!isAudioReady() && !initAudio()) return;
   if (!ctx || !sfxBus) return;
 
@@ -636,7 +728,7 @@ function hissParams(level: number) {
 /** Start the rising pressure hiss. Idempotent. */
 export function startPressureHiss(level = hissLevel): void {
   hissLevel = clamp01(level);
-  if (muted) return;
+  if (silenced()) return;
   if (hiss) {
     updatePressureHiss(hissLevel);
     return;
@@ -714,5 +806,6 @@ export const __internals = {
   clamp01,
   hissParams,
   prefersReducedMotion,
+  silenced,
   SFX_DEFS,
 };

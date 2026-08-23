@@ -1,13 +1,13 @@
 /** `/join/:code` — name and avatar color, then in (§7). */
 import { useState } from 'react';
-import { isValidRoomCode } from '@phrasey/shared';
+import { ROOM_KEY_LENGTH, isValidRoomCode, isValidRoomKey } from '@phrasey/shared';
 import { Footer } from '../components/Footer';
 import { IdentityForm } from '../components/IdentityForm';
 import { TopBar } from '../components/TopBar';
 import { Link, navigate } from '../lib/router';
 import { useGameStore } from '../store/gameStore';
 
-export function Join({ code }: { code: string }) {
+export function Join({ code, routeKey }: { code: string; routeKey: string | null }) {
   const identity = useGameStore((s) => s.identity);
   const setIdentity = useGameStore((s) => s.setIdentity);
   const connect = useGameStore((s) => s.connect);
@@ -21,14 +21,22 @@ export function Join({ code }: { code: string }) {
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // A share link or QR carries the key; a hand-typed /join/KABO does not, so
+  // we ask for it rather than letting a code alone into the room (§6.6).
+  const [key, setKey] = useState(routeKey ?? '');
   const valid = isValidRoomCode(code);
+  const keyOk = isValidRoomKey(key);
 
   async function join() {
+    if (!keyOk) {
+      setError('Enter the room key from the invite link.');
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
       await connect();
-      const res = await joinRoom(code);
+      const res = await joinRoom(code, key.toUpperCase());
       if (res.ok) {
         const room = (res.data as { room: { code: string } }).room;
         navigate(`/room/${room.code}`);
@@ -63,6 +71,34 @@ export function Join({ code }: { code: string }) {
 
         {valid ? (
           <>
+            {/*
+              Only shown when the link did not carry the key — i.e. someone
+              typed the code by hand. The normal path (click the link, scan the
+              QR) never sees this field.
+            */}
+            {!routeKey && (
+              <div className="flex w-full max-w-md flex-col gap-1.5">
+                <label htmlFor="room-key" className="font-mono text-[0.625rem] tracking-[0.16em] uppercase opacity-65">
+                  Room key
+                </label>
+                <input
+                  id="room-key"
+                  value={key}
+                  onChange={(e) => setKey(e.target.value.toUpperCase().slice(0, ROOM_KEY_LENGTH))}
+                  maxLength={ROOM_KEY_LENGTH}
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  spellCheck={false}
+                  placeholder="M3XR"
+                  aria-describedby="room-key-help"
+                  className="w-full rounded-card border-2 border-ink/15 bg-white px-3 py-3 font-mono text-lg font-semibold tracking-[0.3em] uppercase"
+                />
+                <p id="room-key-help" className="text-xs opacity-55">
+                  The four characters after the dash in the invite link.
+                </p>
+              </div>
+            )}
+
             <IdentityForm
               autoFocus
               name={identity.name}

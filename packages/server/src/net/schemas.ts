@@ -48,6 +48,8 @@ export const settingsSchema = z
     turnSeconds: z.union([z.literal(10), z.literal(15), z.literal(25), z.null()]),
     botCount: z.number().int().min(0).max(7),
     botTier: z.enum(['chill', 'sharp', 'ruthless']),
+    /** Comfort setting, not a game rule — see Room.setSettings. */
+    sameRoomAudio: z.boolean(),
     interruptsEnabled: z.boolean(),
   })
   .partial();

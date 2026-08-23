@@ -9,6 +9,7 @@
       "durationSeconds": 31.768,
       "bpm": 110,
       "loop": true,
+      "loopCrossfadeSeconds": 1.5,
       "mood": "gameplay"
     },
     {
@@ -19,6 +20,7 @@
       "durationSeconds": 31.768,
       "bpm": 110,
       "loop": true,
+      "loopCrossfadeSeconds": 1.5,
       "mood": "lobby"
     }
   ]

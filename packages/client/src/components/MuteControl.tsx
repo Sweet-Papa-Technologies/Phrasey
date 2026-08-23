@@ -1,12 +1,29 @@
-/** Master mute lives in the top bar, defaulted on at 40% volume (§9). */
+/**
+ * Master mute lives in the top bar, defaulted on at 40% volume (§9).
+ *
+ * Two sliders, because music and effects are two buses: the master sets the
+ * table for everything, and the music one trims the bed underneath it so a cap
+ * crack still cuts through. The music slider is optional — screens without a
+ * music bed simply omit it.
+ */
 export interface MuteControlProps {
   muted: boolean;
   volume: number;
   onMuted: (v: boolean) => void;
   onVolume: (v: number) => void;
+  /** Music bus level, 0..1. Omit to hide the music slider. */
+  musicVolume?: number;
+  onMusicVolume?: (v: number) => void;
 }
 
-export function MuteControl({ muted, volume, onMuted, onVolume }: MuteControlProps) {
+export function MuteControl({
+  muted,
+  volume,
+  onMuted,
+  onVolume,
+  musicVolume,
+  onMusicVolume,
+}: MuteControlProps) {
   return (
     <div className="flex items-center gap-2">
       <button
@@ -38,6 +55,32 @@ export function MuteControl({ muted, volume, onMuted, onVolume }: MuteControlPro
           aria-label="Volume"
         />
       </label>
+      {typeof musicVolume === 'number' && onMusicVolume && (
+        <label className="flex items-center gap-1" title="Music volume">
+          <svg
+            viewBox="0 0 24 24"
+            className="h-3.5 w-3.5 opacity-55"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            aria-hidden="true"
+          >
+            <path d="M9 18V6l10-2v12" strokeLinejoin="round" />
+            <circle cx="6.5" cy="18" r="2.5" />
+            <circle cx="16.5" cy="16" r="2.5" />
+          </svg>
+          <span className="sr-only">Music volume</span>
+          <input
+            type="range"
+            min={0}
+            max={100}
+            value={Math.round(musicVolume * 100)}
+            onChange={(e) => onMusicVolume(Number(e.target.value) / 100)}
+            className="h-1.5 w-16 accent-grape"
+            aria-label="Music volume"
+          />
+        </label>
+      )}
     </div>
   );
 }

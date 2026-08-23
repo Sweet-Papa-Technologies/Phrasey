@@ -25,6 +25,9 @@ interface AudioApi {
   playSfx?: (name: SfxName, opts?: SfxOptions) => void;
   setMasterVolume?: (v: number) => void;
   setMuted?: (b: boolean) => void;
+  setMusicVolume?: (v: number) => void;
+  setSameRoomLocal?: (v: boolean | null) => void;
+  setSameRoomContext?: (ctx: { roomDefault?: boolean; isHost?: boolean }) => void;
   startPressureHiss?: (level?: number) => void;
   updatePressureHiss?: (level: number) => void;
   stopPressureHiss?: (fade?: number) => void;
@@ -39,6 +42,8 @@ let api: AudioApi | null = null;
 let loading: Promise<void> | null = null;
 let pendingVolume: number | null = null;
 let pendingMuted: boolean | null = null;
+let pendingMusicVolume: number | null = null;
+let pendingSameRoom: { local?: boolean | null; roomDefault?: boolean; isHost?: boolean } = {};
 
 function safe<T>(fn: () => T): T | undefined {
   try {
@@ -63,6 +68,11 @@ export function initSound(): Promise<void> {
       // The module arms its own unlock-on-first-gesture listeners on import.
       if (pendingVolume !== null) safe(() => api?.setMasterVolume?.(pendingVolume!));
       if (pendingMuted !== null) safe(() => api?.setMuted?.(pendingMuted!));
+      if (pendingMusicVolume !== null) safe(() => api?.setMusicVolume?.(pendingMusicVolume!));
+      if ('local' in pendingSameRoom) {
+        safe(() => api?.setSameRoomLocal?.(pendingSameRoom.local ?? null));
+      }
+      safe(() => api?.setSameRoomContext?.(pendingSameRoom));
       void safe(() => api?.loadMusicManifest?.());
     })
     .catch(() => {
@@ -95,6 +105,31 @@ export function setVolume(next: number): void {
   const v = Math.min(1, Math.max(0, next));
   pendingVolume = v;
   safe(() => api?.setMasterVolume?.(v));
+}
+
+/** Music bus level, independent of the master (§9 — the bed sits under the SFX). */
+export function setMusicVolume(next: number): void {
+  const v = Math.min(1, Math.max(0, next));
+  pendingMusicVolume = v;
+  safe(() => api?.setMusicVolume?.(v));
+}
+
+/**
+ * This player's own Same-room switch. `null` hands the decision back to the
+ * host's room-level default.
+ */
+export function setSameRoomLocal(next: boolean | null): void {
+  pendingSameRoom = { ...pendingSameRoom, local: next };
+  safe(() => api?.setSameRoomLocal?.(next));
+}
+
+/**
+ * Room context for Same-room: the host's broadcast default, and whether this
+ * device is the host's (the one that stays the speaker).
+ */
+export function setSameRoomContext(ctx: { roomDefault: boolean; isHost: boolean }): void {
+  pendingSameRoom = { ...pendingSameRoom, ...ctx };
+  safe(() => api?.setSameRoomContext?.(ctx));
 }
 
 /** Shared pressure as a continuous hiss, 0–1. Silent at zero. */

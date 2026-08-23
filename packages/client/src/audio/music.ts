@@ -5,13 +5,32 @@
  * the client reads at load, "so tracks can be dropped in without a rebuild".
  * Nothing here hard-codes a filename; drop an .ogg in, add a manifest row, done.
  *
- * Deliberately built on HTMLAudioElement rather than the Web Audio graph: it
- * streams instead of decoding the whole file up front, and it keeps working
- * before the user has produced the gesture that unlocks an AudioContext.
- * Master volume and mute still apply — we subscribe to them from `sfx.ts`.
+ * ## Two playback backends, and why
+ *
+ * The beds are ~32s and they loop for the whole match, so the loop point is
+ * heard dozens of times a round. `HTMLAudioElement.loop` jumps the playhead
+ * from the last sample straight back to the first: there is no overlap, the
+ * waveform is discontinuous at the join, and several browsers add a short
+ * re-buffer on top. That is the jitter.
+ *
+ * So the preferred backend is Web Audio. The file is fetched and decoded once
+ * into an AudioBuffer, then each pass through the loop is its own
+ * `AudioBufferSourceNode` scheduled on the context's sample clock. Pass n+1 is
+ * started `crossfadeSeconds` *before* pass n ends and the two are crossfaded
+ * against each other with an **equal-power** (sin/cos) pair of curves, so the
+ * summed power through the seam is constant instead of dipping ~3 dB the way a
+ * linear pair would. The overlap length is per track, from the manifest, so a
+ * human dropping in a Suno bed can tune it without touching this file.
+ *
+ * The HTMLAudioElement path is kept as the fallback for every case where Web
+ * Audio can't be had — no AudioContext, no `fetch`, a 404, a codec the decoder
+ * refuses. It behaves exactly as it always did. Nothing here throws, and audio
+ * never degrades to an error: worst case it degrades to the old seam, and
+ * worst-worst case to silence.
  */
 
-import { onAudioSettingsChange } from './sfx';
+import { getAudioContext, initAudio, onAudioSettingsChange } from './sfx';
+import { DEFAULT_MUSIC_VOLUME, readAudioPrefs, writeAudioPrefs } from './prefs';
 
 export interface MusicTrack {
   /** Stable key. `playMusic('lobby-bed')`. */
@@ -24,6 +43,13 @@ export interface MusicTrack {
   durationSeconds: number;
   bpm: number;
   loop: boolean;
+  /**
+   * Seconds of overlap between one pass of the loop and the next. Tunable per
+   * track from the manifest; `0` disables the playback overlap entirely (for a
+   * bed whose seam is already baked into the file). Clamped to just under half
+   * the real decoded duration.
+   */
+  loopCrossfadeSeconds: number;
   /** Free-form tag. The app looks for `lobby` and `gameplay`. */
   mood: string;
 }
@@ -34,7 +60,7 @@ export interface MusicManifest {
 }
 
 export interface PlayMusicOptions {
-  /** Crossfade length in seconds. Default 1.5. */
+  /** Track-to-track crossfade length in seconds. Default 1.5. */
   crossfadeSeconds?: number;
   /** Per-track trim, 0..1. Default 1. */
   gain?: number;
@@ -43,8 +69,20 @@ export interface PlayMusicOptions {
 }
 
 export const DEFAULT_MANIFEST_URL = '/audio/music/manifest.json';
-/** Music sits under the effects so a cap crack still cuts through. */
-export const DEFAULT_MUSIC_VOLUME = 0.55;
+/** Music bus default. See `prefs.ts` — ~18% effective under the 40% master. */
+export { DEFAULT_MUSIC_VOLUME };
+
+/** Used when a manifest row omits `loopCrossfadeSeconds`. */
+export const DEFAULT_LOOP_CROSSFADE_SECONDS = 1.5;
+
+/** Samples in a fade curve. 128 is inaudibly smooth and costs nothing. */
+const FADE_CURVE_STEPS = 128;
+/** How far ahead of the playhead loop passes are scheduled. */
+const LOOKAHEAD_SECONDS = 6;
+/** How often the scheduler tops the queue back up. */
+const SCHEDULER_INTERVAL_MS = 1000;
+/** Track-to-track crossfade tick. */
+const FADE_STEP_MS = 50;
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
@@ -57,27 +95,136 @@ function safe<T>(fn: () => T): T | undefined {
 }
 
 // ---------------------------------------------------------------------------
+// Loop maths — pure, exported, and the part worth testing directly
+// ---------------------------------------------------------------------------
+
+/**
+ * One half of an equal-power crossfade: `sin(p·π/2)` in, `cos(p·π/2)` out.
+ *
+ * The pair satisfies `in² + out² = 1` at every point, so two uncorrelated
+ * passes summed through them hold constant *power* across the seam. The naive
+ * linear pair (`p` / `1-p`) holds constant amplitude instead, which for
+ * anything but perfectly correlated material dips to -3 dB at the midpoint —
+ * an audible dent once a bar, which is exactly what "jittery on loop" means.
+ */
+export function equalPowerFadeCurve(
+  direction: 'in' | 'out',
+  steps: number = FADE_CURVE_STEPS,
+): Float32Array<ArrayBuffer> {
+  const n = Math.max(2, Math.floor(steps));
+  const curve = new Float32Array(new ArrayBuffer(n * 4));
+  for (let i = 0; i < n; i++) {
+    const p = i / (n - 1);
+    curve[i] = direction === 'in' ? Math.sin((p * Math.PI) / 2) : Math.cos((p * Math.PI) / 2);
+  }
+  return curve;
+}
+
+/** Hard ceiling on the overlap, as a fraction of the track's real duration. */
+const MAX_CROSSFADE_FRACTION = 0.49;
+
+/**
+ * The manifest's `loopCrossfadeSeconds` for this track, clamped against the
+ * real decoded duration.
+ *
+ * The ceiling is just under half the track: at exactly half, a pass's fade-in
+ * window would end on the same instant its fade-out window begins, and Web
+ * Audio throws `NotSupportedError` when two automation events touch.
+ */
+export function resolveLoopCrossfade(
+  track: Pick<MusicTrack, 'loopCrossfadeSeconds'>,
+  duration: number,
+): number {
+  const raw =
+    typeof track.loopCrossfadeSeconds === 'number' && Number.isFinite(track.loopCrossfadeSeconds)
+      ? track.loopCrossfadeSeconds
+      : DEFAULT_LOOP_CROSSFADE_SECONDS;
+  const d = Number.isFinite(duration) && duration > 0 ? duration : 0;
+  if (d <= 0) return 0;
+  return Math.max(0, Math.min(raw, d * MAX_CROSSFADE_FRACTION));
+}
+
+/**
+ * Gap between the start of one pass and the start of the next. Passes overlap
+ * by the crossfade, so the loop advances by `duration - crossfade` each time.
+ */
+export function loopPeriod(duration: number, crossfade: number): number {
+  return Math.max(0.05, duration - Math.max(0, crossfade));
+}
+
+/**
+ * Context time at which loop pass `index` starts.
+ *
+ * Deliberately computed from the anchor rather than accumulated off the
+ * previous pass: a party game leaves this running for an hour, and adding a
+ * float 100+ times drifts the seam off the sample grid.
+ */
+export function loopPassStartTime(
+  anchor: number,
+  index: number,
+  duration: number,
+  crossfade: number,
+): number {
+  return anchor + index * loopPeriod(duration, crossfade);
+}
+
+const FADE_IN_CURVE = equalPowerFadeCurve('in');
+const FADE_OUT_CURVE = equalPowerFadeCurve('out');
+
+// ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
 
 let manifest: MusicManifest | null = null;
 let manifestPromise: Promise<MusicManifest> | null = null;
 
-let musicVolume = DEFAULT_MUSIC_VOLUME;
+let musicVolume = readAudioPrefs().musicVolume;
 let masterEffective = 0.4;
 
-interface Deck {
-  el: HTMLAudioElement;
+interface DeckCommon {
   track: MusicTrack;
   /** Per-track trim from PlayMusicOptions. */
   gain: number;
-  /** 0..1 fade position, multiplied into the element volume. */
+  /** 0..1 track-to-track fade position, multiplied into the deck output. */
   fade: number;
 }
+
+interface ElementDeck extends DeckCommon {
+  kind: 'element';
+  el: HTMLAudioElement;
+}
+
+interface LoopPass {
+  src: AudioBufferSourceNode;
+  g: GainNode;
+  /** Context time this pass finishes. */
+  endsAt: number;
+}
+
+interface BufferDeck extends DeckCommon {
+  kind: 'buffer';
+  ctx: AudioContext;
+  buffer: AudioBuffer;
+  /** Deck output: master × music × per-track gain × track-to-track fade. */
+  out: GainNode;
+  duration: number;
+  crossfade: number;
+  /** Context time pass 0 would have begun at offset 0. */
+  anchor: number;
+  nextPass: number;
+  passes: LoopPass[];
+  timer: ReturnType<typeof setInterval> | null;
+}
+
+type Deck = ElementDeck | BufferDeck;
 
 let current: Deck | null = null;
 let outgoing: Deck[] = [];
 let fadeTimer: ReturnType<typeof setInterval> | null = null;
+
+/** Decoded buffers, keyed by URL. Decoding a 32s bed is not free; do it once. */
+const buffers = new Map<string, AudioBuffer>();
+const decoding = new Map<string, Promise<AudioBuffer | null>>();
 
 onAudioSettingsChange((s) => {
   masterEffective = s.effective;
@@ -106,6 +253,10 @@ function normalize(raw: unknown): MusicManifest {
       durationSeconds: Number.isFinite(t.durationSeconds) ? t.durationSeconds : 0,
       bpm: Number.isFinite(t.bpm) ? t.bpm : 0,
       loop: t.loop !== false,
+      loopCrossfadeSeconds:
+        typeof t.loopCrossfadeSeconds === 'number' && Number.isFinite(t.loopCrossfadeSeconds)
+          ? Math.max(0, t.loopCrossfadeSeconds)
+          : DEFAULT_LOOP_CROSSFADE_SECONDS,
       mood: typeof t.mood === 'string' ? t.mood : '',
     })),
   };
@@ -146,7 +297,7 @@ export function findTrack(idOrMood: string): MusicTrack | null {
 }
 
 // ---------------------------------------------------------------------------
-// Playback
+// Source selection
 // ---------------------------------------------------------------------------
 
 function canPlay(el: HTMLAudioElement, file: string): boolean {
@@ -168,30 +319,319 @@ function sourceFor(el: HTMLAudioElement, track: MusicTrack): string {
   return track.fallbackFile ?? track.file;
 }
 
-function makeDeck(track: MusicTrack, gain: number): Deck | null {
+function newAudioElement(): HTMLAudioElement | null {
   return (
     safe(() => {
       const Ctor = (globalThis as { Audio?: typeof Audio }).Audio;
-      if (!Ctor) return null;
-      const el = new Ctor();
+      return Ctor ? new Ctor() : null;
+    }) ?? null
+  );
+}
+
+/** `canPlayType` on a throwaway element is the cheapest codec probe we have. */
+let probe: HTMLAudioElement | null | undefined;
+function pickSourceUrl(track: MusicTrack): string {
+  if (probe === undefined) probe = newAudioElement();
+  return probe ? sourceFor(probe, track) : track.file;
+}
+
+// ---------------------------------------------------------------------------
+// Element deck (fallback backend)
+// ---------------------------------------------------------------------------
+
+function makeElementDeck(track: MusicTrack, gain: number, startAt: number): ElementDeck | null {
+  return (
+    safe(() => {
+      const el = newAudioElement();
+      if (!el) return null;
       el.src = sourceFor(el, track);
       el.loop = track.loop;
       el.preload = 'auto';
       el.crossOrigin = 'anonymous';
       el.volume = 0;
-      return { el, track, gain: clamp01(gain), fade: 0 } as Deck;
+      if (startAt > 0) safe(() => (el.currentTime = startAt));
+      return { kind: 'element', el, track, gain: clamp01(gain), fade: 0 } as ElementDeck;
     }) ?? null
   );
 }
 
+// ---------------------------------------------------------------------------
+// Buffer deck (preferred backend) — the loop scheduler
+// ---------------------------------------------------------------------------
+
+function decodeAudio(ctx: AudioContext, bytes: ArrayBuffer): Promise<AudioBuffer | null> {
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = (b: AudioBuffer | null) => {
+      if (!settled) {
+        settled = true;
+        resolve(b);
+      }
+    };
+    const ok = safe(() => {
+      // Both signatures: modern browsers return a promise, older Safari only
+      // takes the success/failure callbacks.
+      const r = ctx.decodeAudioData(
+        bytes,
+        (b) => done(b),
+        () => done(null),
+      ) as unknown as Promise<AudioBuffer> | undefined;
+      if (r && typeof r.then === 'function') r.then(done, () => done(null));
+      return true;
+    });
+    if (!ok) done(null);
+  });
+}
+
+async function loadBuffer(ctx: AudioContext, url: string): Promise<AudioBuffer | null> {
+  const cached = buffers.get(url);
+  if (cached) return cached;
+  const pending = decoding.get(url);
+  if (pending) return pending;
+
+  const job = (async () => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(String(res.status));
+      const bytes = await res.arrayBuffer();
+      const buf = await decodeAudio(ctx, bytes);
+      if (buf) buffers.set(url, buf);
+      return buf;
+    } catch {
+      return null;
+    } finally {
+      decoding.delete(url);
+    }
+  })();
+  decoding.set(url, job);
+  return job;
+}
+
+function setFadeCurve(
+  param: AudioParam,
+  curve: Float32Array<ArrayBuffer>,
+  at: number,
+  duration: number,
+): void {
+  const t = Math.max(0, at);
+  const d = Math.max(0.001, duration);
+  if (typeof param.setValueCurveAtTime === 'function') {
+    const ok = safe(() => {
+      param.setValueCurveAtTime(curve, t, d);
+      return true;
+    });
+    if (ok) return;
+  }
+  // No curve support (or it threw against an overlapping event): a linear ramp
+  // dips a little at the midpoint but is still a crossfade, not a seam.
+  safe(() => param.linearRampToValueAtTime(curve[curve.length - 1]!, t + d));
+}
+
+/**
+ * Schedule one pass through the loop.
+ *
+ * The envelope is the whole point:
+ *  - pass 0 enters at full (its head has no predecessor to fade against; the
+ *    track-to-track fade is a separate node),
+ *  - every later pass fades **in** over the crossfade with the equal-power
+ *    sine, arriving exactly as the previous pass fades **out** with the
+ *    matching cosine,
+ *  - and every pass fades out over the last `crossfade` seconds.
+ *
+ * Because pass n+1 starts at `duration - crossfade` after pass n, the two
+ * ramps line up sample-for-sample on the context clock.
+ */
+function spawnPass(deck: BufferDeck, index: number): void {
+  const now = safe(() => deck.ctx.currentTime) ?? 0;
+  const at = loopPassStartTime(deck.anchor, index, deck.duration, deck.crossfade);
+  const d = deck.duration;
+  const x = deck.crossfade;
+
+  // The head starts open (pass 0) or shut (every later pass) as a plain param
+  // value rather than a scheduled event: Web Audio refuses any event that lands
+  // inside a value-curve window, and the fade-in curve begins on this instant.
+  const openAtHead = x <= 0 || index === 0;
+
+  const built = safe(() => {
+    const src = deck.ctx.createBufferSource();
+    src.buffer = deck.buffer;
+    const g = deck.ctx.createGain();
+    g.gain.value = openAtHead ? 1 : 0;
+    src.connect(g);
+    g.connect(deck.out);
+    return { src, g };
+  });
+  if (!built) return;
+  const { src, g } = built;
+
+  if (x > 0) {
+    // Fade-in holds at 1 once the curve ends, so no explicit hold event.
+    if (index > 0) setFadeCurve(g.gain, FADE_IN_CURVE, at, x);
+    setFadeCurve(g.gain, FADE_OUT_CURVE, at + d - x, x);
+  }
+
+  // A pass whose nominal start is already behind us (pass 0 with a `startAt`,
+  // or a tab that was backgrounded) joins mid-buffer instead of being skipped.
+  const offset = at < now ? Math.min(Math.max(0, now - at), Math.max(0, d - 0.05)) : 0;
+  const when = Math.max(at, now);
+  safe(() => src.start(when, offset));
+  safe(() => src.stop(at + d + 0.05));
+
+  deck.passes.push({ src, g, endsAt: at + d });
+}
+
+/** Top the scheduled queue back up to the lookahead horizon, and reap dead passes. */
+function ensureScheduled(deck: BufferDeck): void {
+  const now = safe(() => deck.ctx.currentTime) ?? 0;
+  const horizon = now + LOOKAHEAD_SECONDS;
+
+  // A one-shot track gets exactly one pass, ever.
+  if (deck.track.loop || deck.nextPass === 0) {
+    // The bound is belt-and-braces: a pathological duration must not spin here.
+    for (let guard = 0; guard < 64; guard++) {
+      const at = loopPassStartTime(deck.anchor, deck.nextPass, deck.duration, deck.crossfade);
+      if (at > horizon) break;
+      spawnPass(deck, deck.nextPass);
+      deck.nextPass++;
+      if (!deck.track.loop) break;
+    }
+  }
+
+  const live: LoopPass[] = [];
+  for (const p of deck.passes) {
+    if (p.endsAt < now - 0.5) {
+      safe(() => p.src.disconnect());
+      safe(() => p.g.disconnect());
+    } else {
+      live.push(p);
+    }
+  }
+  deck.passes = live;
+}
+
+function makeBufferDeck(
+  ctx: AudioContext,
+  track: MusicTrack,
+  buffer: AudioBuffer,
+  gain: number,
+  startAt: number,
+): BufferDeck | null {
+  const out = safe(() => {
+    const g = ctx.createGain();
+    g.gain.value = 0;
+    g.connect(ctx.destination);
+    return g;
+  });
+  if (!out) return null;
+
+  const duration =
+    (Number.isFinite(buffer.duration) && buffer.duration > 0 ? buffer.duration : 0) ||
+    track.durationSeconds ||
+    0;
+  if (duration <= 0) {
+    safe(() => out.disconnect());
+    return null;
+  }
+
+  const now = safe(() => ctx.currentTime) ?? 0;
+  const offset = Math.max(0, Math.min(startAt, Math.max(0, duration - 0.05)));
+  return {
+    kind: 'buffer',
+    track,
+    gain: clamp01(gain),
+    fade: 0,
+    ctx,
+    buffer,
+    out,
+    duration,
+    crossfade: track.loop ? resolveLoopCrossfade(track, duration) : 0,
+    anchor: now - offset,
+    nextPass: 0,
+    passes: [],
+    timer: null,
+  };
+}
+
+async function makeWebAudioDeck(
+  track: MusicTrack,
+  gain: number,
+  startAt: number,
+): Promise<BufferDeck | null> {
+  const ctx = getAudioContext() ?? (initAudio() ? getAudioContext() : null);
+  if (!ctx) return null;
+  if (typeof ctx.createBufferSource !== 'function' || typeof ctx.decodeAudioData !== 'function') {
+    return null;
+  }
+  if (typeof fetch !== 'function') return null;
+  const buffer = await loadBuffer(ctx, pickSourceUrl(track));
+  if (!buffer) return null;
+  return makeBufferDeck(ctx, track, buffer, gain, startAt);
+}
+
+// ---------------------------------------------------------------------------
+// Deck lifecycle shared by both backends
+// ---------------------------------------------------------------------------
+
+function rampGain(ctx: AudioContext, param: AudioParam, value: number): void {
+  safe(() => {
+    const t = ctx.currentTime;
+    param.cancelScheduledValues(t);
+    param.setValueAtTime(param.value, t);
+    param.linearRampToValueAtTime(value, t + 0.05);
+  });
+}
+
 function applyVolumes(): void {
   const set = (d: Deck) => {
-    safe(() => {
-      d.el.volume = clamp01(masterEffective * musicVolume * d.gain * d.fade);
-    });
+    const v = clamp01(masterEffective * musicVolume * d.gain * d.fade);
+    if (d.kind === 'element') {
+      safe(() => {
+        d.el.volume = v;
+      });
+    } else {
+      rampGain(d.ctx, d.out.gain, v);
+    }
   };
   if (current) set(current);
   for (const d of outgoing) set(d);
+}
+
+async function startDeck(deck: Deck): Promise<boolean> {
+  if (deck.kind === 'element') {
+    return (safe(() => deck.el.play()) ?? Promise.reject(new Error('no play')))
+      .then(() => true)
+      .catch(() => false);
+  }
+  if (deck.ctx.state === 'suspended') {
+    await Promise.resolve(safe(() => deck.ctx.resume())).catch(() => undefined);
+  }
+  ensureScheduled(deck);
+  if (deck.track.loop && !deck.timer) {
+    deck.timer =
+      safe(() => setInterval(() => ensureScheduled(deck), SCHEDULER_INTERVAL_MS)) ?? null;
+  }
+  // Everything is on the clock either way; a suspended context will simply
+  // pick the schedule up when it resumes.
+  return deck.ctx.state === 'running';
+}
+
+function stopDeck(deck: Deck): void {
+  if (deck.kind === 'element') {
+    safe(() => deck.el.pause());
+    safe(() => {
+      deck.el.src = '';
+    });
+    return;
+  }
+  if (deck.timer) safe(() => clearInterval(deck.timer!));
+  deck.timer = null;
+  for (const p of deck.passes) {
+    safe(() => p.src.stop());
+    safe(() => p.src.disconnect());
+    safe(() => p.g.disconnect());
+  }
+  deck.passes = [];
+  safe(() => deck.out.disconnect());
 }
 
 function ensureFadeLoop(stepMs: number, perStep: number): void {
@@ -209,12 +649,7 @@ function ensureFadeLoop(stepMs: number, perStep: number): void {
     const dead = outgoing.filter((d) => d.fade <= 0);
     if (dead.length) {
       outgoing = outgoing.filter((d) => d.fade > 0);
-      for (const d of dead) {
-        safe(() => d.el.pause());
-        safe(() => {
-          d.el.src = '';
-        });
-      }
+      for (const d of dead) stopDeck(d);
     }
     applyVolumes();
     if (!busy && fadeTimer) {
@@ -223,6 +658,10 @@ function ensureFadeLoop(stepMs: number, perStep: number): void {
     }
   }, stepMs);
 }
+
+// ---------------------------------------------------------------------------
+// Playback
+// ---------------------------------------------------------------------------
 
 /**
  * Start a track, crossfading out whatever is playing. Accepts a track id or a
@@ -241,12 +680,22 @@ export async function playMusic(
   if (!track) return false;
   if (current && current.track.id === track.id) return true;
 
-  const deck = makeDeck(track, opts.gain ?? 1);
+  const gain = opts.gain ?? 1;
+  const startAt = typeof opts.startAt === 'number' && Number.isFinite(opts.startAt)
+    ? Math.max(0, opts.startAt)
+    : 0;
+
+  // Web Audio first, because that is the backend that can crossfade the loop.
+  // A failed fetch, a codec the decoder refuses, or no context at all falls
+  // back to the streaming element rather than going silent.
+  const deck: Deck | null =
+    (await makeWebAudioDeck(track, gain, startAt)) ?? makeElementDeck(track, gain, startAt);
   if (!deck) return false;
-  if (typeof opts.startAt === 'number') {
-    safe(() => {
-      deck.el.currentTime = Math.max(0, opts.startAt!);
-    });
+
+  // Decoding is async, so another playMusic may have landed while we waited.
+  if (current && current.track.id === track.id) {
+    stopDeck(deck);
+    return true;
   }
 
   if (current) outgoing.push(current);
@@ -254,19 +703,9 @@ export async function playMusic(
   applyVolumes();
 
   const seconds = Math.max(0.05, opts.crossfadeSeconds ?? 1.5);
-  const stepMs = 50;
-  ensureFadeLoop(stepMs, stepMs / (seconds * 1000));
+  ensureFadeLoop(FADE_STEP_MS, FADE_STEP_MS / (seconds * 1000));
 
-  const started = await (safe(() => deck.el.play()) ?? Promise.reject(new Error('no play')))
-    .then(() => true)
-    .catch(() => false);
-
-  if (!started) {
-    // Autoplay was blocked. Keep the deck loaded so a later gesture can just
-    // call playMusic again cheaply, but report the truth to the caller.
-    return false;
-  }
-  return true;
+  return startDeck(deck);
 }
 
 /** Fade out and release everything. Safe to call when nothing is playing. */
@@ -276,14 +715,17 @@ export function stopMusic(fadeSeconds = 1.0): void {
     current = null;
   }
   if (!outgoing.length) return;
-  const stepMs = 50;
-  ensureFadeLoop(stepMs, stepMs / (Math.max(0.05, fadeSeconds) * 1000));
+  ensureFadeLoop(FADE_STEP_MS, FADE_STEP_MS / (Math.max(0.05, fadeSeconds) * 1000));
 }
 
-/** Music bus level, 0..1, independent of master volume. Non-finite is ignored. */
+/**
+ * Music bus level, 0..1, independent of master volume and persisted alongside
+ * it. Non-finite is ignored.
+ */
 export function setMusicVolume(v: number): void {
   if (typeof v !== 'number' || !Number.isFinite(v)) return;
   musicVolume = clamp01(v);
+  writeAudioPrefs({ musicVolume });
   applyVolumes();
 }
 
@@ -296,7 +738,49 @@ export function getCurrentTrack(): MusicTrack | null {
 }
 
 export function isMusicPlaying(): boolean {
-  return !!current && !!safe(() => !current!.el.paused);
+  const d = current;
+  if (!d) return false;
+  if (d.kind === 'element') return !!safe(() => !d.el.paused);
+  return d.passes.length > 0;
+}
+
+/** Which backend the current deck is using. For tests and a debug panel. */
+export function getMusicBackend(): 'buffer' | 'element' | null {
+  return current ? current.kind : null;
+}
+
+/**
+ * Scheduling snapshot for the current buffer deck: what the loop is doing right
+ * now. `null` on the element fallback. Exposed so the browser check (and a
+ * debug panel) can assert on the graph rather than on how it sounds.
+ */
+export function getLoopSchedule(): {
+  trackId: string;
+  duration: number;
+  crossfade: number;
+  period: number;
+  anchor: number;
+  scheduled: number;
+  nextStart: number;
+  passStarts: number[];
+  /** Live gain of each scheduled pass. Two non-zero entries = mid-crossfade. */
+  passGains: number[];
+  deckGain: number;
+} | null {
+  const d = current;
+  if (!d || d.kind !== 'buffer') return null;
+  return {
+    trackId: d.track.id,
+    duration: d.duration,
+    crossfade: d.crossfade,
+    period: loopPeriod(d.duration, d.crossfade),
+    anchor: d.anchor,
+    scheduled: d.nextPass,
+    nextStart: loopPassStartTime(d.anchor, d.nextPass, d.duration, d.crossfade),
+    passStarts: d.passes.map((p) => p.endsAt - d.duration),
+    passGains: d.passes.map((p) => safe(() => p.g.gain.value) ?? 0),
+    deckGain: safe(() => d.out.gain.value) ?? 0,
+  };
 }
 
 /** Tear down for tests / unmount. */
@@ -306,14 +790,13 @@ export function disposeMusic(): void {
     fadeTimer = null;
   }
   for (const d of [current, ...outgoing]) {
-    if (!d) continue;
-    safe(() => d.el.pause());
-    safe(() => {
-      d.el.src = '';
-    });
+    if (d) stopDeck(d);
   }
   current = null;
   outgoing = [];
   manifest = null;
   manifestPromise = null;
+  buffers.clear();
+  decoding.clear();
+  probe = undefined;
 }

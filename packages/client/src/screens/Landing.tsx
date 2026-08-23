@@ -7,7 +7,7 @@
  */
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { isValidRoomCode } from '@phrasey/shared';
+import { formatRoomHandle, isValidRoomCode, parseRoomHandle } from '@phrasey/shared';
 import { DemoBoard } from '../components/DemoBoard';
 import { Footer } from '../components/Footer';
 import { IdentityForm } from '../components/IdentityForm';
@@ -50,7 +50,15 @@ export function Landing() {
 
   function submitCode(e: React.FormEvent) {
     e.preventDefault();
-    const c = code.trim().toUpperCase();
+    const raw = code.trim();
+    // Accept either a bare code ("KABO") or a whole pasted handle
+    // ("KABO-M3XR"). Pasting the invite should not be the wrong move.
+    const handle = parseRoomHandle(raw);
+    if (handle) {
+      navigate(`/join/${formatRoomHandle(handle.code, handle.key)}`);
+      return;
+    }
+    const c = raw.toUpperCase();
     if (!isValidRoomCode(c)) {
       setCodeError('Room codes are four letters, alternating consonant and vowel — like KABO.');
       return;

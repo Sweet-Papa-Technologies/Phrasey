@@ -8,11 +8,13 @@ import { copyText, joinUrl } from '../lib/format';
 
 export interface RoomCodeProps {
   code: string;
+  /** Included in the share link and the QR so a click or a scan still joins in one step. */
+  roomKey?: string | null;
   compact?: boolean;
 }
 
-export function RoomCode({ code, compact = false }: RoomCodeProps) {
-  const url = joinUrl(code);
+export function RoomCode({ code, roomKey = null, compact = false }: RoomCodeProps) {
+  const url = joinUrl(code, roomKey);
   const [qr, setQr] = useState<string | null>(null);
   const [copied, setCopied] = useState<'code' | 'link' | null>(null);
 

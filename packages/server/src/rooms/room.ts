@@ -301,11 +301,19 @@ export class Room {
 
   setSettings(playerId: string, patch: Partial<RoomSettings>): void {
     this.requireHost(playerId);
-    if (this.state.status !== 'lobby' && this.state.status !== 'round-end') {
+
+    // `sameRoomAudio` is the one setting that is not a game rule — it says
+    // "we are all sitting in the same room, so one device should make the
+    // noise". Changing it mid-round affects nothing about play, and a table
+    // that discovers the echo problem two rounds in should not have to wait
+    // for a round boundary to fix it. Everything else stays gated.
+    const onlyComfort = Object.keys(patch).every((k) => k === 'sameRoomAudio');
+    if (!onlyComfort && this.state.status !== 'lobby' && this.state.status !== 'round-end') {
       throw new AppError('NOT_IN_LOBBY', 'Settings can only change between rounds.');
     }
     const b = this.state.balance;
     const next: RoomSettings = { ...this.state.settings };
+    if (typeof patch.sameRoomAudio === 'boolean') next.sameRoomAudio = patch.sameRoomAudio;
     if (patch.matchMode === 'rounds' || patch.matchMode === 'score') next.matchMode = patch.matchMode;
     if (typeof patch.rounds === 'number') next.rounds = clamp(patch.rounds, b.match.minRounds, b.match.maxRounds);
     if (typeof patch.targetScore === 'number') {

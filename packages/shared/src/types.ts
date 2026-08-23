@@ -101,6 +101,19 @@ export const CATEGORIES = [
   'Note left on a windshield',
   "Overheard at Trader Joe's",
   'Bumper sticker',
+  // Familiar / pop-culture-adjacent categories. Added after playtest feedback
+  // that the corpus was too abstract to be fun to guess: a board only gives you
+  // traction if the phrase is something you could plausibly complete from three
+  // letters. See packages/corpus-gen/corpus/SOURCING.md for the rights posture
+  // on the four title/catchphrase categories, which are kept separable.
+  'Nursery rhyme line',
+  'Common sign or public notice',
+  'Thing your GPS says',
+  'Thing on a restaurant menu',
+  'Movie title everyone knows',
+  'Song title everyone knows',
+  'TV show title everyone knows',
+  'Catchphrase everyone knows',
 ] as const;
 
 export type Category = (typeof CATEGORIES)[number];
@@ -200,6 +213,14 @@ export interface RoomSettings {
   botCount: number;
   botTier: BotTier;
   interruptsEnabled: boolean;
+  /**
+   * §9 sound: the host broadcasting "we are all in one physical room", so a
+   * joining player's device starts quiet instead of adding a fourth copy of the
+   * same bed to the table. Optional and purely additive — a client or server
+   * that predates it simply never sets it, and each player's own Same-room
+   * switch overrides it locally either way.
+   */
+  sameRoomAudio?: boolean;
 }
 
 export interface RoomPublic {

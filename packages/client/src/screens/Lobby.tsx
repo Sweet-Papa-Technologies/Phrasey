@@ -5,6 +5,7 @@
 import { BALANCE, type BotTier, type MatchMode, type RoomPublic, type RoomSettings } from '@phrasey/shared';
 import { PlayerRail } from '../components/PlayerRail';
 import { RoomCode } from '../components/RoomCode';
+import { useGameStore } from '../store/gameStore';
 
 export interface LobbyProps {
   room: RoomPublic;
@@ -62,6 +63,7 @@ function Segmented<T extends string | number | null>({
 }
 
 export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps) {
+  const roomKey = useGameStore((s) => s.roomKey);
   const s = room.settings;
 
   /**
@@ -76,7 +78,7 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
   return (
     <main id="main" className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-7 px-4 pb-10">
       <section className="rounded-slab border-2 border-ink/10 bg-white/65 p-5 sm:p-7" aria-label="Invite">
-        <RoomCode code={room.code} />
+        <RoomCode code={room.code} roomKey={roomKey} />
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1.35fr]">
