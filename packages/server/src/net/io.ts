@@ -157,9 +157,13 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
         let room;
         try {
           room = manager.require(input.code);
-        } catch (err) {
+        } catch {
           joinGuard.fail(probeAddr);
-          throw err;
+          // Deliberately the SAME error a bad key gets. Distinguishing "no such
+          // room" from "wrong key" hands an attacker a free oracle: walk the
+          // 6,400 codes, keep the ones that answer differently, and only then
+          // start guessing keys. One message for both halves closes that.
+          throw new AppError('BAD_ROOM', 'That room code and key do not match.');
         }
         const now = Date.now();
 
@@ -187,7 +191,7 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
         if (!keyMatches(room.key, input.key)) {
           joinGuard.fail(addr);
           log.warn({ code: room.code }, 'join rejected: bad room key');
-          throw new AppError('BAD_ROOM_KEY', 'That room code and key do not match.');
+          throw new AppError('BAD_ROOM', 'That room code and key do not match.');
         }
         joinGuard.succeed(addr);
 

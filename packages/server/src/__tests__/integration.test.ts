@@ -234,7 +234,7 @@ describe('§7 session flow', () => {
     const stranger = await client();
     const res = await stranger.call('room:join', { code: room.code, name: 'Mallory', color: '#B8FF3C' });
     expect(res.ok).toBe(false);
-    expect(res.error?.code).toBe('BAD_ROOM_KEY');
+    expect(res.error?.code).toBe('BAD_ROOM');
 
     const wrong = await client();
     const res2 = await wrong.call('room:join', {
@@ -244,10 +244,30 @@ describe('§7 session flow', () => {
       color: '#B8FF3C',
     });
     expect(res2.ok).toBe(false);
-    expect(res2.error?.code).toBe('BAD_ROOM_KEY');
+    expect(res2.error?.code).toBe('BAD_ROOM');
 
     // And the room is untouched — nobody got seated by trying.
     expect(room.players.length).toBe(1);
+  });
+
+  it('gives the same answer for a wrong key and a room that does not exist', async () => {
+    const host = await client();
+    const room = await createRoom(host);
+
+    const a = await client();
+    const wrongKey = await a.call('room:join', { code: room.code, key: 'ZZZZ', name: 'M', color: '#B8FF3C' });
+
+    // A code that is well-formed but has no room behind it.
+    const missing = room.code === 'BABA' ? 'DEDE' : 'BABA';
+    const b = await client();
+    const noRoom = await b.call('room:join', { code: missing, key: 'ZZZZ', name: 'M', color: '#B8FF3C' });
+
+    expect(wrongKey.ok).toBe(false);
+    expect(noRoom.ok).toBe(false);
+    // Identical, on purpose: a different answer here is a free oracle for
+    // which codes are live, which is most of the work of enumerating them.
+    expect(noRoom.error?.code).toBe(wrongKey.error?.code);
+    expect(noRoom.error?.message).toBe(wrongKey.error?.message);
   });
 
   it('returns the key only to someone who actually got in', async () => {
