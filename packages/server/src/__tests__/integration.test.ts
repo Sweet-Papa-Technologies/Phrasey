@@ -28,17 +28,21 @@ afterEach(async () => {
   await server.close();
 });
 
+/** Room key by code, so helpers can present the credential on join. */
+const roomKeys = new Map<string, string>();
+
 async function createRoom(c: TestClient, settings?: Record<string, unknown>): Promise<RoomPublic> {
   const res = await c.call('room:create', { name: 'Host', color: '#FF5C1A', settings });
   expect(res.ok, JSON.stringify(res.error)).toBe(true);
   const data = res.data as JoinedPayload;
   c.playerId = data.playerId;
   c.token = data.sessionToken;
+  roomKeys.set(data.room.code, data.key);
   return data.room;
 }
 
 async function join(c: TestClient, code: string, name = 'Guest'): Promise<JoinedPayload> {
-  const res = await c.call('room:join', { code, name, color: '#B8FF3C' });
+  const res = await c.call('room:join', { code, key: roomKeys.get(code), name, color: '#B8FF3C' });
   expect(res.ok, JSON.stringify(res.error)).toBe(true);
   const data = res.data as JoinedPayload;
   c.playerId = data.playerId;
@@ -186,6 +190,7 @@ describe('§7 session flow', () => {
     clients.push(back);
     const res = await back.call('room:join', {
       code: room.code,
+      key: roomKeys.get(room.code),
       name: 'Guest',
       color: '#B8FF3C',
       sessionToken: joined.sessionToken,
@@ -198,6 +203,44 @@ describe('§7 session flow', () => {
     expect(handAfter).toEqual(handBefore);
   });
 
+  it('refuses a join that has the code but not the key', async () => {
+    const host = await client();
+    const room = await createRoom(host);
+
+    const stranger = await client();
+    const res = await stranger.call('room:join', { code: room.code, name: 'Mallory', color: '#B8FF3C' });
+    expect(res.ok).toBe(false);
+    expect(res.error?.code).toBe('BAD_ROOM_KEY');
+
+    const wrong = await client();
+    const res2 = await wrong.call('room:join', {
+      code: room.code,
+      key: roomKeys.get(room.code) === 'AAAA' ? 'BBBB' : 'AAAA',
+      name: 'Mallory',
+      color: '#B8FF3C',
+    });
+    expect(res2.ok).toBe(false);
+    expect(res2.error?.code).toBe('BAD_ROOM_KEY');
+
+    // And the room is untouched — nobody got seated by trying.
+    expect(room.players.length).toBe(1);
+  });
+
+  it('returns the key only to someone who actually got in', async () => {
+    const host = await client();
+    const room = await createRoom(host);
+    const key = roomKeys.get(room.code)!;
+    expect(key).toBeTruthy();
+
+    // The key is a credential, so it must not ride along on broadcast room state.
+    expect(JSON.stringify(room)).not.toContain(key);
+
+    const guest = await client();
+    const joined = await join(guest, room.code);
+    expect(joined.key).toBe(key);
+    expect(JSON.stringify(joined.room)).not.toContain(key);
+  });
+
   it('a bad session token does not reclaim a seat', async () => {
     const host = await client();
     const guest = await client();
@@ -207,6 +250,7 @@ describe('§7 session flow', () => {
     const attacker = await client();
     const res = await attacker.call('room:join', {
       code: room.code,
+      key: roomKeys.get(room.code),
       name: 'Mallory',
       color: '#B8FF3C',
       sessionToken: 'A'.repeat(32),
@@ -279,8 +323,8 @@ describe('input validation and rate limiting', () => {
 
     const bad: [string, unknown][] = [
       ['room:join', { code: 'zzzz', name: 'x', color: '#FF5C1A' }],
-      ['room:join', { code: room.code, name: '', color: '#FF5C1A' }],
-      ['room:join', { code: room.code, name: 'x'.repeat(500), color: '#FF5C1A' }],
+      ['room:join', { code: room.code, key: roomKeys.get(room.code), name: '', color: '#FF5C1A' }],
+      ['room:join', { code: room.code, key: roomKeys.get(room.code), name: 'x'.repeat(500), color: '#FF5C1A' }],
       ['turn:playCard', { type: 'letter' }],
       ['turn:playCard', { type: 'letter', cardId: '../../etc/passwd' }],
       ['turn:discard', { cardIds: [] }],

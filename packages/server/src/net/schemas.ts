@@ -8,7 +8,7 @@
  * unparsed — the engine receives only values that already type-check.
  */
 import { z } from 'zod';
-import { AVATAR_COLORS, ROOM_CODE_PATTERN, TURN_ACTION_KINDS } from '@phrasey/shared';
+import { AVATAR_COLORS, ROOM_CODE_PATTERN, TURN_ACTION_KINDS, ROOM_KEY_LENGTH, ROOM_KEY_PATTERN } from '@phrasey/shared';
 
 export const MAX_NAME_LENGTH = 20;
 export const MAX_GUESS_LENGTH = 80;
@@ -60,6 +60,8 @@ export const createRoomSchema = z.object({
 
 export const joinRoomSchema = z.object({
   code: codeSchema,
+  /** Optional at the schema level; the handler requires it unless a session token reclaims a seat. */
+  key: z.string().length(ROOM_KEY_LENGTH).regex(ROOM_KEY_PATTERN).optional(),
   name: nameSchema,
   color: colorSchema,
   sessionToken: z.string().min(8).max(200).regex(/^[A-Za-z0-9._-]+$/).optional(),

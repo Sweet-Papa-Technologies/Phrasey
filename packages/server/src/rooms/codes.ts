@@ -7,8 +7,37 @@
  * is plenty for a single-instance party server and small enough that collision
  * handling has to be real rather than probabilistic.
  */
-import { CODE_CONSONANTS, CODE_VOWELS, ROOM_CODE_PATTERN } from '@phrasey/shared';
+import { randomInt } from 'node:crypto';
+import { CODE_CONSONANTS, CODE_VOWELS, ROOM_CODE_PATTERN, ROOM_KEY_ALPHABET, ROOM_KEY_LENGTH } from '@phrasey/shared';
 import { isProfaneCode } from './profanity.js';
+
+/**
+ * The room key — the part that is actually a secret.
+ *
+ * Generated with a CSPRNG, not Math.random: the code space is small enough to
+ * enumerate, so the key is the only thing standing between a stranger and
+ * someone's game. 31^4 is ~923k, and joins are rate limited, which is the
+ * "lightweight" part — this is a party game, not a bank.
+ */
+export function generateRoomKey(): string {
+  let out = '';
+  for (let i = 0; i < ROOM_KEY_LENGTH; i++) {
+    out += ROOM_KEY_ALPHABET[randomInt(ROOM_KEY_ALPHABET.length)];
+  }
+  return out;
+}
+
+/**
+ * Constant-time-ish comparison. The timing signal on a 4-char key is not a
+ * realistic attack, but comparing credentials with === is a habit worth not
+ * having.
+ */
+export function keyMatches(expected: string, given: string | undefined): boolean {
+  if (!given || given.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ given.toUpperCase().charCodeAt(i);
+  return diff === 0;
+}
 
 export const TOTAL_CODES = CODE_CONSONANTS.length * CODE_VOWELS.length * CODE_CONSONANTS.length * CODE_VOWELS.length;
 

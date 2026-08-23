@@ -39,6 +39,8 @@ export interface RoomDoc {
   snapshot?: string;
   snapshotSeq?: number;
   snapshotAt?: Timestamp;
+  /** The room credential, so a restored room still validates joins. */
+  key?: string;
   seats?: PersistedSeat[];
   puzzleIds?: string[];
 }

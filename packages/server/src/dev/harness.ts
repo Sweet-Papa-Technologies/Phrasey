@@ -354,15 +354,16 @@ async function main(): Promise<void> {
     },
   });
   if (!created.ok) throw new Error(`room:create failed: ${JSON.stringify(created.error)}`);
-  const room = created.data as { sessionToken: string; playerId: string; room: { code: string } };
+  const room = created.data as { sessionToken: string; playerId: string; key: string; room: { code: string } };
   host.playerId = room.playerId;
   host.sessionToken = room.sessionToken;
   const code = room.room.code;
+  const roomKey = room.key;
   log('harness', `room ${code} created`);
 
   for (let i = 1; i < players.length; i++) {
     const p = players[i] as Player;
-    const joined = await p.emit('room:join', { code, name: `Player${i + 1}`, color: COLORS[i % COLORS.length] as string });
+    const joined = await p.emit('room:join', { code, key: roomKey, name: `Player${i + 1}`, color: COLORS[i % COLORS.length] as string });
     if (!joined.ok) throw new Error(`room:join failed: ${JSON.stringify(joined.error)}`);
     const d = joined.data as { sessionToken: string; playerId: string };
     p.playerId = d.playerId;

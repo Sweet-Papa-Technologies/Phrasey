@@ -27,7 +27,8 @@ import type { Logger } from '../logger.js';
 import { AppError, toSocketError } from '../errors.js';
 import type { RoomManager } from '../rooms/manager.js';
 import type { Room } from '../rooms/room.js';
-import { RateLimiter } from './rateLimit.js';
+import { JoinGuard, RateLimiter } from './rateLimit.js';
+import { keyMatches } from '../rooms/codes.js';
 import {
   interruptPassSchema,
   createRoomSchema,
@@ -60,6 +61,7 @@ export interface IoDeps {
 export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerEvents, ServerToClientEvents> {
   const { cfg, log, manager } = deps;
   const limiter = new RateLimiter();
+  const joinGuard = new JoinGuard();
 
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(http, {
     path: SOCKET_PATH,
@@ -113,6 +115,18 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
     return { room, playerId };
   }
 
+  /**
+   * Best-effort client address for the join guard. Behind Cloud Run this is
+   * the proxy, so X-Forwarded-For's first hop is the real client. It is
+   * spoofable, which is why this guard raises the cost of enumeration rather
+   * than claiming to prevent it.
+   */
+  function addrOf(socket: PhraseySocket): string {
+    const fwd = socket.handshake.headers['x-forwarded-for'];
+    const first = Array.isArray(fwd) ? fwd[0] : fwd;
+    return (first?.split(',')[0] ?? '').trim() || socket.handshake.address || socket.id;
+  }
+
   io.on('connection', (socket: PhraseySocket) => {
     log.debug({ socketId: socket.id }, 'socket connected');
 
@@ -127,13 +141,26 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
         manager.bindSocket(socket.id, room.code);
         room.attachSocket(playerId, socket.id, Date.now());
         room.resync(playerId, Date.now());
-        return { sessionToken: token, playerId, room: room.roomPublic() };
+        return { sessionToken: token, playerId, key: room.key, room: room.roomPublic() };
       }),
     );
 
     socket.on('room:join', (p, ack) =>
       handle(socket, 'room:join', joinRoomSchema, p, ack, (input) => {
-        const room = manager.require(input.code);
+        // A miss on an unknown code is just as much an enumeration signal as a
+        // bad key, so it costs the same. Otherwise an attacker maps which codes
+        // are live for free and only then starts guessing keys.
+        const probeAddr = addrOf(socket);
+        if (joinGuard.retryAfterMs(probeAddr) > 0) {
+          throw new AppError('TOO_MANY_ATTEMPTS', 'Too many failed attempts. Try again shortly.');
+        }
+        let room;
+        try {
+          room = manager.require(input.code);
+        } catch (err) {
+          joinGuard.fail(probeAddr);
+          throw err;
+        }
         const now = Date.now();
 
         // §7 reconnect: the token reclaims the held seat, hand and score intact.
@@ -143,11 +170,27 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
             manager.bindSocket(socket.id, room.code);
             room.resync(reclaimed, now);
             log.info({ code: room.code, playerId: reclaimed }, 'seat reclaimed');
-            return { sessionToken: input.sessionToken, playerId: reclaimed, room: room.roomPublic() };
+            return { sessionToken: input.sessionToken, playerId: reclaimed, key: room.key, room: room.roomPublic() };
           }
         }
 
         if (manager.roomForSocket(socket.id)) throw new AppError('ALREADY_IN_ROOM', 'Leave your room first.');
+
+        // The code is a name, not a secret (6,400 of them). The key is the
+        // credential. A valid session token above already proved membership,
+        // so this only gates genuinely new joins.
+        const addr = addrOf(socket);
+        const waitMs = joinGuard.retryAfterMs(addr);
+        if (waitMs > 0) {
+          throw new AppError('TOO_MANY_ATTEMPTS', `Too many failed attempts. Try again in ${Math.ceil(waitMs / 1000)}s.`);
+        }
+        if (!keyMatches(room.key, input.key)) {
+          joinGuard.fail(addr);
+          log.warn({ code: room.code }, 'join rejected: bad room key');
+          throw new AppError('BAD_ROOM_KEY', 'That room code and key do not match.');
+        }
+        joinGuard.succeed(addr);
+
         if (room.status === 'match-end') throw new AppError('MATCH_OVER', 'That match has finished.');
 
         // §7: "Late joiners land in the next round, not mid-round." The engine
@@ -157,7 +200,7 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
         manager.bindSocket(socket.id, room.code);
         room.attachSocket(playerId, socket.id, now);
         room.resync(playerId, now);
-        return { sessionToken: token, playerId, room: room.roomPublic() };
+        return { sessionToken: token, playerId, key: room.key, room: room.roomPublic() };
       }),
     );
 

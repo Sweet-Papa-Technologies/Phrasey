@@ -32,6 +32,11 @@ export interface CreateRoomPayload {
 
 export interface JoinRoomPayload {
   code: string;
+  /**
+   * The room key. Required unless `sessionToken` reclaims a seat you already
+   * held. See ROOM_KEY_LENGTH below for why this exists.
+   */
+  key?: string;
   name: string;
   color: string;
   /** Present on reconnect; lets the server restore a held seat (§7). */
@@ -80,6 +85,12 @@ export interface JoinedPayload {
   /** Opaque token the client stores to reclaim its seat after a drop. */
   sessionToken: string;
   playerId: string;
+  /**
+   * The room key, returned only to someone who is now legitimately in the
+   * room. The host needs it to share; a joiner already had it. It is not on
+   * RoomPublic because it is a credential, not room state.
+   */
+  key: string;
   room: RoomPublic;
 }
 
@@ -138,6 +149,49 @@ export const ROOM_CODE_PATTERN = /^[BDFGHJKLMNPRSTVZ][AEIOU][BDFGHJKLMNPRSTVZ][A
 
 export function isValidRoomCode(code: string): boolean {
   return ROOM_CODE_PATTERN.test(code.toUpperCase());
+}
+
+// --------------------------------------------------------------------------
+// Room keys — anti-enumeration
+// --------------------------------------------------------------------------
+
+/**
+ * The 4-character CVCV code is a *name*, not a secret: 16 consonants x 5 vowels
+ * squared is 6,400 possibilities, which a script walks in seconds. Pronounceable
+ * over Zoom (§6.6) and unguessable are incompatible goals for one short string,
+ * so they are two strings.
+ *
+ * The code stays exactly as designed — big, sayable, on the cast view. The key
+ * is the credential: it rides in the share link and the QR, so the normal path
+ * is unchanged, and a code-only guess gets nowhere.
+ *
+ * Alphabet excludes 0/O/1/I/L, which people transcribe wrong when reading a
+ * code off a screen.
+ */
+export const ROOM_KEY_ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+export const ROOM_KEY_LENGTH = 4;
+export const ROOM_KEY_PATTERN = /^[23456789ABCDEFGHJKMNPQRSTUVWXYZ]{4}$/;
+
+export function isValidRoomKey(key: string): boolean {
+  return ROOM_KEY_PATTERN.test(key.toUpperCase());
+}
+
+/** The shareable identity: "KABO-M3XR". One thing to paste, say, or scan. */
+export function formatRoomHandle(code: string, key: string): string {
+  return `${code.toUpperCase()}-${key.toUpperCase()}`;
+}
+
+/**
+ * Parse a pasted handle. Tolerant on purpose — people retype these from a
+ * screen, so separators, spaces and case are all forgiven.
+ */
+export function parseRoomHandle(input: string): { code: string; key: string } | null {
+  const cleaned = input.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (cleaned.length !== ROOM_CODE_LENGTH + ROOM_KEY_LENGTH) return null;
+  const code = cleaned.slice(0, ROOM_CODE_LENGTH);
+  const key = cleaned.slice(ROOM_CODE_LENGTH);
+  if (!isValidRoomCode(code) || !isValidRoomKey(key)) return null;
+  return { code, key };
 }
 
 /** Avatar colors offered at join (§7, §9 palette). */

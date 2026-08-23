@@ -102,6 +102,8 @@ export class Room {
 
   constructor(
     readonly code: string,
+    /** The room's credential. Never broadcast; returned only on a successful join. */
+    readonly key: string,
     state: GameState,
     private readonly deps: RoomDeps,
     now: number,
@@ -162,16 +164,23 @@ export class Room {
     this.deps.fanout.game(this.state, recipients, events);
 
     let rosterChanged = false;
+    // Round boundaries are the moments where losing state actually hurts, so
+    // they snapshot immediately rather than waiting for the event counter.
+    // This is what makes scaling to zero survivable: a recycled instance loses
+    // at most part of one turn instead of up to snapshotEveryNEvents.
+    let boundary = false;
     for (const e of events) {
       if (e.t === 'round:start') {
         this.botBeat = null;
         rosterChanged = true;
+        boundary = true;
       }
       if (e.t === 'turn:begin') this.botBeat = null;
       if (e.t === 'interrupt:close' || e.t === 'interrupt:open') this.botBeat = null;
       if (e.t === 'notice') rosterChanged = true;
       if (e.t === 'round:end') {
         rosterChanged = true;
+        boundary = true;
         // §3.1: a match is a sequence of rounds; deal the next one after a beat
         // so the table can read the answer and the scores.
         this.intermissionAt =
@@ -180,13 +189,14 @@ export class Room {
       if (e.t === 'match:end') {
         this.intermissionAt = null;
         rosterChanged = true;
+        boundary = true;
         void this.writeSession();
       }
     }
     if (rosterChanged) this.deps.fanout.roomState(recipients, this.roomPublic(), null);
 
     this.eventsSinceSnapshot += events.length;
-    if (this.eventsSinceSnapshot >= this.state.balance.session.snapshotEveryNEvents) {
+    if (boundary || this.eventsSinceSnapshot >= this.state.balance.session.snapshotEveryNEvents) {
       this.eventsSinceSnapshot = 0;
       void this.persist();
     }
@@ -585,6 +595,7 @@ export class Room {
     this.snapshotSeq += 1;
     await this.deps.roomStore.snapshot(this.code, {
       instanceId: this.deps.instanceId,
+      key: this.key,
       hostId: this.state.hostId,
       status: this.state.status,
       ttl: ttlFrom(this.state.createdAt, this.state.balance.session.roomTtlHours),

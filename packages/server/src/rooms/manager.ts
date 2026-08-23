@@ -21,7 +21,7 @@ import { Timestamp } from '../data/firestore.js';
 import type { SessionStore } from '../data/sessions.js';
 import type { BotPolicies } from '../bots/policies.js';
 import type { Fanout } from './fanout.js';
-import { generateRoomCode, isWellFormedCode } from './codes.js';
+import { generateRoomCode, generateRoomKey, isWellFormedCode } from './codes.js';
 import { Room, type RoomDeps } from './room.js';
 
 export interface ManagerDeps {
@@ -87,6 +87,7 @@ export class RoomManager {
     const now = this.now();
     const taken = new Set<string>([...this.rooms.keys(), ...this.reservedCodes]);
     const code = generateRoomCode(taken);
+    const key = generateRoomKey();
     const state = createMatch({
       seed: (Math.random() * 0xffffffff) >>> 0,
       players: [],
@@ -98,7 +99,7 @@ export class RoomManager {
       sessionId: randomUUID(),
       nowMs: now,
     });
-    const room = new Room(code, state, this.roomDeps(), now);
+    const room = new Room(code, key, state, this.roomDeps(), now);
     const playerId = room.addHuman(host.name, host.color, host.token, now);
     this.rooms.set(code, room);
 
@@ -149,7 +150,9 @@ export class RoomManager {
       if (expired || !doc.snapshot) continue;
       try {
         const state = decodeState(doc.snapshot);
-        const room = new Room(code, state, this.roomDeps(), now);
+        // A pre-key snapshot has no stored key; mint one rather than
+        // dropping the room, and the old share links simply stop working.
+        const room = new Room(code, doc.key ?? generateRoomKey(), state, this.roomDeps(), now);
         room.restoreSeats(doc.seats ?? [], now);
         if (doc.puzzleIds) room.puzzleIds.push(...doc.puzzleIds);
         this.rooms.set(code, room);

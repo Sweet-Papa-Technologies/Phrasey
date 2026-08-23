@@ -69,7 +69,7 @@ function makeRoom(over: Partial<ServerConfig> = {}, seats = 2) {
     settings: { rounds: 1, matchMode: 'rounds', turnSeconds: 15, botCount: 0 },
     nowMs: 0,
   });
-  const room = new Room('KABO', state, h.deps, 0);
+  const room = new Room('KABO', 'T35T', state, h.deps, 0);
   const ids: string[] = [];
   for (let i = 0; i < seats; i++) {
     const id = room.addHuman(`P${i}`, '#FF5C1A', `token-${i}`, 0);
@@ -271,7 +271,7 @@ describe('bot driver', () => {
       settings: { rounds: 1, turnSeconds: 15, botCount: 1 },
       nowMs: 0,
     });
-    const room = new Room('KABO', state, h.deps, 0);
+    const room = new Room('KABO', 'T35T', state, h.deps, 0);
     const a = room.addHuman('A', '#FF5C1A', 't-a', 0);
     room.attachSocket(a, 'sock-a', 0);
     room.setSettings(a, { botCount: 1 });
@@ -393,7 +393,7 @@ describe('leak guard resilience', () => {
       settings: { rounds: 1, turnSeconds: 15, botCount: 0 },
       nowMs: 0,
     });
-    const room = new Room('KABO', state, h.deps, 0);
+    const room = new Room('KABO', 'T35T', state, h.deps, 0);
     const a = room.addHuman('A', '#FF5C1A', 't-a', 0);
     const b = room.addHuman('B', '#B8FF3C', 't-b', 0);
     room.attachSocket(a, 'sock-a', 0);

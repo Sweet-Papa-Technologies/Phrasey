@@ -55,8 +55,8 @@ variable "image" {
 
 variable "min_instances" {
   type        = number
-  description = "Cloud Run min instances. 1 keeps in-memory rooms and turn timers alive (design doc 6.3). Costs ~a always-on instance."
-  default     = 1
+  description = "Cloud Run min instances. 0 is safe here: an open websocket counts as an in-flight request, so the instance survives while anyone is connected and only scales to zero when the game is genuinely empty. Set to 1 to trade ~$50/month for no cold start."
+  default     = 0
 }
 
 variable "max_instances" {
