@@ -154,7 +154,7 @@ export class TestClient {
   /** Decline every interrupt window automatically (empty cardId == pass). */
   autoDeclineInterrupts(): this {
     this.socket.on('interrupt:window', (p: { windowId: string }) => {
-      this.socket.emit('interrupt:play', { cardId: '', windowId: p.windowId }, () => undefined);
+      this.socket.emit('interrupt:pass', { windowId: p.windowId }, () => undefined);
     });
     return this;
   }

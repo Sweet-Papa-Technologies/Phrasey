@@ -389,12 +389,13 @@ export class Room {
    * read as "I decline", which is also the intuitive meaning of submitting an
    * empty solve box. See the report; the fix belongs in @phrasey/shared.
    */
-  solveOrPass(playerId: string, guess: string, now: number): void {
-    if (guess.trim() === '') {
-      this.commit({ type: 'pass', playerId }, now);
-      return;
-    }
+  solve(playerId: string, guess: string, now: number): void {
     this.commit({ type: 'solve', playerId, guess }, now);
+  }
+
+  /** Decline the optional solve (§3.3) and end the turn. */
+  pass(playerId: string, now: number): void {
+    this.commit({ type: 'pass', playerId }, now);
   }
 
   /**
@@ -402,11 +403,12 @@ export class Room {
    * declines the window, which lets it close early instead of burning 4s.
    */
   interrupt(playerId: string, intent: InterruptIntent, now: number): void {
-    if (intent.cardId.trim() === '') {
-      this.commit({ type: 'passInterrupt', playerId, windowId: intent.windowId }, now);
-      return;
-    }
     this.commit({ type: 'playInterrupt', playerId, cardId: intent.cardId, windowId: intent.windowId }, now);
+  }
+
+  /** Decline an open window so it can close early instead of expiring. */
+  declineInterrupt(playerId: string, windowId: string, now: number): void {
+    this.commit({ type: 'passInterrupt', playerId, windowId }, now);
   }
 
   emote(playerId: string, emote: string): void {

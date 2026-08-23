@@ -73,7 +73,7 @@ async function playUntilRoundEnd(players: TestClient[], deadlineMs = 40_000): Pr
 
       if (acted.get(p.playerId)) {
         // Decline the optional solve (empty guess == pass).
-        const res = await p.call('turn:solve', { guess: '' });
+        const res = await p.call('turn:pass', {});
         if (res.ok) acted.set(p.playerId, false);
         progressed = true;
         continue;

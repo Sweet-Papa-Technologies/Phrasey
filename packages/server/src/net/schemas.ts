@@ -84,13 +84,19 @@ export const discardSchema = z.object({
 });
 
 export const solveSchema = z.object({
-  // An empty guess is the "decline to solve" signal — see Room.solveOrPass and
-  // the protocol gap noted in the report.
-  guess: z.string().max(MAX_GUESS_LENGTH),
+  // Declining to solve is `turn:pass`, a distinct event. A blank guess here is
+  // a real (losing) attempt, not a pass — conflating them made a mis-click
+  // indistinguishable from a deliberate decline.
+  guess: z.string().min(1).max(MAX_GUESS_LENGTH),
 });
 
 export const interruptSchema = z.object({
-  cardId: z.string().max(64).regex(/^[A-Za-z0-9:_-]*$/),
+  cardId: z.string().min(1).max(64).regex(/^[A-Za-z0-9:_-]+$/),
+  windowId: z.string().min(1).max(64).regex(/^[A-Za-z0-9:_-]+$/),
+});
+
+/** Declining an open window, so an uncontested one need not burn its full 4s. */
+export const interruptPassSchema = z.object({
   windowId: z.string().min(1).max(64).regex(/^[A-Za-z0-9:_-]+$/),
 });
 

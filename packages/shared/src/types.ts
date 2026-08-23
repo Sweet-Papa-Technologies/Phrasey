@@ -218,11 +218,20 @@ export interface RoomPublic {
 
 export type TurnDirection = 1 | -1;
 
+/**
+ * Which beat of the turn we are on. §3.3 gives a player a primary action and
+ * then an optional solve, so "it is your turn" and "you are being offered the
+ * solve" are different states — and a client that has to infer the difference
+ * gets it wrong across a reconnect.
+ */
+export type TurnPhase = 'turn' | 'awaiting-solve' | 'interrupt' | 'ended';
+
 export interface RoundPublic {
   roundNumber: number;
   board: MaskedBoard;
   pressure: number;
   pressureMax: number;
+  phase: TurnPhase;
   currentPlayerId: string | null;
   direction: TurnDirection;
   /** Epoch ms when the current turn expires; null if the timer is off. */

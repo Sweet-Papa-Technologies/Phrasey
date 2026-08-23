@@ -12,10 +12,6 @@
  * The players here are dumb on purpose — they are a protocol exerciser, not a
  * bot. Bot brains live in `@phrasey/engine`.
  *
- * NOTE ON THE PROTOCOL: `ClientToServerEvents` has no `turn:pass` and no
- * `interrupt:pass`, so this sends `turn:solve` with an empty guess and
- * `interrupt:play` with an empty cardId. The server reads both as "decline".
- * See the M2 report — the real fix belongs in @phrasey/shared.
  */
 import { io, type Socket } from 'socket.io-client';
 import {
@@ -153,7 +149,7 @@ class Player {
     on('interrupt:window', (p) => {
       log(this.label, `interrupt window ${p.windowId} (${p.kind}), ${p.playableCardIds.length} playable`);
       // Decline: empty cardId is the pass convention.
-      this.emit('interrupt:play', { cardId: '', windowId: p.windowId });
+      this.emit('interrupt:pass', { windowId: p.windowId });
       this.onEvent(this, 'interrupt:window', p);
     });
 
@@ -224,7 +220,7 @@ class Player {
         return;
       }
       // Empty guess == decline (protocol gap; see header).
-      const res = await this.emit('turn:solve', { guess: '' });
+      const res = await this.emit('turn:pass', {});
       if (!res.ok) this.onRejected(res.error);
       else this.awaitingSolve = false;
       return;

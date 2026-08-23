@@ -126,6 +126,15 @@ export function createMockTransport(opts: MockTransportOptions = {}): Transport 
           const err = g.playInterrupt(g.selfId, p.cardId, p.windowId);
           return done(err ? fail(err) : ok({ ok: true }));
         }
+        case 'turn:pass': {
+          const err = g.passTurn?.(g.selfId);
+          return done(err ? fail(err) : ok({ ok: true }));
+        }
+        case 'interrupt:pass': {
+          const p = payload as { windowId: string };
+          const err = g.declineInterrupt?.(g.selfId, p.windowId);
+          return done(err ? fail(err) : ok({ ok: true }));
+        }
         case 'chat:emote':
           return done(ok({ ok: true }));
         case 'room:leave':

@@ -312,6 +312,9 @@ export class MockGame {
       board: this.board(),
       pressure: this.pressure,
       pressureMax: BALANCE.pressure.max,
+      // The mock resolves the optional solve inline, so it is only ever in
+      // 'turn' or, while a window is up, 'interrupt'.
+      phase: this.status !== 'playing' ? 'ended' : this.openWindowId ? 'interrupt' : 'turn',
       currentPlayerId: this.status === 'playing' ? (this.players[this.turnIdx]?.id ?? null) : null,
       direction: this.direction,
       turnEndsAt: this.turnEndsAt,
@@ -767,6 +770,27 @@ export class MockGame {
     this.openWindowId = null;
     this.pendingSwipe = null;
     this.emit('interrupt:closed', { windowId });
+  }
+
+  /**
+   * Decline an open window. Mirrors the server: the window closes immediately
+   * rather than idling out its full 4s, and the turn moves on.
+   */
+  declineInterrupt(_playerId: string, windowId: string): string | null {
+    if (this.openWindowId !== windowId) return null;
+    this.closeWindow(windowId);
+    this.endTurn([]);
+    return null;
+  }
+
+  /**
+   * The mock resolves the optional solve inline rather than modelling a
+   * separate awaiting-solve beat, so declining it is already the default and
+   * this is a no-op. It exists so the mock answers the same protocol surface
+   * the real server does.
+   */
+  passTurn(_playerId: string): string | null {
+    return null;
   }
 
   playInterrupt(playerId: string, cardId: string, windowId: string): string | null {

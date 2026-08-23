@@ -39,6 +39,7 @@ export function Game() {
   const pressureMax = useGameStore((s) => s.pressureMax);
   const blownOut = useGameStore((s) => s.blownOut);
   const turnPlayerId = useGameStore((s) => s.turnPlayerId);
+  const phase = useGameStore((s) => s.round?.phase ?? 'turn');
   const turnEndsAt = useGameStore((s) => s.turnEndsAt);
   const interrupt = useGameStore((s) => s.interrupt);
   const roundResult = useGameStore((s) => s.roundResult);
@@ -50,6 +51,7 @@ export function Game() {
 
   const me = useGameStore(selectMe);
   const myTurn = useGameStore(selectIsMyTurn);
+  const awaitingSolve = myTurn && phase === 'awaiting-solve';
   const isHost = useGameStore(selectIsHost);
 
   const playLetterCard = useGameStore((s) => s.playLetterCard);
@@ -58,6 +60,7 @@ export function Game() {
   const solve = useGameStore((s) => s.solve);
   const playInterrupt = useGameStore((s) => s.playInterrupt);
   const setSolveOpen = useGameStore((s) => s.setSolveOpen);
+  const passTurn = useGameStore((s) => s.passTurn);
   const startGame = useGameStore((s) => s.startGame);
   const dismissError = useGameStore((s) => s.dismissError);
 
@@ -99,7 +102,11 @@ export function Game() {
       if (!roundResult && !me?.solveLocked) setSolveOpen(true);
       else if (me?.solveLocked) flash("You're locked out of solving this round.");
     },
-    onCancel: () => setSolveOpen(false),
+    onCancel: () => {
+      setSolveOpen(false);
+      // During the optional-solve beat, backing out IS declining it.
+      if (useGameStore.getState().round?.phase === 'awaiting-solve') void passTurn();
+    },
     onBlocked: (r) =>
       flash(
         r.reason === 'already-guessed'
@@ -178,10 +185,16 @@ export function Game() {
           <div className="flex flex-wrap items-center gap-3 rounded-card border-2 border-ink/10 bg-white/65 px-3 py-2">
             <TurnRing endsAt={turnEndsAt} totalSeconds={room.settings.turnSeconds} size={44} showOffState />
             <p className="font-display text-lg font-bold" aria-live="polite">
-              {myTurn ? 'Your turn' : `${turnName || 'Somebody'} is up`}
+              {!myTurn
+                ? `${turnName || 'Somebody'} is up`
+                : awaitingSolve
+                  ? 'Solve it, or pass'
+                  : 'Your turn'}
             </p>
             <p className="hidden font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55 xl:block">
-              type a letter you hold · enter to solve · esc to cancel
+              {awaitingSolve
+                ? 'enter to solve · esc to pass'
+                : 'type a letter you hold · enter to solve · esc to cancel'}
             </p>
             <button
               type="button"
@@ -191,6 +204,19 @@ export function Game() {
             >
               Solve
             </button>
+            {/*
+              The optional-solve beat (§3.3). Without an explicit way to decline
+              it, every turn sits here until the turn clock runs out.
+            */}
+            {awaitingSolve && (
+              <button
+                type="button"
+                onClick={() => void passTurn()}
+                className="rounded-full border-2 border-ink/20 px-4 py-2 text-sm font-bold"
+              >
+                Pass
+              </button>
+            )}
           </div>
 
           <Board board={board} delays={reveal.delays} peeks={peeks} />
@@ -246,7 +272,7 @@ export function Game() {
             hand={hand}
             sourceName={interruptSource || 'Somebody'}
             onPlay={(cardId) => void playInterrupt(cardId)}
-            onDismiss={() => useGameStore.setState({ interrupt: null })}
+            onDismiss={() => void useGameStore.getState().declineInterrupt()}
           />
         )}
       </AnimatePresence>

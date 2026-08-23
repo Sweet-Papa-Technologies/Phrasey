@@ -51,7 +51,19 @@ export interface ClientToServerEvents {
   'turn:playCard': (p: PlayCardIntent, ack: Ack<{ ok: true }>) => void;
   'turn:discard': (p: { cardIds: string[] }, ack: Ack<{ ok: true }>) => void;
   'turn:solve': (p: { guess: string }, ack: Ack<{ ok: true }>) => void;
+  /**
+   * Decline the optional solve and end your turn (§3.3 makes solving optional
+   * after the primary action). A distinct event rather than an empty `guess`:
+   * conflating them means a player who submits a blank box silently passes,
+   * and it makes declining indistinguishable from a mis-click in the logs.
+   */
+  'turn:pass': (p: Record<string, never>, ack: Ack<{ ok: true }>) => void;
   'interrupt:play': (p: InterruptIntent, ack: Ack<{ ok: true }>) => void;
+  /**
+   * Decline an open interrupt window. Without this the window can only close
+   * by expiry, so every uncontested window costs the table the full 4 seconds.
+   */
+  'interrupt:pass': (p: { windowId: string }, ack: Ack<{ ok: true }>) => void;
   'chat:emote': (p: { emote: string }, ack: Ack<{ ok: true }>) => void;
   ping_: (p: Record<string, never>, ack: Ack<{ t: number }>) => void;
 }

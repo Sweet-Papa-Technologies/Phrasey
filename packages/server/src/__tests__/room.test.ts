@@ -206,7 +206,7 @@ describe('interrupt windows', () => {
 
     sent.length = 0;
     // Empty cardId == pass (the missing `interrupt:pass` in the protocol).
-    room.interrupt(other, { cardId: '', windowId }, 1100);
+    room.declineInterrupt(other, windowId, 1100);
     expect(room.state.round!.window).toBeNull();
     expect(sent.some((s) => s.event === 'interrupt:closed')).toBe(true);
   });
@@ -239,7 +239,7 @@ describe('bot driver', () => {
       if (player.isBot) break;
       const first = player.hand[0] as Card;
       room.discard(cur, [first.id], now);
-      if (room.state.round!.phase === 'awaiting-solve') room.solveOrPass(cur, '', now);
+      if (room.state.round!.phase === 'awaiting-solve') room.pass(cur, now);
       now += 10;
     }
     const bot = room.state.players.find((p) => p.id === room.state.round!.currentPlayerId)!;
@@ -283,7 +283,7 @@ describe('bot driver', () => {
       const cur = room.state.round!.currentPlayerId!;
       const first = room.state.players.find((p) => p.id === cur)!.hand[0] as Card;
       room.discard(cur, [first.id], now);
-      if (room.state.round!.phase === 'awaiting-solve') room.solveOrPass(cur, '', now);
+      if (room.state.round!.phase === 'awaiting-solve') room.pass(cur, now);
       now += 10;
     }
     const botId = room.state.round!.currentPlayerId!;
@@ -322,7 +322,7 @@ describe('rounds and matches', () => {
     const card = room.state.players.find((p) => p.id === cur)!.hand[0] as Card;
     room.discard(cur, [card.id], 0);
     if (room.state.round!.phase === 'awaiting-solve') {
-      room.solveOrPass(cur, room.state.round!.answer, 10);
+      room.solve(cur, room.state.round!.answer, 10);
     }
     expect(room.state.status).toBe('round-end');
 
@@ -336,7 +336,7 @@ describe('rounds and matches', () => {
     const cur2 = room.state.round!.currentPlayerId!;
     const c2 = room.state.players.find((p) => p.id === cur2)!.hand[0] as Card;
     room.discard(cur2, [c2.id], 700);
-    if (room.state.round!.phase === 'awaiting-solve') room.solveOrPass(cur2, room.state.round!.answer, 710);
+    if (room.state.round!.phase === 'awaiting-solve') room.solve(cur2, room.state.round!.answer, 710);
     expect(room.state.status).toBe('match-end');
     expect(sessions.written).toHaveLength(1);
   });
@@ -354,7 +354,7 @@ describe('persistence', () => {
       const cur = room.state.round!.currentPlayerId!;
       const card = room.state.players.find((p) => p.id === cur)!.hand[0] as Card;
       room.discard(cur, [card.id], i * 100);
-      if (room.state.round!.phase === 'awaiting-solve') room.solveOrPass(cur, '', i * 100 + 10);
+      if (room.state.round!.phase === 'awaiting-solve') room.pass(cur, i * 100 + 10);
       if (room.state.round!.endedReason !== null) break;
     }
     await vi.waitFor(() => expect(doc()!.snapshotSeq as number).toBeGreaterThan(seq));

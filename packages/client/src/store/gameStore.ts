@@ -110,6 +110,8 @@ export interface GameStore {
   discard(cardIds: string[]): Promise<void>;
   solve(guess: string): Promise<void>;
   playInterrupt(cardId: string): Promise<void>;
+  declineInterrupt(): Promise<void>;
+  passTurn(): Promise<void>;
   dismissError(): void;
   setCastView(on: boolean): void;
   setMuted(on: boolean): void;
@@ -498,6 +500,26 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (!w) return;
       await send('interrupt:play', { cardId, windowId: w.windowId });
       set({ interrupt: null });
+    },
+
+    /**
+     * Decline an open window. This has to reach the server: clearing it locally
+     * only hides our own prompt, and the window then sits open for its full 4s
+     * holding up the whole table.
+     */
+    async declineInterrupt() {
+      const w = get().interrupt;
+      set({ interrupt: null });
+      if (w) await send('interrupt:pass', { windowId: w.windowId });
+    },
+
+    /**
+     * Decline the optional solve (§3.3) and end the turn. Without this the
+     * awaiting-solve beat runs out the full turn clock on every single turn.
+     */
+    async passTurn() {
+      set({ solveOpen: false });
+      await send('turn:pass', {});
     },
 
     dismissError() {

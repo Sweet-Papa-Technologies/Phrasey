@@ -29,6 +29,7 @@ import type { RoomManager } from '../rooms/manager.js';
 import type { Room } from '../rooms/room.js';
 import { RateLimiter } from './rateLimit.js';
 import {
+  interruptPassSchema,
   createRoomSchema,
   discardSchema,
   emoteSchema,
@@ -204,7 +205,15 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
     socket.on('turn:solve', (p, ack) =>
       handle(socket, 'turn:solve', solveSchema, p, ack, (input) => {
         const { room, playerId } = seatOf(socket);
-        room.solveOrPass(playerId, input.guess, Date.now());
+        room.solve(playerId, input.guess, Date.now());
+        return { ok: true as const };
+      }),
+    );
+
+    socket.on('turn:pass', (p, ack) =>
+      handle(socket, 'turn:pass', emptySchema, p, ack, () => {
+        const { room, playerId } = seatOf(socket);
+        room.pass(playerId, Date.now());
         return { ok: true as const };
       }),
     );
@@ -213,6 +222,14 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
       handle(socket, 'interrupt:play', interruptSchema, p, ack, (input) => {
         const { room, playerId } = seatOf(socket);
         room.interrupt(playerId, input, Date.now());
+        return { ok: true as const };
+      }),
+    );
+
+    socket.on('interrupt:pass', (p, ack) =>
+      handle(socket, 'interrupt:pass', interruptPassSchema, p, ack, (input) => {
+        const { room, playerId } = seatOf(socket);
+        room.declineInterrupt(playerId, input.windowId, Date.now());
         return { ok: true as const };
       }),
     );

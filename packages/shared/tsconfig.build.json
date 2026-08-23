@@ -1,0 +1,7 @@
+{
+  // Build config. Same as tsconfig.json but without the tests, so `dist` ships
+  // only runtime code. `typecheck` still uses tsconfig.json, which includes the
+  // tests — they should be type-checked, just not emitted.
+  "extends": "./tsconfig.json",
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/__tests__/**", "src/**/__tests__/**"]
+}

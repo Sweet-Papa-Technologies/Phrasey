@@ -79,6 +79,7 @@ export function roundPublic(state: GameState): RoundPublic | null {
     board: maskBoardFromRound(round),
     pressure: round.pressure,
     pressureMax: state.balance.pressure.max,
+    phase: round.phase,
     currentPlayerId: round.currentPlayerId,
     direction: round.direction,
     turnEndsAt: round.turnEndsAt,
