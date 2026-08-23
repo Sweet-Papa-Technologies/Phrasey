@@ -22,3 +22,8 @@ service-account*.json
 
 # Playwright MCP scratch output
 .playwright-mcp/
+
+# Stray browser-automation screenshots
+/consent-banner.png
+/landing.png
+/page-*.png
