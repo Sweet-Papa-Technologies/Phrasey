@@ -5,10 +5,21 @@
     "raw": "I CRIED. THEN I PARKED BEHIND YOU.",
     "category": "Note left on a windshield",
     "hint": "tears first, then a strategic placement of wheels",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_52801c53336ec82a",
+    "text": "I DREW A LINE ON THE GROUND. YOU CROSSED IT.",
+    "raw": "I DREW A LINE ON THE GROUND. YOU CROSSED IT.",
+    "category": "Note left on a windshield",
+    "hint": "a mark made with a permanent marker",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.934Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
   },
   {
     "id": "p_bc9542566ab82f2d",
@@ -18,8 +29,19 @@
     "hint": "the writer let go of the grudge but the hard ground surface did not",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.130Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
+  },
+  {
+    "id": "p_4afbb1ef3be672a8",
+    "text": "I HOPE YOUR NEXT SPOT IS NARROWER",
+    "raw": "I HOPE YOUR NEXT SPOT IS NARROWER",
+    "category": "Note left on a windshield",
+    "hint": "a wish wrapped in spite",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
   },
   {
     "id": "p_904a439df3b621fd",
@@ -27,10 +49,10 @@
     "raw": "I HOPE YOUR TIRES TASTE THE SALT",
     "category": "Note left on a windshield",
     "hint": "de-icing chemical meets rubber, and the writer is pleased",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.940Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
   },
   {
     "id": "p_108519509646ae62",
@@ -38,10 +60,21 @@
     "raw": "I LEFT YOU A STICK. IT MEANS STOP",
     "category": "Note left on a windshield",
     "hint": "a small wooden object was placed as a warning",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.938Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
+  },
+  {
+    "id": "p_a310c1f1ea91ce6b",
+    "text": "I PARKED BEHIND YOU AND I CANT BREATHE",
+    "raw": "I PARKED BEHIND YOU AND I CANT BREATHE",
+    "category": "Note left on a windshield",
+    "hint": "the way out was sealed shut and the throat followed",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
   },
   {
     "id": "p_b1a34ee203a7707a",
@@ -49,10 +82,21 @@
     "raw": "I SAW YOUR PLATE. I DID NOT NEED TO.",
     "category": "Note left on a windshield",
     "hint": "the driver's identifying number was visible without any effort to find it",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.130Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.531Z"
+  },
+  {
+    "id": "p_f5a8e5d5d0d8f99c",
+    "text": "I WOULD THANK YOU BUT I DONT KNOW YOU",
+    "raw": "I WOULD THANK YOU BUT I DONT KNOW YOU",
+    "category": "Note left on a windshield",
+    "hint": "gratitude is impossible without a name",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_3eadcfc7077ee4d8",
@@ -60,10 +104,10 @@
     "raw": "MY PATIENCE LEFT BEFORE YOUR CAR DID",
     "category": "Note left on a windshield",
     "hint": "tolerance expired while the engine was still running",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.941Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_45b8761ecc8021d7",
@@ -71,10 +115,10 @@
     "raw": "THAT REAR END IS NOT A PARKING SPOT",
     "category": "Note left on a windshield",
     "hint": "a single vehicle occupies what should fit two",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.925Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_1b48956114627865",
@@ -82,10 +126,10 @@
     "raw": "THE CURB IS NOT A SUGGESTION. IT IS A LAW.",
     "category": "Note left on a windshield",
     "hint": "the raised edge along the road is legally binding, not optional",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.130Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_547a73e488c1aa3b",
@@ -93,10 +137,10 @@
     "raw": "THE CURB IS NOT YOUR FRIEND",
     "category": "Note left on a windshield",
     "hint": "the painted line at the road edge was crossed",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.937Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_3f54553976c1c43e",
@@ -104,10 +148,32 @@
     "raw": "THE GRASS IS DRY. YOU ARE WET WITH REGRET.",
     "category": "Note left on a windshield",
     "hint": "the lawn has been trampled and the driver is imagined as drenched in shame",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.130Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
+  },
+  {
+    "id": "p_b98dc38c9c5df714",
+    "text": "THE GRASS IS NOT YOUR DRIVEWAY",
+    "raw": "THE GRASS IS NOT YOUR DRIVEWAY",
+    "category": "Note left on a windshield",
+    "hint": "the green stuff does not hold keys or oil",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
+  },
+  {
+    "id": "p_0a09d020d8db4068",
+    "text": "THE LINES ARE PAINTED FOR A REASON",
+    "raw": "THE LINES ARE PAINTED FOR A REASON",
+    "category": "Note left on a windshield",
+    "hint": "someone with a brush made a decision you ignored",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.532Z"
   },
   {
     "id": "p_63cb3be625992b47",
@@ -115,21 +181,21 @@
     "raw": "THIS IS NOT A DRIVETHRU FOR YOUR VEHICLE",
     "category": "Note left on a windshield",
     "hint": "the road was used as a shortcut, not a lane",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.939Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
-    "id": "p_f25fe6baf48f624f",
-    "text": "THREE WHEELS ON THE GRASS. THREE. I COUNTED.",
-    "raw": "THREE WHEELS ON THE GRASS. THREE. I COUNTED.",
+    "id": "p_104e5120fd15c2fb",
+    "text": "THIS LOT IS NOT A LIVING ROOM",
+    "raw": "THIS LOT IS NOT A LIVING ROOM",
     "category": "Note left on a windshield",
-    "hint": "the lawn received an uninvited load, measured precisely",
-    "difficulty": 2,
+    "hint": "sofa-shaped thinking in a parking area",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.941Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
     "id": "p_dbc1dbb3a9154507",
@@ -137,10 +203,21 @@
     "raw": "WHO TAUGHT YOU THAT ONE CAR NEEDS TWO",
     "category": "Note left on a windshield",
     "hint": "double occupancy of a single marked zone",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.937Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
+  },
+  {
+    "id": "p_fcc9d39a74093eb0",
+    "text": "WHO THINKS ONE PERSON NEEDS TWO SPOTS",
+    "raw": "WHO THINKS ONE PERSON NEEDS TWO SPOTS",
+    "category": "Note left on a windshield",
+    "hint": "greed measured in painted lines on the ground",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
     "id": "p_aa40bedd1ebbae03",
@@ -148,21 +225,21 @@
     "raw": "YOU ARE NOT THE ONLY ONE WHO WANTS A SPOT",
     "category": "Note left on a windshield",
     "hint": "other drivers also desire the same space and the writer is not alone in needing it",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.130Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
-    "id": "p_6ea463ae2a225366",
-    "text": "YOU BLOCKED MY DOOR. I BLOCKED YOUR DIGNITY",
-    "raw": "YOU BLOCKED MY DOOR. I BLOCKED YOUR DIGNITY",
+    "id": "p_244e0f0a762ca0e6",
+    "text": "YOU BLOCKED THE LANE. MOVE IT.",
+    "raw": "YOU BLOCKED THE LANE. MOVE IT.",
     "category": "Note left on a windshield",
-    "hint": "reciprocal obstruction with an emotional upgrade",
+    "hint": "the shared exit is now a wall",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.939Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
     "id": "p_db1c061decf2aa92",
@@ -170,10 +247,21 @@
     "raw": "YOU CANT EVEN BACK IN STRAIGHT. ITS SAD.",
     "category": "Note left on a windshield",
     "hint": "the reversing maneuver lacked basic geometry",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.943Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
+  },
+  {
+    "id": "p_35871e347a1dbf04",
+    "text": "YOU CANT JUST STOP IN THE MIDDLE",
+    "raw": "YOU CANT JUST STOP IN THE MIDDLE",
+    "category": "Note left on a windshield",
+    "hint": "the flow of traffic did not ask to pause",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
   },
   {
     "id": "p_fea01bcc00dc3222",
@@ -183,8 +271,19 @@
     "hint": "one glowing fixture at the back was left behind",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:58.928Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.533Z"
+  },
+  {
+    "id": "p_7defdddbf8d401b5",
+    "text": "YOU PULL OUT AND YOU HIT MY MIRROR",
+    "raw": "YOU PULL OUT AND YOU HIT MY MIRROR",
+    "category": "Note left on a windshield",
+    "hint": "a prediction stated as fact",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
   },
   {
     "id": "p_c1aa79a549442ebb",
@@ -192,9 +291,31 @@
     "raw": "YOUR BUMPER OWES ME AN APOLOGY",
     "category": "Note left on a windshield",
     "hint": "the protruding part at the back of a vehicle has no right to be that close to mine",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
+  },
+  {
+    "id": "p_9bfb5507c79aeeb3",
+    "text": "YOUR CAR IS WIDER THAN THE SPOT",
+    "raw": "YOUR CAR IS WIDER THAN THE SPOT",
+    "category": "Note left on a windshield",
+    "hint": "the paint job says one thing, the space says another",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:03.128Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
+  },
+  {
+    "id": "p_0ccede0201df1444",
+    "text": "YOUR TIRE IS ON THE CANT",
+    "raw": "YOUR TIRE IS ON THE CANT",
+    "category": "Note left on a windshield",
+    "hint": "one wheel crossed the boundary line",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
   }
 ]

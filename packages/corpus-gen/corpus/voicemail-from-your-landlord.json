@@ -5,10 +5,10 @@
     "raw": "CHECK YOUR MAIL FOR THE NEW NUMBER.",
     "category": "Voicemail from your landlord",
     "hint": "a digit change is waiting in your postal tray",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.823Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   },
   {
     "id": "p_1d697faeed21e33a",
@@ -16,10 +16,10 @@
     "raw": "HE SAID HE WOULD COME. HE DID NOT.",
     "category": "Voicemail from your landlord",
     "hint": "a phantom appointment that existed in one direction only",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.408Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   },
   {
     "id": "p_0448d0865f79bba0",
@@ -29,8 +29,19 @@
     "hint": "a plumbing sound caught in the small hours of sleep",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.798Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
+  },
+  {
+    "id": "p_be2c4450aa427203",
+    "text": "I LEFT A MESSAGE. YOU DID NOT CALL.",
+    "raw": "I LEFT A MESSAGE. YOU DID NOT CALL.",
+    "category": "Voicemail from your landlord",
+    "hint": "outbound contact that was never returned",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
   },
   {
     "id": "p_7997e01d4245a842",
@@ -38,10 +49,32 @@
     "raw": "I MENTIONED A GUY. HE IS NOT COMING.",
     "category": "Voicemail from your landlord",
     "hint": "the promised worker will never show up at your door",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
+  },
+  {
+    "id": "p_6a92ecbc0ddf878a",
+    "text": "I NEED THAT MONEY BY FRIDAY.",
+    "raw": "I NEED THAT MONEY BY FRIDAY.",
+    "category": "Voicemail from your landlord",
+    "hint": "a payment with a specific deadline",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
+  },
+  {
+    "id": "p_7e91fc83ea35704d",
+    "text": "I WILL SEND SOMEONE. CHECK YOUR DOORSTEP.",
+    "raw": "I WILL SEND SOMEONE. CHECK YOUR DOORSTEP.",
+    "category": "Voicemail from your landlord",
+    "hint": "a delivery of a person, not a package",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.797Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
   },
   {
     "id": "p_ff05bb4f6bb89e5d",
@@ -49,21 +82,10 @@
     "raw": "IS THE FLOOR SUPPOSED TO DO THAT",
     "category": "Voicemail from your landlord",
     "hint": "a noise from below with no reply",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.407Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_7834008060ec7125",
-    "text": "IT IS NOT MY FAULT. IT IS YOUR FAULT.",
-    "raw": "IT IS NOT MY FAULT. IT IS YOUR FAULT.",
-    "category": "Voicemail from your landlord",
-    "hint": "all blame assigned without evidence",
-    "difficulty": 2,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.407Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
   },
   {
     "id": "p_274b66942ae2b966",
@@ -71,10 +93,10 @@
     "raw": "THAT WAS NOT IN THE AGREEMENT.",
     "category": "Voicemail from your landlord",
     "hint": "something was supposedly off the table contractually",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.822Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
   },
   {
     "id": "p_fcbc8b759317d602",
@@ -82,21 +104,10 @@
     "raw": "THE AMOUNT IS FOUR HUNDRED AND EIGHTY",
     "category": "Voicemail from your landlord",
     "hint": "a specific sum that feels personal",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.407Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_4109e80e4218759a",
-    "text": "THE DEPOSIT WAS FOR THE DEPOSIT.",
-    "raw": "THE DEPOSIT WAS FOR THE DEPOSIT.",
-    "category": "Voicemail from your landlord",
-    "hint": "the held sum belongs to the held sum itself",
-    "difficulty": 2,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.824Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
   },
   {
     "id": "p_226b8c282c444980",
@@ -104,10 +115,65 @@
     "raw": "THE DEPOSIT. WE WILL DISCUSS IT LATER.",
     "category": "Voicemail from your landlord",
     "hint": "money held hostage with a promise of conversation",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.528Z"
+  },
+  {
+    "id": "p_4f9d17f1da1cc531",
+    "text": "THE DOOR LOCK IS BROKEN. THAT IS YOUR COST.",
+    "raw": "THE DOOR LOCK IS BROKEN. THAT IS YOUR COST.",
+    "category": "Voicemail from your landlord",
+    "hint": "a faulty entry point assigned to the wrong party",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_83f5f3a434006f99",
+    "text": "THE FEE IS ONE HUNDRED. DO NOT ARGUE.",
+    "raw": "THE FEE IS ONE HUNDRED. DO NOT ARGUE.",
+    "category": "Voicemail from your landlord",
+    "hint": "a flat charge delivered with no room for debate",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_055cb05d82525dc6",
+    "text": "THE FEE IS TWO HUNDRED. CALL ME BACK.",
+    "raw": "THE FEE IS TWO HUNDRED. CALL ME BACK.",
+    "category": "Voicemail from your landlord",
+    "hint": "a precise sum followed by a demand for contact",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.408Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_f09c1d15e8b6eb30",
+    "text": "THE GUY IS COMING. DO NOT BE HOME.",
+    "raw": "THE GUY IS COMING. DO NOT BE HOME.",
+    "category": "Voicemail from your landlord",
+    "hint": "a worker arriving when you should not be present",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_daa8db4364a3f16f",
+    "text": "THE GUY IS NOT COMING. SEND THE MONEY.",
+    "raw": "THE GUY IS NOT COMING. SEND THE MONEY.",
+    "category": "Voicemail from your landlord",
+    "hint": "the promised visitor cancels but the bill stands",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
   },
   {
     "id": "p_b5a7533d3ab564e8",
@@ -115,10 +181,10 @@
     "raw": "THE GUY WITH THE WRENCH IS NOT THE GUY",
     "category": "Voicemail from your landlord",
     "hint": "a tool that was never delivered",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:33.406Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
   },
   {
     "id": "p_e40ea8267fd7b6fc",
@@ -126,10 +192,21 @@
     "raw": "THE HEAT GOES OFF AT NOON. DEAL WITH IT.",
     "category": "Voicemail from your landlord",
     "hint": "thermal comfort ends midday and you are on your own",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.823Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_4f0d3698d227906e",
+    "text": "THE HEAT IS OFF UNTIL I GET PAID.",
+    "raw": "THE HEAT IS OFF UNTIL I GET PAID.",
+    "category": "Voicemail from your landlord",
+    "hint": "a utility that stops when the balance is not met",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
   },
   {
     "id": "p_64c2deccf2bb4230",
@@ -137,10 +214,54 @@
     "raw": "THE REFRIGERATOR IS YOUR PROBLEM NOW",
     "category": "Voicemail from your landlord",
     "hint": "a cold appliance has been transferred to your care",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.798Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.529Z"
+  },
+  {
+    "id": "p_556d1ec202d9761c",
+    "text": "THE REPAIR IS YOUR PROBLEM.",
+    "raw": "THE REPAIR IS YOUR PROBLEM.",
+    "category": "Voicemail from your landlord",
+    "hint": "a broken thing that was never his to fix",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_737a36ac8629a7ff",
+    "text": "THE SINK IS LEAKING. I HEARD ABOUT IT.",
+    "raw": "THE SINK IS LEAKING. I HEARD ABOUT IT.",
+    "category": "Voicemail from your landlord",
+    "hint": "a plumbing issue that reached him secondhand",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_3fd4d9885419fa74",
+    "text": "THE WINDOW WAS ALREADY CRACKED. I KNOW.",
+    "raw": "THE WINDOW WAS ALREADY CRACKED. I KNOW.",
+    "category": "Voicemail from your landlord",
+    "hint": "a preexisting defect he claims to have documented",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_2b65f7c78259abe5",
+    "text": "YOU CAN NOT DO THAT. THE FEE IS FIFTY.",
+    "raw": "YOU CAN NOT DO THAT. THE FEE IS FIFTY.",
+    "category": "Voicemail from your landlord",
+    "hint": "a prohibition paired with a small penalty",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
   },
   {
     "id": "p_a171dcd3d2c7cc6f",
@@ -148,9 +269,31 @@
     "raw": "YOU CAN NOT PARK THERE. I SAID SO.",
     "category": "Voicemail from your landlord",
     "hint": "a vehicle is not welcome in that spot and was told already",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_c0a3c8c64d59827d",
+    "text": "YOU TOLD ME THE WALL WAS LIKE THAT.",
+    "raw": "YOU TOLD ME THE WALL WAS LIKE THAT.",
+    "category": "Voicemail from your landlord",
+    "hint": "a surface defect the tenant admitted existed before",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
+  },
+  {
+    "id": "p_ccd17ee2e36ba2a1",
+    "text": "YOUR CAR BLOCKS MY ACCESS. MOVE IT NOW.",
+    "raw": "YOUR CAR BLOCKS MY ACCESS. MOVE IT NOW.",
+    "category": "Voicemail from your landlord",
+    "hint": "a vehicle in the wrong spot with an urgent tone",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:39.823Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.530Z"
   }
 ]

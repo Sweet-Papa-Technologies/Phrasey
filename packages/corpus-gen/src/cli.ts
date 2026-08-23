@@ -21,12 +21,15 @@ import {
   saveReviewQueue,
 } from './corpus.js';
 import { generateCategory, pool } from './generate.js';
-import { allocate, BRIEFS } from './prompts.js';
+import { allocate, BRIEFS, POP_CULTURE_CATEGORIES } from './prompts.js';
 import { makeProvider, PROVIDER_NAMES } from './providers/index.js';
 import { seedPuzzles } from './seed.js';
 import { computeStats, formatStats } from './stats.js';
 import type { Candidate, CorpusEntry, RejectedEntry } from './types.js';
-import { CorpusIndex, validateCandidate } from './validator.js';
+import { CorpusIndex, RULES, triage, validateCandidate } from './validator.js';
+import type { RightsTier } from './types.js';
+import { unlinkSync, existsSync } from 'node:fs';
+import { categoryPath } from './paths.js';
 
 const program = new Command();
 
@@ -48,12 +51,19 @@ program
   .option('--concurrency <n>', 'categories generated in parallel', (v) => parseInt(v, 10), 3)
   .option('--batch-size <n>', 'phrases requested per model call', (v) => parseInt(v, 10), 15)
   .option('--max-rounds <n>', 'model calls per category before giving up', (v) => parseInt(v, 10), 6)
-  .action(async (opts: { category: string; count: number; provider: string; concurrency: number; batchSize: number; maxRounds: number }) => {
+  .option(
+    '--max-length <n>',
+    `length ceiling for NEW phrases (the validator's hard cap stays at ${RULES.MAX_LENGTH})`,
+    (v) => parseInt(v, 10),
+    RULES.TARGET_MAX_LENGTH,
+  )
+  .option('--tier <t>', 'restrict --category all to one rights tier: core | pop-culture')
+  .action(async (opts: { category: string; count: number; provider: string; concurrency: number; batchSize: number; maxRounds: number; maxLength: number; tier?: string }) => {
     const provider = makeProvider(opts.provider);
 
     let targets: { category: Category; count: number }[];
     if (opts.category === 'all') {
-      targets = allocate(opts.count);
+      targets = allocate(opts.count, opts.tier as RightsTier | undefined);
     } else {
       if (!isCategory(opts.category)) {
         console.error(`Unknown category "${opts.category}".\nKnown categories:\n  ${CATEGORIES.join('\n  ')}`);
@@ -84,6 +94,7 @@ program
         existing,
         batchSize: opts.batchSize,
         maxRounds: opts.maxRounds,
+        maxLength: opts.maxLength,
         onLog: (line) => console.log(line),
       });
     });
@@ -132,13 +143,24 @@ program
     for (const [category, entries] of byCategory) {
       const survivors: CorpusEntry[] = [];
       for (const entry of entries) {
+        const brief = isCategory(category) ? BRIEFS[category] : undefined;
+        // Rights metadata is taken from the brief, not from the file, so a
+        // re-validate repairs entries written before a brief changed.
         const candidate: Candidate = {
           raw: entry.raw || entry.text,
           hint: entry.hint,
           category,
-          source: entry.source,
+          source: brief?.source ?? entry.source,
+          rightsTier: brief?.rightsTier ?? entry.rightsTier ?? 'core',
+          ...(brief?.rightsNote ? { rightsNote: brief.rightsNote } : {}),
+          // Preserved, or a re-validate silently erases which model wrote it.
+          ...(entry.provider ? { provider: entry.provider } : {}),
         };
-        const result = validateCandidate(candidate, { index });
+        const result = validateCandidate(candidate, {
+          index,
+          ...(brief?.commonWordFloor !== undefined ? { commonWordFloor: brief.commonWordFloor } : {}),
+          ...(brief?.maxUncommonWords !== undefined ? { maxUncommonWords: brief.maxUncommonWords } : {}),
+        });
         if (result.ok) {
           index.add(result.text);
           survivors.push(makeEntry(candidate, result));
@@ -193,9 +215,16 @@ program
   .option('--database <id>', 'Firestore named database', 'phrasey')
   .option('--dry-run', 'print what would be written and touch nothing', false)
   .option('--category <c>', 'seed one category only')
+  .option('--tier <t>', 'seed one rights tier only: core | pop-culture')
   .option('--limit <n>', 'seed at most n puzzles', (v) => parseInt(v, 10))
-  .action(async (opts: { project: string; database: string; dryRun: boolean; category?: string; limit?: number }) => {
+  .option(
+    '--deactivate-missing',
+    'set active:false on live puzzles no longer in the corpus. Without it, merge-seeding leaves removed puzzles serving forever.',
+    false,
+  )
+  .action(async (opts: { project: string; database: string; dryRun: boolean; category?: string; tier?: string; limit?: number; deactivateMissing: boolean }) => {
     let entries = opts.category ? loadCategory(opts.category) : loadAll();
+    if (opts.tier) entries = entries.filter((e) => (e.rightsTier ?? 'core') === opts.tier);
     if (opts.limit) entries = entries.slice(0, opts.limit);
     if (entries.length === 0) {
       console.error('Nothing to seed — the corpus is empty.');
@@ -208,6 +237,9 @@ program
         projectId: opts.project,
         databaseId: opts.database,
         dryRun: opts.dryRun,
+        // Only safe when seeding the whole corpus — a filtered seed would
+        // deactivate everything outside the filter.
+        deactivateMissing: opts.deactivateMissing && !opts.category && !opts.tier && !opts.limit,
         onLog: (l) => console.log(l),
       });
       if (result.dryRun) {
@@ -220,12 +252,114 @@ program
         console.log(`[dry-run] ${result.docs.length} puzzle documents ready. No writes performed.`);
       } else {
         console.log(`Seeded ${result.written} puzzles to projects/${opts.project}/databases/${opts.database}.`);
+        if (result.deactivated.length > 0) {
+          console.log(`Deactivated ${result.deactivated.length} puzzles that are no longer in the corpus.`);
+        } else if (opts.deactivateMissing && (opts.category || opts.tier || opts.limit)) {
+          console.log('--deactivate-missing ignored: it is only safe on a full-corpus seed.');
+        }
       }
     } catch (err) {
       console.error(`Seeding failed: ${err instanceof Error ? err.message : String(err)}`);
       console.error('If the named database does not exist yet, create it (Terraform) and re-run — this command is idempotent.');
       process.exitCode = 1;
     }
+  });
+
+// ---------------------------------------------------------------------------
+// triage — move the abstract tail to the review queue
+// ---------------------------------------------------------------------------
+
+program
+  .command('triage')
+  .description(
+    'Shortlist committed entries that pass the validator but are unlikely to be fun to guess, and move them to the review queue with a reason. Nothing is deleted.',
+  )
+  .option('--max-length <n>', 'flag entries longer than this', (v) => parseInt(v, 10), RULES.TARGET_MAX_LENGTH)
+  // Default 3 = off. Difficulty is a *spread* to keep, not a bar to clear: the
+  // corpus should skew easy, and it does, but a run of hard boards is still
+  // worth having. Length and the surreal-tautology register are what triage is
+  // actually for. Pass --max-difficulty 2 to build a strictly-easy set.
+  .option('--max-difficulty <n>', 'flag entries above this difficulty (3 = off)', (v) => parseInt(v, 10) as 1 | 2 | 3, 3)
+  .option('--no-register', 'skip the self-referential / abstract-vocabulary checks')
+  .option('--apply', 'actually rewrite the category files; without it this is a report', false)
+  .action((opts: { maxLength: number; maxDifficulty: 1 | 2 | 3; register: boolean; apply: boolean }) => {
+    const byCategory = loadByCategory();
+    const moved: RejectedEntry[] = [];
+    const keptByCategory = new Map<string, CorpusEntry[]>();
+    let kept = 0;
+
+    for (const [category, entries] of byCategory) {
+      const survivors: CorpusEntry[] = [];
+      for (const entry of entries) {
+        const brief = isCategory(category) ? BRIEFS[category] : undefined;
+        const verdict = triage(entry.text, {
+          maxLength: opts.maxLength,
+          maxDifficulty: opts.maxDifficulty,
+          checkRegister: opts.register,
+          recalled: brief?.recalled === true,
+        });
+        if (verdict.flagged) {
+          moved.push({
+            raw: entry.raw || entry.text,
+            hint: entry.hint,
+            category,
+            reasons: ['MANUAL_REVIEW_GUESSABILITY'],
+            details: verdict.reasons,
+            rejectedAt: new Date().toISOString(),
+          });
+          console.log(`FLAG [${category}] "${entry.text}"`);
+          for (const r of verdict.reasons) console.log(`       ${r}`);
+        } else {
+          survivors.push(entry);
+          kept++;
+        }
+      }
+      keptByCategory.set(category, survivors);
+    }
+
+    if (opts.apply) {
+      appendReviewQueue(moved);
+      for (const [category, survivors] of keptByCategory) {
+        if (byCategory.get(category)?.length) saveCategory(category, survivors);
+      }
+    }
+
+    console.log('');
+    console.log(
+      `${kept} entries hold up, ${moved.length} flagged.` +
+        (opts.apply ? ' Flagged entries moved to corpus/review-queue.json.' : ' Dry run — pass --apply to move them.'),
+    );
+  });
+
+// ---------------------------------------------------------------------------
+// drop — remove a whole rights tier in one command
+// ---------------------------------------------------------------------------
+
+program
+  .command('drop')
+  .description('Delete every category file in a rights tier. The lever a legal review needs (see corpus/SOURCING.md).')
+  .requiredOption('--tier <t>', 'rights tier to remove: pop-culture')
+  .option('--dry-run', 'list what would be deleted and touch nothing', false)
+  .action((opts: { tier: string; dryRun: boolean }) => {
+    if (opts.tier !== 'pop-culture') {
+      console.error(`Refusing to drop tier "${opts.tier}". Only "pop-culture" is separable by design.`);
+      process.exitCode = 1;
+      return;
+    }
+    let removed = 0;
+    for (const category of POP_CULTURE_CATEGORIES) {
+      const path = categoryPath(category);
+      const n = loadCategory(category).length;
+      if (!existsSync(path)) continue;
+      console.log(`${opts.dryRun ? '[dry-run] would delete' : 'deleted'} ${path} (${n} puzzles)`);
+      if (!opts.dryRun) unlinkSync(path);
+      removed += n;
+    }
+    console.log('');
+    console.log(
+      `${opts.dryRun ? 'Would remove' : 'Removed'} ${removed} puzzles across ${POP_CULTURE_CATEGORIES.length} categories.` +
+        (opts.dryRun ? '' : ' Re-run `seed` to push the change, or use `seed --tier core`.'),
+    );
   });
 
 // ---------------------------------------------------------------------------

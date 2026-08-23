@@ -5,21 +5,32 @@
     "raw": "do doors need to be closed or is that just us",
     "category": "Group chat message at 2am",
     "hint": "a question about whether a common architectural feature must be shut or if it is a habit",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.248Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
-    "id": "p_76d7f29a55a9d19d",
-    "text": "DOES THE OVEN LIGHT STAY ON WHEN THE OVEN IS OFF",
-    "raw": "does the oven light stay on when the oven is off",
+    "id": "p_42be054eb2a1fa03",
+    "text": "DO WE ACTUALLY NEED TWO SINKS",
+    "raw": "do we actually need two sinks",
     "category": "Group chat message at 2am",
-    "hint": "a question about whether a small bulb inside a baking appliance remains lit without heat",
-    "difficulty": 3,
+    "hint": "a late-night doubt about the double basin in the room",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.250Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
+  },
+  {
+    "id": "p_4f8c75add0e8acb0",
+    "text": "I AM GOING TO GO TO BED NOW I THINK",
+    "raw": "i am going to go to bed now i think",
+    "category": "Group chat message at 2am",
+    "hint": "a person announces they are ending the night soon",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
     "id": "p_fd185dbd35182f57",
@@ -27,10 +38,10 @@
     "raw": "i am going to open the window but then i wont",
     "category": "Group chat message at 2am",
     "hint": "a person resolves to do something with a pane of glass but will not actually do it",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.250Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
     "id": "p_374d0ba4ce1c6145",
@@ -38,10 +49,21 @@
     "raw": "i am going to say something important",
     "category": "Group chat message at 2am",
     "hint": "a dramatic buildup that leads to absolutely nothing",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
+  },
+  {
+    "id": "p_99c77d6bd98129cb",
+    "text": "I AM GOING TO TURN THE LIGHT OFF BUT I WONT",
+    "raw": "i am going to turn the light off but i wont",
+    "category": "Group chat message at 2am",
+    "hint": "a person means to stop the lamp but will not follow through",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.175Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
     "id": "p_891a9fafc0beef20",
@@ -49,32 +71,21 @@
     "raw": "i counted the ceiling tiles and there are eleven",
     "category": "Group chat message at 2am",
     "hint": "a person tallied the overhead panels and arrived at a specific odd number",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.250Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
-    "id": "p_8291d371f63dd336",
-    "text": "I HAVE BEEN STARING AT THE HALLWAY LIGHT FOR FORTY MINUTES",
-    "raw": "i have been staring at the hallway light for forty minutes",
+    "id": "p_c7a0a32c8260dc17",
+    "text": "I THINK THE CEILING LIGHT IS ABOUT TO FALL",
+    "raw": "i think the ceiling light is about to fall",
     "category": "Group chat message at 2am",
-    "hint": "a person fixates on a fixture overhead in a narrow passage without blinking",
-    "difficulty": 3,
+    "hint": "an overhead fixture appears ready to drop down",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.247Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_762bb1fa7490e374",
-    "text": "I KEEP CHECKING THE DOOR AND IT IS LOCKED AND I STILL CHECK",
-    "raw": "i keep checking the door and it is locked and i still check",
-    "category": "Group chat message at 2am",
-    "hint": "you do this ritual every night and it never feels enough",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.173Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
     "id": "p_17fcf5544995e1ab",
@@ -82,10 +93,21 @@
     "raw": "i think the fridge is the only one who gets it",
     "category": "Group chat message at 2am",
     "hint": "a cold appliance seems to be the sole entity that understands a person's current state",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.249Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
+  },
+  {
+    "id": "p_de78a12220e24a15",
+    "text": "I THINK THE RADIATOR IS LEAKING",
+    "raw": "i think the radiator is leaking",
+    "category": "Group chat message at 2am",
+    "hint": "a heating unit on the wall is losing water",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
     "id": "p_fe84ec89d0af55a0",
@@ -93,43 +115,21 @@
     "raw": "i think the walls are breathing",
     "category": "Group chat message at 2am",
     "hint": "your home structure appears to expand and contract",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.175Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
-    "id": "p_2e91c74ab1085d0c",
-    "text": "MY MICROWAVE CLOCK IS WRONG AND I CANNOT TELL BY HOW MUCH",
-    "raw": "my microwave clock is wrong and i cannot tell by how much",
+    "id": "p_d7d758c29cb88336",
+    "text": "THE BATHROOM DOOR IS STUCK AGAIN",
+    "raw": "the bathroom door is stuck again",
     "category": "Group chat message at 2am",
-    "hint": "a small kitchen display has drifted from actual time",
-    "difficulty": 3,
+    "hint": "a room entrance will not close properly once more",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.174Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_83e6e736678ef8b3",
-    "text": "THE CAT IS WATCHING ME WITH THE FULL WEIGHT OF ITS OPINION",
-    "raw": "the cat is watching me with the full weight of its opinion",
-    "category": "Group chat message at 2am",
-    "hint": "a small pet regards you with total contempt and zero warmth",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.176Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_bc17b22a46e3e45b",
-    "text": "THE CONCEPT OF A HALLWAY MAKES NO SENSE",
-    "raw": "the concept of a hallway makes no sense",
-    "category": "Group chat message at 2am",
-    "hint": "a narrow passage connecting rooms is questioned as a logical design choice",
-    "difficulty": 2,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.250Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
     "id": "p_23ed41ed2a5b19e2",
@@ -137,21 +137,32 @@
     "raw": "the dishwasher sounds like it is judging me",
     "category": "Group chat message at 2am",
     "hint": "a machine that cleans plates seems to be forming an opinion about the person next to it",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.249Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
-    "id": "p_9c690a9c7dc0eb69",
-    "text": "THE SOUND A DOOR MAKES WHEN IT IS ALMOST CLOSED IS THE WORST",
-    "raw": "the sound a door makes when it is almost closed is the worst",
+    "id": "p_c0b8007dbdb9ae9d",
+    "text": "THE FRIDGE IS LOUDER THAN USUAL TONIGHT",
+    "raw": "the fridge is louder than usual tonight",
     "category": "Group chat message at 2am",
-    "hint": "a particular creak from a hinge at the final inch of movement",
-    "difficulty": 3,
+    "hint": "a cold appliance is producing more noise than is normal",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.175Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
+  },
+  {
+    "id": "p_fdd0952f0b710a9f",
+    "text": "THE MICROWAVE HAS BEEN OFF SINCE DINNER",
+    "raw": "the microwave has been off since dinner",
+    "category": "Group chat message at 2am",
+    "hint": "a kitchen box that stopped working earlier in the evening",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.511Z"
   },
   {
     "id": "p_4facaaf1a6331126",
@@ -159,10 +170,10 @@
     "raw": "the water sounds different when it is cold",
     "category": "Group chat message at 2am",
     "hint": "a liquid coming from a pipe produces a distinct noise at a low temperature",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.251Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
   },
   {
     "id": "p_61a112558eb5d504",
@@ -170,10 +181,21 @@
     "raw": "there is a draft and i cannot find the source",
     "category": "Group chat message at 2am",
     "hint": "an invisible flow of air is present but its origin is impossible to locate",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.251Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
+  },
+  {
+    "id": "p_a2811386d5b436d7",
+    "text": "WHY DO ALL THE DOORS IN THIS HOUSE CREAK",
+    "raw": "why do all the doors in this house creak",
+    "category": "Group chat message at 2am",
+    "hint": "every entrance in a dwelling makes a groaning noise",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
   },
   {
     "id": "p_9dae9b04d710af4f",
@@ -183,19 +205,19 @@
     "hint": "one small appliance that was acquired at some point and now its purpose is questioned",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:38.175Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
   },
   {
-    "id": "p_3648367cbe3a5ff2",
-    "text": "WHY DOES THE MICROWAVE HUM WHEN NOBODY IS IN THE ROOM",
-    "raw": "why does the microwave hum when nobody is in the room",
+    "id": "p_5d32d26a36c009ab",
+    "text": "WHY DOES THE HALLWAY LIGHT HAVE TWO SWITCHES",
+    "raw": "why does the hallway light have two switches",
     "category": "Group chat message at 2am",
-    "hint": "an unseen audience for a small appliance's self-directed noise",
-    "difficulty": 3,
+    "hint": "a corridor fixture is controlled by more than one lever",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.246Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
   },
   {
     "id": "p_fdf8e69a82f80195",
@@ -205,7 +227,29 @@
     "hint": "a ventilation device in a small tiled room has not stopped spinning",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:07:56.250Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
+  },
+  {
+    "id": "p_19ce02f2482d6c24",
+    "text": "WHY IS THE KITCHEN SO QUIET RIGHT NOW",
+    "raw": "why is the kitchen so quiet right now",
+    "category": "Group chat message at 2am",
+    "hint": "the cooking room has become silent at this hour",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
+  },
+  {
+    "id": "p_93fa241e5f390def",
+    "text": "WHY IS THE TAP DRIPPING AGAIN",
+    "raw": "why is the tap dripping again",
+    "category": "Group chat message at 2am",
+    "hint": "a water faucet is producing small repeated sounds once more",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.512Z"
   }
 ]

@@ -66,9 +66,11 @@ pnpm --filter @phrasey/corpus-gen cli -- seed --dry-run
 pnpm --filter @phrasey/corpus-gen cli -- seed
 ```
 
-Generation runs against INFINITY (`http://192.168.1.99:8080/v1`, Qwen 3.8 27B)
-on the LAN, or `--provider vertex` for Gemini. Seeding is idempotent — the doc
-id is a hash of the normalized text.
+Generation runs against a local OpenAI-compatible model server (Qwen 3.8 27B),
+or `--provider vertex` for Gemini. Set `PHRASEY_INFINITY_URL` to point at it —
+see `packages/corpus-gen/.env.example`. The address is not committed: it is an
+unauthenticated endpoint on a private network and this repo is public.
+Seeding is idempotent — the doc id is a hash of the normalized text.
 
 ## Things that will bite you
 
@@ -110,3 +112,39 @@ think-aloud as `content`. corpus-gen treats both as retryable.
 - [ ] Decide the pressure-gauge question in `docs/BALANCE-FINDINGS.md`
 - [ ] Top the corpus up from 209 to the 500 ship target (§4.3)
 - [ ] Confirm `privacy@` / `legal@` addresses route somewhere
+
+## What is in this public repo, and what is not
+
+Reviewed 2026-08-23. The repo is public, so this is the standing answer to
+"is anything in here sensitive".
+
+**Not in the repo, and must never be:** service-account keys, API keys or
+tokens of any kind, `.env` files, `*.tfvars`, Terraform state. `.gitignore`
+covers all of these, git history was checked, and none has ever been committed.
+
+**Deliberately in the repo, and fine:**
+
+| Thing | Why it is safe |
+|---|---|
+| GCP project id `fofoapps-934be` | An identifier, not a credential. Doing anything with it requires IAM you do not have. Standard in IaC. |
+| Runtime service-account email | Same — an identity, not a secret. |
+| Cloud Run URL, `phrasey.web.app` | Public endpoints. Anyone who plays the game learns them. |
+| Terraform state bucket name | Object access is IAM-gated. A name alone grants nothing. |
+| `privacy@` / `legal@` addresses | Published contact points, on purpose (§8). |
+
+**Removed during review:** the LAN address of the local model server used by
+`corpus-gen`. It is an unauthenticated endpoint on a private network, and
+while an RFC1918 address is not reachable from the internet, publishing
+someone's internal topology is free to avoid. It now comes from
+`PHRASEY_INFINITY_URL` and defaults to localhost — see
+`packages/corpus-gen/.env.example`.
+
+**Checked and clean:**
+
+- No puzzle answers in the shipped client bundle. All 597 corpus phrases were
+  searched against `packages/client/dist/assets/*.js`: zero hits. The
+  server-authority model in §6.2 holds all the way through to the build
+  artifact, which is the property the whole game rests on.
+- No emails, phone numbers, URLs or ID-shaped strings in any puzzle or hint.
+- `firestore.rules` denies all client reads and writes, so the database is not
+  reachable from a browser even though the project id is public.

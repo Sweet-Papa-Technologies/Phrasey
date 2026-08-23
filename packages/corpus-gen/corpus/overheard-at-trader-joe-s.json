@@ -1,36 +1,58 @@
 [
   {
+    "id": "p_0e975a5fdd0aad51",
+    "text": "CAN I JUST TOUCH THE CANDLES AND LEAVE",
+    "raw": "CAN I JUST TOUCH THE CANDLES AND LEAVE",
+    "category": "Overheard at Trader Joe's",
+    "hint": "wanting to browse a non-food section",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
+  },
+  {
     "id": "p_0a91c2135a6c8939",
     "text": "DO YOU THINK THE CRANBERRIES ARE EATING ME BACK",
     "raw": "DO YOU THINK THE CRANBERRIES ARE EATING ME BACK",
     "category": "Overheard at Trader Joe's",
     "hint": "wondering if tart red fruit is hostile",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.203Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
   },
   {
-    "id": "p_6b5d5648f56508cb",
-    "text": "I BOUGHT THREE KINDS OF GRANOLA AND I REGRET NOTHING",
-    "raw": "I BOUGHT THREE KINDS OF GRANOLA AND I REGRET NOTHING",
+    "id": "p_135671c0e4abdb34",
+    "text": "I AM NOT CRYING THE ONIONS ARE DOING THAT",
+    "raw": "I AM NOT CRYING THE ONIONS ARE DOING THAT",
     "category": "Overheard at Trader Joe's",
-    "hint": "buying multiple oat clusters with zero remorse",
-    "difficulty": 3,
+    "hint": "blaming produce for an emotional response",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.204Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
   },
   {
-    "id": "p_d7e8182229f3d397",
-    "text": "I CANNOT EXPLAIN THE GRIEF I FEEL TOWARD THAT ONE JAR",
-    "raw": "I CANNOT EXPLAIN THE GRIEF I FEEL TOWARD THAT ONE JAR",
+    "id": "p_2309ca7232744a11",
+    "text": "I CANNOT BELIEVE I AM BUYING THIS AGAIN",
+    "raw": "I CANNOT BELIEVE I AM BUYING THIS AGAIN",
     "category": "Overheard at Trader Joe's",
-    "hint": "an unnameable sadness directed at a single glass container",
-    "difficulty": 3,
+    "hint": "repeated impulse purchase with regret",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.143Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
+  },
+  {
+    "id": "p_2c07bd1b9bb61061",
+    "text": "I CANNOT EXPLAIN WHY I NEED THIS CHEESE",
+    "raw": "I CANNOT EXPLAIN WHY I NEED THIS CHEESE",
+    "category": "Overheard at Trader Joe's",
+    "hint": "an unexplained urgent desire for dairy",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.534Z"
   },
   {
     "id": "p_b876846f985ad94c",
@@ -38,10 +60,32 @@
     "raw": "I DID NOT KNOW PEOPLE COULD CRY OVER DRIED FIGS",
     "category": "Overheard at Trader Joe's",
     "hint": "emotional reaction to a dehydrated fruit",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.202Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
+  },
+  {
+    "id": "p_08e2afc50d187009",
+    "text": "I DID NOT KNOW THAT WAS A FOOD CHOICE",
+    "raw": "I DID NOT KNOW THAT WAS A FOOD CHOICE",
+    "category": "Overheard at Trader Joe's",
+    "hint": "seeing something on a shelf for the first time",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
+  },
+  {
+    "id": "p_5981c58389340a2d",
+    "text": "I HAVE BEEN ARGUING WITH A BAG OF RICE",
+    "raw": "I HAVE BEEN ARGUING WITH A BAG OF RICE",
+    "category": "Overheard at Trader Joe's",
+    "hint": "a pantry item is causing a personal standoff",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
     "id": "p_e3c143d1afb736a2",
@@ -49,32 +93,32 @@
     "raw": "I HAVE BEEN IN THIS AISLE FOR TWENTY MINUTES",
     "category": "Overheard at Trader Joe's",
     "hint": "how long someone has been stuck in one section",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.206Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
-    "id": "p_4ceebd8026ca96e5",
-    "text": "I HAVE BEEN READING THAT NUTRITION LABEL FOR TEN MINUTES",
-    "raw": "I HAVE BEEN READING THAT NUTRITION LABEL FOR TEN MINUTES",
+    "id": "p_2417b352c5ba3596",
+    "text": "I HAVE BEEN STANDING HERE SINCE LUNCH",
+    "raw": "I HAVE BEEN STANDING HERE SINCE LUNCH",
     "category": "Overheard at Trader Joe's",
-    "hint": "staring at ingredient percentages far longer than necessary",
-    "difficulty": 3,
+    "hint": "a frozen moment in one spot all day",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
-    "id": "p_2d6cf8d317d9713f",
-    "text": "I TOLD MY THERAPIST ABOUT THE JALAPENO JAM AND SHE NODDED",
-    "raw": "I TOLD MY THERAPIST ABOUT THE JALAPENO JAM AND SHE NODDED",
+    "id": "p_39e1f22276b52ff1",
+    "text": "I TOLD MYSELF NO SNACKS THIS WEEK",
+    "raw": "I TOLD MYSELF NO SNACKS THIS WEEK",
     "category": "Overheard at Trader Joe's",
-    "hint": "a professional reacted calmly to a spicy preserve confession",
-    "difficulty": 3,
+    "hint": "a promise already breaking in the moment",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.139Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
     "id": "p_2c8e482760cd2dc0",
@@ -82,10 +126,10 @@
     "raw": "I WENT IN FOR ONE APPLE AND LOOK AT THIS BAG",
     "category": "Overheard at Trader Joe's",
     "hint": "a single produce trip became a haul",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:23:15.482Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
     "id": "p_faac18b88691d389",
@@ -95,30 +139,19 @@
     "hint": "a warning about a condiment that would cause noise",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.206Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.535Z"
   },
   {
-    "id": "p_21183f8f86880964",
-    "text": "IS THE COCONUT WATER SECTION A LIFESTYLE OR A PHASE",
-    "raw": "IS THE COCONUT WATER SECTION A LIFESTYLE OR A PHASE",
+    "id": "p_2444f271ee50f3f0",
+    "text": "IS IT ME OR IS THIS PRICED WRONG",
+    "raw": "IS IT ME OR IS THIS PRICED WRONG",
     "category": "Overheard at Trader Joe's",
-    "hint": "questioning whether a tropical drink display is temporary",
-    "difficulty": 3,
+    "hint": "questioning a number on a label",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.142Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_f984bc1b47296f2e",
-    "text": "IS THE HONEY CRISP STILL IN THE BACK OR IS IT GONE",
-    "raw": "IS THE HONEY CRISP STILL IN THE BACK OR IS IT GONE",
-    "category": "Overheard at Trader Joe's",
-    "hint": "checking if a fruit variety restocked",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.205Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_65e352291894a110",
@@ -126,10 +159,21 @@
     "raw": "MY SISTER CALLED AND I CANNOT FINISH THIS JAR",
     "category": "Overheard at Trader Joe's",
     "hint": "a phone interruption halts a snack",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.204Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
+  },
+  {
+    "id": "p_992f71714da338b9",
+    "text": "SOMEONE LEFT A CART IN THE MIDDLE AND I FELL",
+    "raw": "SOMEONE LEFT A CART IN THE MIDDLE AND I FELL",
+    "category": "Overheard at Trader Joe's",
+    "hint": "an abandoned object causing an emotional collapse",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_957c8a40f6464779",
@@ -139,8 +183,8 @@
     "hint": "a nutty flavor feels like a personal offense",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.207Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_00ae358d711fadf7",
@@ -148,32 +192,21 @@
     "raw": "THAT PUMPKIN SPICE IS A LIE AND I ACCEPT IT",
     "category": "Overheard at Trader Joe's",
     "hint": "autumn flavoring is not what it promises",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.203Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
-    "id": "p_7cee7711e5a1a908",
-    "text": "THAT QUINOA PUFF SNACK MADE ME CRY IN THE PARKING LOT",
-    "raw": "THAT QUINOA PUFF SNACK MADE ME CRY IN THE PARKING LOT",
+    "id": "p_c905ecbbe1046bd7",
+    "text": "THAT SMELL IS NOT A LIE AND I AM FURIOUS",
+    "raw": "THAT SMELL IS NOT A LIE AND I AM FURIOUS",
     "category": "Overheard at Trader Joe's",
-    "hint": "a grain-based treat triggered tears outside the building",
-    "difficulty": 3,
+    "hint": "an aroma that is honest and therefore threatening",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.141Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_f47851f02f3ea8ff",
-    "text": "THE HOLIDAY TRIMMING SUGARS ARE OUT AND I AM FINE",
-    "raw": "THE HOLIDAY TRIMMING SUGARS ARE OUT AND I AM FINE",
-    "category": "Overheard at Trader Joe's",
-    "hint": "festive candy is gone and the speaker claims composure",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.206Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_62ebecf40356e796",
@@ -181,10 +214,10 @@
     "raw": "THE MAPLE SYRUP SHELF IS MY THERAPY SESSION",
     "category": "Overheard at Trader Joe's",
     "hint": "a sweet liquid display serves as counseling",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.206Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_944bfeb1e5495aa6",
@@ -192,10 +225,21 @@
     "raw": "THE SEASONAL SUGAR FREE SECTION IS A COLD WAR",
     "category": "Overheard at Trader Joe's",
     "hint": "dietary alternative zone feels like a standoff",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:11:18.204Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
+  },
+  {
+    "id": "p_02c7cb3930654f3a",
+    "text": "THIS JAR IS HEAVIER THAN MY RESOLUTIONS",
+    "raw": "THIS JAR IS HEAVIER THAN MY RESOLUTIONS",
+    "category": "Overheard at Trader Joe's",
+    "hint": "a glass container versus self-control",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
   },
   {
     "id": "p_9854f4d9455d4320",
@@ -205,7 +249,29 @@
     "hint": "someone spiked a warm drink with a golden root and left a question",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:18:19.140Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.536Z"
+  },
+  {
+    "id": "p_b31a1e575ab487a5",
+    "text": "WHY IS THE GOURMET AISLE SO DEEP",
+    "raw": "WHY IS THE GOURMET AISLE SO DEEP",
+    "category": "Overheard at Trader Joe's",
+    "hint": "a section that keeps going past all logic",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_31b3802cfddccfe4",
+    "text": "WHY WOULD ANYONE PUT THIS ON THE SAME SHELF",
+    "raw": "WHY WOULD ANYONE PUT THIS ON THE SAME SHELF",
+    "category": "Overheard at Trader Joe's",
+    "hint": "two items that should never be neighbors",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
   }
 ]

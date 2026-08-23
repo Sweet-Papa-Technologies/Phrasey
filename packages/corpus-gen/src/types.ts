@@ -1,6 +1,20 @@
 /** Types local to the offline corpus pipeline. Nothing here ships to a client. */
 
-export type PuzzleSource = 'generated' | 'public-domain' | 'manual';
+export type PuzzleSource = 'generated' | 'public-domain' | 'manual' | 'reference';
+
+/**
+ * Rights bucket, so the pop-culture slice can be dropped wholesale.
+ *
+ * `core`        — original generated observational material plus long-established
+ *                 public-domain idioms, proverbs and nursery rhymes.
+ * `pop-culture` — film / song / TV titles and generic catchphrases. Titles are
+ *                 not protected by copyright, but this tier is the one a lawyer
+ *                 might want removed, so it is separable by construction:
+ *                 `pnpm --filter @phrasey/corpus-gen cli -- drop --tier pop-culture`.
+ *
+ * See corpus/SOURCING.md.
+ */
+export type RightsTier = 'core' | 'pop-culture';
 
 /** A candidate straight off the model, before validation. */
 export interface Candidate {
@@ -11,6 +25,8 @@ export interface Candidate {
   hint: string;
   category: string;
   source?: PuzzleSource;
+  rightsTier?: RightsTier;
+  rightsNote?: string;
   provider?: string;
 }
 
@@ -26,6 +42,10 @@ export interface CorpusEntry {
   hint: string;
   difficulty: 1 | 2 | 3;
   source: PuzzleSource;
+  /** Which rights bucket this entry belongs to. Defaults to `core`. */
+  rightsTier: RightsTier;
+  /** One line a human reviewer can read without opening SOURCING.md. */
+  rightsNote?: string;
   provider?: string;
   generatedAt: string;
 }

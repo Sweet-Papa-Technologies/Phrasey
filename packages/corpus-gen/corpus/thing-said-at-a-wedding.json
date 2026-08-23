@@ -1,14 +1,47 @@
 [
   {
-    "id": "p_be04bb402ba71cf3",
-    "text": "I HAVE BEEN ASKED TO DANCE FOUR TIMES AND HAVE SAID NO",
-    "raw": "I HAVE BEEN ASKED TO DANCE FOUR TIMES AND HAVE SAID NO",
+    "id": "p_ce29aa1bdd49c2fc",
+    "text": "I CAN NOT FIND A SEAT THAT IS NOT TAKEN",
+    "raw": "I CAN NOT FIND A SEAT THAT IS NOT TAKEN",
     "category": "Thing said at a wedding",
-    "hint": "a guest has repeatedly declined invitations to join others on the floor",
-    "difficulty": 3,
+    "hint": "every available chair has been claimed",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.549Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.514Z"
+  },
+  {
+    "id": "p_3f74499e942f3df5",
+    "text": "I DID NOT KNOW WE WERE SEATED BY FAMILY",
+    "raw": "I DID NOT KNOW WE WERE SEATED BY FAMILY",
+    "category": "Thing said at a wedding",
+    "hint": "the table arrangement follows bloodlines not choice",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.514Z"
+  },
+  {
+    "id": "p_b4a23a3dbf3353a7",
+    "text": "I HAVE ASKED FOR WATER THREE TIMES NOW",
+    "raw": "I HAVE ASKED FOR WATER THREE TIMES NOW",
+    "category": "Thing said at a wedding",
+    "hint": "a simple drink request has gone unanswered",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.514Z"
+  },
+  {
+    "id": "p_1c0e8a93f1823ccc",
+    "text": "I HAVE BEEN OFFERED A SECOND PLATE AGAIN",
+    "raw": "I HAVE BEEN OFFERED A SECOND PLATE AGAIN",
+    "category": "Thing said at a wedding",
+    "hint": "the caterer keeps refilling without asking",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.514Z"
   },
   {
     "id": "p_1052278f6e7019f4",
@@ -16,10 +49,10 @@
     "raw": "I HAVE BEEN OFFERED CHAMPAGNE FOR THE THIRD TIME",
     "category": "Thing said at a wedding",
     "hint": "a celebratory drink keeps getting refilled",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.768Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_85482c9d83cd1336",
@@ -29,8 +62,8 @@
     "hint": "concern about the dessert catching flame",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.769Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_e4a7a22a8ddc2280",
@@ -38,10 +71,10 @@
     "raw": "I THINK THE CATERER IS THE BEST MAN",
     "category": "Thing said at a wedding",
     "hint": "whoever feeds everyone might be standing beside the groom",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.544Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_573489563e5ecfed",
@@ -51,8 +84,19 @@
     "hint": "someone at the event has consumed multiple drinks and remains cheerful",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.545Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
+  },
+  {
+    "id": "p_75a12baab4c2ccdf",
+    "text": "SHE HAS NOT COME BACK FROM THE BATHROOM",
+    "raw": "SHE HAS NOT COME BACK FROM THE BATHROOM",
+    "category": "Thing said at a wedding",
+    "hint": "her restrooms absence is getting quite long",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_1e10fa7a4cc52704",
@@ -60,10 +104,21 @@
     "raw": "SOMEONE IS CRYING BECAUSE OF THE SONGS",
     "category": "Thing said at a wedding",
     "hint": "emotional tears triggered by musical selection",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
+  },
+  {
+    "id": "p_769d01349a911436",
+    "text": "SOMEONE KEPT THE GROOMS BUTTONS FOR A YEAR",
+    "raw": "SOMEONE KEPT THE GROOMS BUTTONS FOR A YEAR",
+    "category": "Thing said at a wedding",
+    "hint": "a keepsake from the ceremony is still unreturned",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.769Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_6765ba0a0473941d",
@@ -71,21 +126,43 @@
     "raw": "THE BAND PLAYS THE SAME SONG FOR THE FIFTH TIME",
     "category": "Thing said at a wedding",
     "hint": "musicians repeat a track and it is becoming unbearable",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.546Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
-    "id": "p_92e13af849afe953",
-    "text": "THE BEST MAN'S SPEECH HAS BEEN RUNNING FOR TWELVE MINUTES",
-    "raw": "THE BEST MAN'S SPEECH HAS BEEN RUNNING FOR TWELVE MINUTES",
+    "id": "p_c5662914c575ab83",
+    "text": "THE BEST MAN HAS BEEN ASKED TO STOP TALKING",
+    "raw": "THE BEST MAN HAS BEEN ASKED TO STOP TALKING",
     "category": "Thing said at a wedding",
-    "hint": "a designated speaker has exceeded every acceptable limit",
-    "difficulty": 3,
+    "hint": "a certain speech is running well past its limit",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.769Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
+  },
+  {
+    "id": "p_73e31c9b07b78204",
+    "text": "THE BRIDE IS ASKING FOR MORE RED WINE",
+    "raw": "THE BRIDE IS ASKING FOR MORE RED WINE",
+    "category": "Thing said at a wedding",
+    "hint": "the newly wed is not satisfied with her pour",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
+  },
+  {
+    "id": "p_045e130b82a9a230",
+    "text": "THE CAKE LOOKS LIKE A FIRE HAZARD",
+    "raw": "THE CAKE LOOKS LIKE A FIRE HAZARD",
+    "category": "Thing said at a wedding",
+    "hint": "that dessert table is a safety concern",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.515Z"
   },
   {
     "id": "p_6d3987ba08283335",
@@ -95,8 +172,8 @@
     "hint": "the dessert has a flat, artificial flavor profile",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.550Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
   },
   {
     "id": "p_5d47aabf4fc5b16c",
@@ -106,19 +183,63 @@
     "hint": "a neck accessory facing the wrong direction",
     "difficulty": 3,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.767Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
   },
   {
-    "id": "p_6fbed4ec14c0b258",
-    "text": "THE HALL MONITOR IS HOLDING BACK A MAN IN A WET SUIT",
-    "raw": "THE HALL MONITOR IS HOLDING BACK A MAN IN A WET SUIT",
+    "id": "p_ea636ccc8d41dee4",
+    "text": "THE GROOMS MAN GOT ASKED TO LEAVE",
+    "raw": "THE GROOMS MAN GOT ASKED TO LEAVE",
     "category": "Thing said at a wedding",
-    "hint": "staff are restraining a person in swimwear who wants entry",
-    "difficulty": 3,
+    "hint": "a particular family member was shown the door",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.549Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
+  },
+  {
+    "id": "p_cdfaed9e7dafb85a",
+    "text": "THE RING BEARER IS SLEEPING ON THE FLOOR",
+    "raw": "THE RING BEARER IS SLEEPING ON THE FLOOR",
+    "category": "Thing said at a wedding",
+    "hint": "a very young guest has lost the battle",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
+  },
+  {
+    "id": "p_13b660e5a73f4627",
+    "text": "THE SECOND DANCE HAS BEEN GOING FOR AGES",
+    "raw": "THE SECOND DANCE HAS BEEN GOING FOR AGES",
+    "category": "Thing said at a wedding",
+    "hint": "the floor has been occupied far too long",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
+  },
+  {
+    "id": "p_4077e3047c48817e",
+    "text": "THE TABLE IS TOO CLOSE TO THE SPEAKERS",
+    "raw": "THE TABLE IS TOO CLOSE TO THE SPEAKERS",
+    "category": "Thing said at a wedding",
+    "hint": "the bass is rattling the plates at this end",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
+  },
+  {
+    "id": "p_a8137b4cc9cfa4ef",
+    "text": "WHO IS TALKING TO THE CATERER LIKE A BOSS",
+    "raw": "WHO IS TALKING TO THE CATERER LIKE A BOSS",
+    "category": "Thing said at a wedding",
+    "hint": "a guest is barking orders at the kitchen staff",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
   },
   {
     "id": "p_dc2cf737fad7853f",
@@ -126,10 +247,10 @@
     "raw": "WHO KEPT THE FLOWER GIRL'S DRESS IN THE RESTROOM",
     "category": "Thing said at a wedding",
     "hint": "a child's outfit was left behind in a private room",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:16:22.768Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.516Z"
   },
   {
     "id": "p_1c28575045123541",
@@ -137,20 +258,9 @@
     "raw": "WHO PUT A LIVING PLANT ON THE DANCING FLOOR",
     "category": "Thing said at a wedding",
     "hint": "someone placed greenery where people were meant to move their feet",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.546Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_ea4cc59d6c870318",
-    "text": "WHOSE PARKA IS THIS HANGING FROM THE MICROPHONE STAND",
-    "raw": "WHOSE PARKA IS THIS HANGING FROM THE MICROPHONE STAND",
-    "category": "Thing said at a wedding",
-    "hint": "an unclaimed coat is draped over stage equipment",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:09:12.550Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.517Z"
   }
 ]

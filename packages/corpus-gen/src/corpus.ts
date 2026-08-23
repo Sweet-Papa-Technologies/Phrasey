@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 
 import { join } from 'node:path';
 import { CATEGORIES, type Category } from '@phrasey/shared';
 import { CORPUS_DIR, REVIEW_QUEUE_PATH, categoryPath, categorySlug } from './paths.js';
+import { BRIEFS } from './prompts.js';
 import type { Candidate, CorpusEntry, RejectedEntry } from './types.js';
 import { CorpusIndex, deriveDifficulty, normalizedHash, type ValidationResult } from './validator.js';
 
@@ -88,10 +89,14 @@ export function makeEntry(candidate: Candidate, result: ValidationResult): Corpu
     raw: candidate.raw.trim(),
     category: candidate.category,
     hint: candidate.hint.trim(),
-    difficulty: deriveDifficulty(result.text),
+    difficulty: deriveDifficulty(result.text, {
+      recalled: isCategory(candidate.category) ? BRIEFS[candidate.category].recalled === true : false,
+    }),
     source: candidate.source ?? 'generated',
+    rightsTier: candidate.rightsTier ?? 'core',
     generatedAt: new Date().toISOString(),
   };
+  if (candidate.rightsNote) entry.rightsNote = candidate.rightsNote;
   if (candidate.provider) entry.provider = candidate.provider;
   return entry;
 }

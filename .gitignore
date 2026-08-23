@@ -27,3 +27,6 @@ service-account*.json
 /consent-banner.png
 /landing.png
 /page-*.png
+
+# Agent scratch dirs
+.scratch/

@@ -5,10 +5,32 @@
     "raw": "DRIVING IS HOW I AVOID MYSELF",
     "category": "Bumper sticker",
     "hint": "the wheel becomes a delay tactic for inner work",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.660Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_8c4357fef691c2d4",
+    "text": "I AM JUST PASSING THROUGH",
+    "raw": "I AM JUST PASSING THROUGH",
+    "category": "Bumper sticker",
+    "hint": "this place is not where you are staying",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_73c531b175efce54",
+    "text": "I AM LATE FOR EVERYTHING AGAIN",
+    "raw": "I AM LATE FOR EVERYTHING AGAIN",
+    "category": "Bumper sticker",
+    "hint": "punctuality is not your friend",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
   },
   {
     "id": "p_7f7639c627713fcc",
@@ -18,8 +40,8 @@
     "hint": "a reframe of being disoriented as a bad adventure",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.201Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
   },
   {
     "id": "p_304091ac226cdcd0",
@@ -29,8 +51,41 @@
     "hint": "the person hasn't solved the puzzle yet",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_8faadd70f772d8e2",
+    "text": "I AM THE WRONG WAY",
+    "raw": "I AM THE WRONG WAY",
+    "category": "Bumper sticker",
+    "hint": "you are headed in the opposite direction",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_4d215aa31fdf112a",
+    "text": "I BRAKE FOR EVERYTHING NOW",
+    "raw": "I BRAKE FOR EVERYTHING NOW",
+    "category": "Bumper sticker",
+    "hint": "stopping has become the default response",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.537Z"
+  },
+  {
+    "id": "p_0eeb31f8a326f195",
+    "text": "I DO NOT RENT THIS FEELING",
+    "raw": "I DO NOT RENT THIS FEELING",
+    "category": "Bumper sticker",
+    "hint": "this mood is fully paid for and owned",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_1d06870fcaf7ca5a",
@@ -38,10 +93,10 @@
     "raw": "I HAVE BEEN HERE LONGER THAN YOU",
     "category": "Bumper sticker",
     "hint": "the one who arrived first is still in the parking lot",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.199Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_6f5e3bef7bda5d5f",
@@ -51,8 +106,8 @@
     "hint": "the strategy dissolved before completion",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.660Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_466d536497f00397",
@@ -60,10 +115,21 @@
     "raw": "I PRACTICED THIS FACE IN A MIRROR ONCE",
     "category": "Bumper sticker",
     "hint": "rehearsed an expression before the audience arrived",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.662Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
+  },
+  {
+    "id": "p_d14dbd24334d8e7e",
+    "text": "I WAS ONCE A YOUNG PERSON",
+    "raw": "I WAS ONCE A YOUNG PERSON",
+    "category": "Bumper sticker",
+    "hint": "a former self who no longer exists",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_5d669eb04110d7ab",
@@ -71,10 +137,10 @@
     "raw": "I WOULD LIKE A SMALL REASON TO KEEP DRIVING",
     "category": "Bumper sticker",
     "hint": "just one tiny justification for continuing the trip",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_478637eed2c3ea54",
@@ -84,19 +150,19 @@
     "hint": "distance covers itself without gaining velocity",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
-    "id": "p_24a24c9a9212fdf5",
-    "text": "NO I DID NOT INVITE YOU TO MY INNER MONOLOGUE",
-    "raw": "NO I DID NOT INVITE YOU TO MY INNER MONOLOGUE",
+    "id": "p_7e976e960608c486",
+    "text": "NO THOUGHTS JUST DRIVING",
+    "raw": "NO THOUGHTS JUST DRIVING",
     "category": "Bumper sticker",
-    "hint": "a refusal of uninvited access to private thoughts",
-    "difficulty": 3,
+    "hint": "the mind is off, the hands keep moving",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_0f52b24dea911ced",
@@ -104,10 +170,21 @@
     "raw": "SLOW DOWN THE PAIN IS COMPOUNDING",
     "category": "Bumper sticker",
     "hint": "reduce your speed because suffering accumulates",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
+  },
+  {
+    "id": "p_5bf6ffaaa61f5484",
+    "text": "SOMEONE ELSE STARTED THIS",
+    "raw": "SOMEONE ELSE STARTED THIS",
+    "category": "Bumper sticker",
+    "hint": "you inherited a situation you did not begin",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.538Z"
   },
   {
     "id": "p_b7deceff278f3183",
@@ -117,8 +194,52 @@
     "hint": "abandoned mid-thought by an unknown hand",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.659Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_48e67fa1af434236",
+    "text": "SOMEONE SHOULD KNOW THIS",
+    "raw": "SOMEONE SHOULD KNOW THIS",
+    "category": "Bumper sticker",
+    "hint": "a warning that nobody is heeding",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_6413409247a74feb",
+    "text": "THE BEST DAY WAS YESTERDAY",
+    "raw": "THE BEST DAY WAS YESTERDAY",
+    "category": "Bumper sticker",
+    "hint": "the highlight is already behind you",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_9767f6ca87d1b2ca",
+    "text": "THE FUTURE IS JUST MORE TUESDAY",
+    "raw": "THE FUTURE IS JUST MORE TUESDAY",
+    "category": "Bumper sticker",
+    "hint": "what comes next is not exciting at all",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_6b9e2be10c1f7968",
+    "text": "THE PARKING LOT IS NEVER EMPTY",
+    "raw": "THE PARKING LOT IS NEVER EMPTY",
+    "category": "Bumper sticker",
+    "hint": "you will always find it occupied",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
   },
   {
     "id": "p_dd4863f0acf7227f",
@@ -126,10 +247,21 @@
     "raw": "THE ROAD AHEAD IS JUST MORE OF THIS",
     "category": "Bumper sticker",
     "hint": "no change in scenery is promised from this point on",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.662Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_7b1edfa773aa45d2",
+    "text": "THE ROAD IS LONG AND I AM SLOW",
+    "raw": "THE ROAD IS LONG AND I AM SLOW",
+    "category": "Bumper sticker",
+    "hint": "distance ahead, pace behind",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
   },
   {
     "id": "p_b7cbcc88225bf965",
@@ -137,10 +269,21 @@
     "raw": "THE SUN HIT DIFFERENT TODAY",
     "category": "Bumper sticker",
     "hint": "the glow had a strange quality this morning",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:12:08.200Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_4ba4412158bf466f",
+    "text": "THIS CAR RAN BEFORE ME",
+    "raw": "THIS CAR RAN BEFORE ME",
+    "category": "Bumper sticker",
+    "hint": "a previous owner kept the engine going",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
   },
   {
     "id": "p_2a1c7db9d7738b44",
@@ -150,7 +293,18 @@
     "hint": "reassurance that was not believed",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:19:34.659Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.539Z"
+  },
+  {
+    "id": "p_d11b39d82aa2c22c",
+    "text": "TURN AROUND AND GO HOME",
+    "raw": "TURN AROUND AND GO HOME",
+    "category": "Bumper sticker",
+    "hint": "the exit is behind you, not ahead",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.540Z"
   }
 ]

@@ -10,7 +10,7 @@
  */
 import { letterStats } from '@phrasey/shared';
 import { puzzleId } from './corpus.js';
-import type { CorpusEntry } from './types.js';
+import type { CorpusEntry, PuzzleSource, RightsTier } from './types.js';
 import { deriveDifficulty } from './validator.js';
 
 export interface PuzzleDoc {
@@ -21,7 +21,17 @@ export interface PuzzleDoc {
   difficulty: 1 | 2 | 3;
   letterStats: Record<string, number>;
   active: boolean;
-  source: 'generated' | 'public-domain' | 'manual';
+  /**
+   * NOTE: `'reference'` (a film / song / TV title) is wider than
+   * `@phrasey/shared`'s `Puzzle['source']`, which still lists only the original
+   * three. The server casts rather than narrowing, so nothing breaks, but
+   * whoever owns `packages/shared` should widen that union to match. Flagged in
+   * corpus/SOURCING.md.
+   */
+  source: PuzzleSource;
+  /** `core` or `pop-culture` — lets a whole rights tier be deactivated in place. */
+  rightsTier: RightsTier;
+  rightsNote?: string;
   updatedAt: string;
 }
 
@@ -35,6 +45,8 @@ export function toPuzzleDoc(entry: CorpusEntry): PuzzleDoc {
     letterStats: letterStats(entry.text),
     active: true,
     source: entry.source ?? 'generated',
+    rightsTier: entry.rightsTier ?? 'core',
+    ...(entry.rightsNote ? { rightsNote: entry.rightsNote } : {}),
     updatedAt: new Date().toISOString(),
   };
 }
@@ -44,12 +56,24 @@ export interface SeedOptions {
   databaseId: string;
   dryRun: boolean;
   batchSize?: number;
+  /**
+   * Set `active: false` on every puzzle already in Firestore that is no longer
+   * in the corpus.
+   *
+   * Without this, `merge: true` makes a removal invisible: a puzzle pulled from
+   * the corpus for being unguessable, or a whole rights tier dropped, keeps
+   * serving to live games forever. Deactivation rather than deletion keeps the
+   * document around for the audit trail.
+   */
+  deactivateMissing?: boolean;
   onLog?: (line: string) => void;
 }
 
 export interface SeedResult {
   docs: PuzzleDoc[];
   written: number;
+  /** Puzzle ids flipped to `active: false` because they left the corpus. */
+  deactivated: string[];
   dryRun: boolean;
 }
 
@@ -57,7 +81,14 @@ export interface SeedResult {
 const DEFAULT_BATCH = 400;
 
 export async function seedPuzzles(entries: CorpusEntry[], opts: SeedOptions): Promise<SeedResult> {
-  const { projectId, databaseId, dryRun, batchSize = DEFAULT_BATCH, onLog = () => {} } = opts;
+  const {
+    projectId,
+    databaseId,
+    dryRun,
+    batchSize = DEFAULT_BATCH,
+    deactivateMissing = false,
+    onLog = () => {},
+  } = opts;
 
   // De-duplicate by id: two identical phrases in different category files must
   // not fight over the same document.
@@ -70,7 +101,7 @@ export async function seedPuzzles(entries: CorpusEntry[], opts: SeedOptions): Pr
 
   if (dryRun) {
     onLog(`[dry-run] would write ${docs.length} docs to projects/${projectId}/databases/${databaseId}/puzzles`);
-    return { docs, written: 0, dryRun: true };
+    return { docs, written: 0, deactivated: [], dryRun: true };
   }
 
   // Imported lazily so `--dry-run` and the unit tests never touch GCP.
@@ -93,6 +124,20 @@ export async function seedPuzzles(entries: CorpusEntry[], opts: SeedOptions): Pr
     onLog(`  wrote ${written}/${docs.length}`);
   }
 
+  const deactivated: string[] = [];
+  if (deactivateMissing) {
+    const live = await col.where('active', '==', true).select().get();
+    const stale = live.docs.map((d) => d.id).filter((id) => !byId.has(id));
+    for (let i = 0; i < stale.length; i += batchSize) {
+      const slice = stale.slice(i, i + batchSize);
+      const batch = db.batch();
+      for (const id of slice) batch.set(col.doc(id), { active: false, updatedAt: new Date().toISOString() }, { merge: true });
+      await batch.commit();
+      deactivated.push(...slice);
+    }
+    if (deactivated.length > 0) onLog(`  deactivated ${deactivated.length} puzzles no longer in the corpus`);
+  }
+
   await db.terminate();
-  return { docs, written, dryRun: false };
+  return { docs, written, deactivated, dryRun: false };
 }

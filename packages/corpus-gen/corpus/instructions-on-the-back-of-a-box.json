@@ -5,10 +5,10 @@
     "raw": "ATTACH THE WING THAT WAS NOT INCLUDED",
     "category": "Instructions on the back of a box",
     "hint": "a structural element you were expected to already possess",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:07.475Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.522Z"
   },
   {
     "id": "p_d5d9d4c5e8e4ed3e",
@@ -16,10 +16,21 @@
     "raw": "BY STEP EIGHT YOUR FINGERS ARE ALREADY NUMB",
     "category": "Instructions on the back of a box",
     "hint": "a physical consequence acknowledged far past its point of relevance",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:07.474Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.522Z"
+  },
+  {
+    "id": "p_540d5041ba10bf88",
+    "text": "DO NOT REMOVE THE WRAPPER FROM STEP ONE",
+    "raw": "DO NOT REMOVE THE WRAPPER FROM STEP ONE",
+    "category": "Instructions on the back of a box",
+    "hint": "a layer that was never meant to come off",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.522Z"
   },
   {
     "id": "p_00630cea3aa0f634",
@@ -29,30 +40,41 @@
     "hint": "a warning that arrives after the damage",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.401Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.522Z"
   },
   {
-    "id": "p_5e424cd755921f6f",
-    "text": "IF THE SMELL IS STRONG YOU HAVE MISSED STEP THREE",
-    "raw": "IF THE SMELL IS STRONG YOU HAVE MISSED STEP THREE",
+    "id": "p_24b43c88d59026f0",
+    "text": "HOLD THIS POSITION FOR ABOUT FOREVER",
+    "raw": "HOLD THIS POSITION FOR ABOUT FOREVER",
     "category": "Instructions on the back of a box",
-    "hint": "an olfactory alarm serving as a diagnostic for a skipped action",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:17:07.477Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_fe3b3581b06618a0",
-    "text": "INVERT THE TRAY BEFORE THE TRAY EXISTS",
-    "raw": "INVERT THE TRAY BEFORE THE TRAY EXISTS",
-    "category": "Instructions on the back of a box",
-    "hint": "a circular disassembly order",
+    "hint": "a duration with no upper limit",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.400Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.522Z"
+  },
+  {
+    "id": "p_e7ce211f8a46f989",
+    "text": "IF SMOKING IS VISIBLE YOU HAVE DONE IT WRONG",
+    "raw": "IF SMOKING IS VISIBLE YOU HAVE DONE IT WRONG",
+    "category": "Instructions on the back of a box",
+    "hint": "a sign of failure that is also a food item",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
+  },
+  {
+    "id": "p_a5031cb0e758e094",
+    "text": "IF THE SCREEN IS DARK YOU ARE TOO LATE",
+    "raw": "IF THE SCREEN IS DARK YOU ARE TOO LATE",
+    "category": "Instructions on the back of a box",
+    "hint": "the damage was already done in step two",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
     "id": "p_ab82473e79d2c7ee",
@@ -62,19 +84,8 @@
     "hint": "a step that precedes the part it needs",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.402Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_d503944291fa9504",
-    "text": "PREHEAT TO TWO HUNDRED DEGREES THEN FORGET YOUR OVEN",
-    "raw": "PREHEAT TO TWO HUNDRED DEGREES THEN FORGET YOUR OVEN",
-    "category": "Instructions on the back of a box",
-    "hint": "assuming equipment you do not have",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.402Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
     "id": "p_db4bd2839a080d86",
@@ -82,10 +93,21 @@
     "raw": "PRESS THE BLUE BUTTON THAT IS NOT ON YOUR MODEL",
     "category": "Instructions on the back of a box",
     "hint": "a component referenced but absent from the package",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:07.474Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
+  },
+  {
+    "id": "p_10173b8ff5e026ee",
+    "text": "STEP FIVE ASSUMES YOU OWN A DRILL",
+    "raw": "STEP FIVE ASSUMES YOU OWN A DRILL",
+    "category": "Instructions on the back of a box",
+    "hint": "the hardware store was not in the shipping list",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
     "id": "p_ac44ac7012a564e8",
@@ -93,21 +115,21 @@
     "raw": "STEP THREE IS ALREADY RUINED",
     "category": "Instructions on the back of a box",
     "hint": "the sequence was printed out of order",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.400Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
-    "id": "p_72f89cf62a5e5637",
-    "text": "STEP TWO ASSUMES YOU ALREADY COMPLETED STEP TWO",
-    "raw": "STEP TWO ASSUMES YOU ALREADY COMPLETED STEP TWO",
+    "id": "p_e40095699bb50d4a",
+    "text": "TAP THE BOTTOM UNTIL IT TAPS BACK",
+    "raw": "TAP THE BOTTOM UNTIL IT TAPS BACK",
     "category": "Instructions on the back of a box",
-    "hint": "a circular dependency buried in the middle of the sequence",
-    "difficulty": 3,
+    "hint": "a sound that should be an echo",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:07.478Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
     "id": "p_24f0bb9ae40efa39",
@@ -115,21 +137,43 @@
     "raw": "TAP THE GLASS GENTLY IF IT DOES NOT BREAK",
     "category": "Instructions on the back of a box",
     "hint": "a step that assumes a result",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.402Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
   },
   {
-    "id": "p_0623ababbee6d2fa",
-    "text": "THE LID WILL POP OFF AT STEP NINE DO NOT BE ALARMED",
-    "raw": "THE LID WILL POP OFF AT STEP NINE DO NOT BE ALARMED",
+    "id": "p_43e1651ccfd10823",
+    "text": "THE LID GOES ON BEFORE THE BASE",
+    "raw": "THE LID GOES ON BEFORE THE BASE",
     "category": "Instructions on the back of a box",
-    "hint": "a warning that arrives too late",
-    "difficulty": 3,
+    "hint": "a sequence that defies physics",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.402Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.523Z"
+  },
+  {
+    "id": "p_c8d30c2456552e27",
+    "text": "THE SECOND CUP IS FOR THE OTHER PERSON",
+    "raw": "THE SECOND CUP IS FOR THE OTHER PERSON",
+    "category": "Instructions on the back of a box",
+    "hint": "a guest who was not mentioned earlier",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
+  },
+  {
+    "id": "p_9eeebcf5c7550408",
+    "text": "THE STOVE IS NOT INCLUDED BUT KEEP GOING",
+    "raw": "THE STOVE IS NOT INCLUDED BUT KEEP GOING",
+    "category": "Instructions on the back of a box",
+    "hint": "an appliance that was never in the box",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
   },
   {
     "id": "p_c024beb6b0fba4a0",
@@ -137,9 +181,31 @@
     "raw": "TURN LEFT UNTIL THE RIGHT SIDE FEELS DIFFERENT",
     "category": "Instructions on the back of a box",
     "hint": "directions with no fixed reference point",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:02.402Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
+  },
+  {
+    "id": "p_40a0d1b1e0c27a30",
+    "text": "TURN THE KNOB THAT WAS NOT IN THE KIT",
+    "raw": "TURN THE KNOB THAT WAS NOT IN THE KIT",
+    "category": "Instructions on the back of a box",
+    "hint": "a part that exists only in the diagram",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
+  },
+  {
+    "id": "p_b6ba3a54714f45e5",
+    "text": "WAIT UNTIL THE LIGHT STOPS BEING RED",
+    "raw": "WAIT UNTIL THE LIGHT STOPS BEING RED",
+    "category": "Instructions on the back of a box",
+    "hint": "a color that never arrives on schedule",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
   }
 ]

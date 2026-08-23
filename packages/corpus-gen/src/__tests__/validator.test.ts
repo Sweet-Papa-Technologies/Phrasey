@@ -12,15 +12,21 @@ import {
   RULES,
   REJECTION_REASONS,
   deriveDifficulty,
+  difficultyReport,
   findProfanity,
   findProperNouns,
   leakedWords,
   normalizedHash,
   shapeSignature,
+  abstractVocabulary,
+  isCommonWord,
+  repeatedContentWords,
   simulateSolvability,
   stem,
   tokenize,
+  triage,
   validateCandidate,
+  vocabularyReport,
   type RejectionReason,
 } from '../validator.js';
 
@@ -261,19 +267,87 @@ describe('rule: solvability', () => {
     const sim = simulateSolvability('EEL ALE ELLA');
     expect(sim.hiddenAfterTwo).toBeLessThan(RULES.MIN_HIDDEN_AFTER_TWO);
   });
-  it('leaves a normal phrase alone', () => {
-    for (const good of [
+
+  // The retune (see RULES.MAX_TWO_LETTER_COVERAGE). The rule was catching easy
+  // phrases back when the corpus needed to be harder; the game needs the
+  // opposite now, so the bar moved and these must all survive it.
+  it('leaves ordinarily-guessable familiar phrases alone', () => {
+    const familiar = [
+      'A WATCHED POT NEVER BOILS',
       'THE EARLY BIRD CATCHES THE WORM',
+      'BETTER LATE THAN NEVER',
+      'BACK TO THE FUTURE',
+      'THE SOUND OF MUSIC',
+      'TWINKLE TWINKLE LITTLE STAR',
+      'ROW ROW ROW YOUR BOAT',
+      'BAA BAA BLACK SHEEP',
+      'PLEASE WAIT TO BE SEATED',
+      'NO PARKING AT ANY TIME',
       'WHY IS THERE A SECOND FRIDGE',
       'MILK, EGGS, AND WHATEVER THAT SMELL IS',
-    ]) {
-      const sim = simulateSolvability(good);
-      expect(sim.twoLetterCoverage, good).toBeLessThanOrEqual(RULES.MAX_TWO_LETTER_COVERAGE);
-      expect(sim.meanWordsExposedAt40, good).toBeLessThanOrEqual(RULES.MAX_WORDS_EXPOSED_AT_40);
+    ];
+    for (const good of familiar) {
+      const reasons = validateCandidate({
+        raw: good,
+        hint: 'a deliberately unrelated one line nudge',
+        category: 'x',
+      }).failures.map((f) => f.reason);
+      expect(reasons, good).not.toContain('TRIVIALLY_SOLVABLE');
     }
+  });
+  it('still catches a phrase that falls out from two letters', () => {
+    // High coverage AND nothing left to deduce toward — the pair is the rule.
+    const r = validateCandidate({ raw: 'TOTS TOSS TESTS', hint: 'small children throw examinations', category: 'x' });
+    expect(r.failures.map((f) => f.reason)).toContain('TRIVIALLY_SOLVABLE');
   });
   it('needs several letters to reach the 40% reveal mark on a real phrase', () => {
     expect(simulateSolvability('THE EARLY BIRD CATCHES THE WORM').meanLettersTo40).toBeGreaterThan(2);
+  });
+});
+
+describe('rule: common vocabulary', () => {
+  it('accepts ordinary English, including inflections the list stores in base form', () => {
+    for (const w of ['boils', 'catches', 'parking', 'customers', 'tries', 'stopping', 'making', 'dont', "don't", 'u']) {
+      expect(isCommonWord(w), w).toBe(true);
+    }
+  });
+  it('rejects vocabulary a player does not own', () => {
+    for (const w of ['vestibule', 'perturb', 'ineffable', 'ontology', 'quotidian']) {
+      expect(isCommonWord(w), w).toBe(false);
+    }
+  });
+  it('scores an all-common phrase at 1.0', () => {
+    const r = vocabularyReport('A WATCHED POT NEVER BOILS');
+    expect(r.commonFraction).toBe(1);
+    expect(r.uncommon).toEqual([]);
+  });
+  it('names the words that failed, so the review queue explains itself', () => {
+    expect(vocabularyReport('THE SOUP TASTED OF INEFFABLE SADNESS').uncommon).toEqual(['ineffable']);
+  });
+  it('fires on a phrase built from words nobody would guess', () => {
+    expect(reasonsFor({ raw: 'THE VESTIBULE ACOUSTICS PERTURB MY MOOD' })).toContain('UNCOMMON_VOCABULARY');
+  });
+  it('can be relaxed per category, for material famous as a whole', () => {
+    const rhyme = { raw: 'THE ITSY BITSY SPIDER WENT UP THE SPOUT', hint: 'a tiny arachnid ascends a drainpipe', category: 'Nursery rhyme line' };
+    expect(validateCandidate(rhyme).failures.map((f) => f.reason)).toContain('UNCOMMON_VOCABULARY');
+    expect(
+      validateCandidate(rhyme, { commonWordFloor: 0.5, maxUncommonWords: 3 }).failures.map((f) => f.reason),
+    ).not.toContain('UNCOMMON_VOCABULARY');
+  });
+});
+
+describe('rule: length band', () => {
+  it('keeps §4.3\'s 60-character hard cap by default', () => {
+    expect(RULES.MAX_LENGTH).toBe(60);
+  });
+  it('accepts a tighter ceiling for new material without changing the hard cap', () => {
+    const long = { raw: 'THE PARKING LOT IS FOR CUSTOMERS OF THIS BUILDING ONLY', hint: 'only patrons may leave a vehicle here', category: 'x' };
+    expect(validateCandidate(long).failures.map((f) => f.reason)).not.toContain('LENGTH');
+    expect(validateCandidate(long, { maxLength: RULES.TARGET_MAX_LENGTH }).failures.map((f) => f.reason)).toContain('LENGTH');
+  });
+  it('targets a band well inside the hard cap', () => {
+    expect(RULES.TARGET_MAX_LENGTH).toBeGreaterThan(RULES.MIN_LENGTH);
+    expect(RULES.TARGET_MAX_LENGTH).toBeLessThan(RULES.MAX_LENGTH);
   });
 });
 
@@ -315,15 +389,57 @@ describe('tokenizing helpers', () => {
 });
 
 describe('difficulty derivation', () => {
-  it('scores a short common-letter phrase easiest', () => {
+  it('scores a short, all-common, narrow-alphabet phrase easiest', () => {
     expect(deriveDifficulty('ADD MORE SALT')).toBe(1);
+    expect(deriveDifficulty('A WATCHED POT NEVER BOILS')).toBe(1);
   });
-  it('scores a long, wide-alphabet phrase hardest', () => {
+  it('scores a long, wide-alphabet, rare-lettered phrase hardest', () => {
     expect(deriveDifficulty('QUICK, JUDGE MY VEXING PHRASE BEFORE WE ALL BLOW UP')).toBe(3);
+  });
+  it('treats unfamiliar vocabulary as the dominant term', () => {
+    // Same length, same shape. The only difference is whether you own the words.
+    const easy = difficultyReport('THE PARKING LOT IS FOR CUSTOMERS');
+    const hard = difficultyReport('THE VESTIBULE IS FOR PATRONS');
+    expect(hard.difficulty).toBeGreaterThan(easy.difficulty);
+  });
+  it('explains itself, so a low score is auditable', () => {
+    const r = difficultyReport('QUICK, JUDGE MY VEXING PHRASE BEFORE WE ALL BLOW UP');
+    expect(r.reasons.length).toBeGreaterThan(0);
+    expect(r.reasons.join(' ')).toMatch(/Q|J|X|Z/);
   });
   it('always returns 1, 2 or 3', () => {
     for (const t of [...fixtures.corpusSeed, ...fixtures.valid.map((v) => v.raw)]) {
       expect([1, 2, 3]).toContain(deriveDifficulty(t));
     }
+  });
+});
+
+describe('triage', () => {
+  it('catches the surreal-tautology shape by its repeated content word', () => {
+    expect(repeatedContentWords('THE DEPOSIT WAS FOR THE DEPOSIT')).toEqual(['deposit']);
+    expect(repeatedContentWords('REMOVE ALL PARTS BEFORE REMOVING ANY PARTS')).toContain('part');
+    expect(repeatedContentWords('A WATCHED POT NEVER BOILS')).toEqual([]);
+  });
+  it('spots abstract vocabulary', () => {
+    expect(abstractVocabulary('YOUR GRIEF IS NOT A RECOGNIZED FORMAT')).toEqual(['format', 'grief']);
+    expect(abstractVocabulary('WHY IS THERE A SECOND FRIDGE')).toEqual([]);
+  });
+  it('flags the abstract entries and leaves the familiar ones alone', () => {
+    expect(triage('THE DEPOSIT WAS FOR THE DEPOSIT').flagged).toBe(true);
+    expect(triage('YOUR GRIEF IS NOT A RECOGNIZED FORMAT').flagged).toBe(true);
+    expect(triage('A WATCHED POT NEVER BOILS').flagged).toBe(false);
+    expect(triage('WHY IS THERE A SECOND FRIDGE').flagged).toBe(false);
+  });
+  it('always says why, because flagged entries are kept for a human, not deleted', () => {
+    const v = triage('THE DEPOSIT WAS FOR THE DEPOSIT');
+    expect(v.reasons.join(' ')).toContain('SELF_REFERENTIAL');
+  });
+  it('is not a validator rule — everything it flags still validates', () => {
+    const r = validateCandidate({
+      raw: 'THE DEPOSIT WAS FOR THE DEPOSIT',
+      hint: 'a payment held against another payment',
+      category: 'x',
+    });
+    expect(r.ok).toBe(true);
   });
 });

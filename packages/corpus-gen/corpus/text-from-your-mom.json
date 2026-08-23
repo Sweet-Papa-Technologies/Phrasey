@@ -1,25 +1,36 @@
 [
   {
-    "id": "p_3679fd4381f81fc1",
-    "text": "ARE YOU EATING ENOUGH FOOD. I AM ASKING FOR THE BIRD",
-    "raw": "ARE YOU EATING ENOUGH FOOD. I AM ASKING FOR THE BIRD",
-    "category": "Text from your mom",
-    "hint": "a check-in disguised as a question about a small creature",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.992Z",
-    "provider": "infinity"
-  },
-  {
     "id": "p_11ce6273c96d2d8b",
     "text": "DID I TELL YOU ABOUT THE THUNDER LAST NIGHT",
     "raw": "DID I TELL YOU ABOUT THE THUNDER LAST NIGHT",
     "category": "Text from your mom",
     "hint": "a weather event from the previous evening, asked as a question but stated flatly",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.506Z"
+  },
+  {
+    "id": "p_c52251f44f22c735",
+    "text": "DO YOU KNOW WHO IS FIXING THE ROOF NEXT DOOR",
+    "raw": "DO YOU KNOW WHO IS FIXING THE ROOF NEXT DOOR",
+    "category": "Text from your mom",
+    "hint": "a trade worker is arriving soon at the adjacent house",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.595Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.506Z"
+  },
+  {
+    "id": "p_9201c3c147f746be",
+    "text": "DRINK WATER. I MEAN IT. NO BUTTING IN.",
+    "raw": "DRINK WATER. I MEAN IT. NO BUTTING IN.",
+    "category": "Text from your mom",
+    "hint": "a hydration order delivered with finality",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
   },
   {
     "id": "p_90eb0dc526f4d653",
@@ -29,8 +40,19 @@
     "hint": "a kitchen task failed due to a missing ingredient",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.597Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
+  },
+  {
+    "id": "p_60315b9b86a6818c",
+    "text": "I CROSSED MY FINGERS AND NOTHING HAPPENED",
+    "raw": "I CROSSED MY FINGERS AND NOTHING HAPPENED",
+    "category": "Text from your mom",
+    "hint": "a small ritual failed to produce a result",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
   },
   {
     "id": "p_d1c110c874ae981f",
@@ -38,10 +60,43 @@
     "raw": "I FOUND YOUR OLD SHOE IN THE TRASH AND KEPT IT",
     "category": "Text from your mom",
     "hint": "an item from the past was almost lost but was saved",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.993Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
+  },
+  {
+    "id": "p_ae712c4582767883",
+    "text": "I HEARD YOUR NAME IN THE GROCERY STORE",
+    "raw": "I HEARD YOUR NAME IN THE GROCERY STORE",
+    "category": "Text from your mom",
+    "hint": "a familiar voice from a busy shop",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
+  },
+  {
+    "id": "p_fc4121929d88f755",
+    "text": "I MADE TOO MUCH SOUP. COME OVER WHEN YOU CAN",
+    "raw": "I MADE TOO MUCH SOUP. COME OVER WHEN YOU CAN",
+    "category": "Text from your mom",
+    "hint": "an extra portion of a hot dish awaits at the kitchen table",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
+  },
+  {
+    "id": "p_827faad3d8c043a4",
+    "text": "I PUT THE COAT BY THE DOOR. YOU WILL NEED IT",
+    "raw": "I PUT THE COAT BY THE DOOR. YOU WILL NEED IT",
+    "category": "Text from your mom",
+    "hint": "a warm garment is waiting at the entrance",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
   },
   {
     "id": "p_d6826caddc1b89a5",
@@ -51,19 +106,30 @@
     "hint": "clothing was relocated to a vehicle because of temperature",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.596Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.507Z"
   },
   {
-    "id": "p_ba39bcbb852930f4",
-    "text": "I SLEPT TWELVE HOURS. YOU SHOULD TRY THAT SOMETIMES",
-    "raw": "I SLEPT TWELVE HOURS. YOU SHOULD TRY THAT SOMETIMES",
+    "id": "p_b1a0905acf76108c",
+    "text": "I SAW YOUR FATHER'S HAT IN THE MAIL",
+    "raw": "I SAW YOUR FATHER'S HAT IN THE MAIL",
     "category": "Text from your mom",
-    "hint": "an extended rest was taken and advice is being given",
-    "difficulty": 3,
+    "hint": "an unexpected item arrived by post",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.994Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
+  },
+  {
+    "id": "p_0131973d38d8099c",
+    "text": "I TRIED THE NEW PHONE AND I PUT IT DOWN",
+    "raw": "I TRIED THE NEW PHONE AND I PUT IT DOWN",
+    "category": "Text from your mom",
+    "hint": "a modern device was too much so it was set aside",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
   },
   {
     "id": "p_165ad2dee591796e",
@@ -71,10 +137,21 @@
     "raw": "I WENT TO THE STORE. I DID NOT NEED ANYTHING.",
     "category": "Text from your mom",
     "hint": "a trip to a shop that was completely unnecessary",
-    "difficulty": 3,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.598Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
+  },
+  {
+    "id": "p_28c36321a2d15ef1",
+    "text": "IS THE CAR WASHED? I HAVE A THURSDAY PLAN",
+    "raw": "IS THE CAR WASHED? I HAVE A THURSDAY PLAN",
+    "category": "Text from your mom",
+    "hint": "a vehicle's cleanliness questioned before an errand",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
   },
   {
     "id": "p_11d5cc8017fcc207",
@@ -82,10 +159,21 @@
     "raw": "IT IS GOING TO RAIN AND I AM NOT READY FOR IT.",
     "category": "Text from your mom",
     "hint": "precipitation is coming and the sender is unprepared",
-    "difficulty": 3,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.595Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
+  },
+  {
+    "id": "p_5db7c13e4d9dab0f",
+    "text": "PUT THE MOP BACK WHERE IT BELONGS. BE KIND",
+    "raw": "PUT THE MOP BACK WHERE IT BELONGS. BE KIND",
+    "category": "Text from your mom",
+    "hint": "a cleaning tool needs to return to its place",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
   },
   {
     "id": "p_5a4f7d8a5d59ac6a",
@@ -93,10 +181,10 @@
     "raw": "THE CAT DID SOMETHING TO THE CURTAIN AGAIN.",
     "category": "Text from your mom",
     "hint": "a feline damaged a window covering, and it is a recurring event",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.596Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
   },
   {
     "id": "p_5314f254c40c0057",
@@ -104,10 +192,10 @@
     "raw": "THE CLOUDS LOOKED LIKE YOUR FATHER TODAY.",
     "category": "Text from your mom",
     "hint": "sky formations resembled a parent, mentioned in passing",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.596Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.508Z"
   },
   {
     "id": "p_689e2dd1f04017ee",
@@ -115,10 +203,21 @@
     "raw": "THE DOG IS YELLING AGAIN. ANYWAY EAT SOMETHING.",
     "category": "Text from your mom",
     "hint": "a noisy complaint about a pet, then a food command",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.591Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
+  },
+  {
+    "id": "p_23cb7e98d513f903",
+    "text": "THE DOG NEXT DOOR IS IN THE GARAGE",
+    "raw": "THE DOG NEXT DOOR IS IN THE GARAGE",
+    "category": "Text from your mom",
+    "hint": "a four-legged trespasser found a shelter",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
   },
   {
     "id": "p_fc1890704659f942",
@@ -126,10 +225,10 @@
     "raw": "THE GARDEN IS ALIVE AGAIN AND I DO NOT KNOW WHY",
     "category": "Text from your mom",
     "hint": "plants have started growing and the cause is unclear",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.995Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
   },
   {
     "id": "p_e3106cd1d125b686",
@@ -137,10 +236,10 @@
     "raw": "THE HEAT IS COMING BACK. DO YOU HAVE A BLANKET",
     "category": "Text from your mom",
     "hint": "warmth is returning and a question about staying cozy",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.994Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
   },
   {
     "id": "p_ef17544f73f7b918",
@@ -148,21 +247,54 @@
     "raw": "THE KITCHEN FLOOR IS WET AND I DO NOT KNOW WHY.",
     "category": "Text from your mom",
     "hint": "a household surface is soaked, cause unknown, stated as fact",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.595Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
   },
   {
-    "id": "p_6782e5b6b187f554",
-    "text": "THE NEIGHBOR HAS A NEW DOG AND IT SOUNDS LIKE CRYING",
-    "raw": "THE NEIGHBOR HAS A NEW DOG AND IT SOUNDS LIKE CRYING",
+    "id": "p_5c4c88f22ba390e8",
+    "text": "THE PANS ARE CLEAN. I AM PROUD OF MYSELF.",
+    "raw": "THE PANS ARE CLEAN. I AM PROUD OF MYSELF.",
     "category": "Text from your mom",
-    "hint": "someone next door got a puppy but the barking is unsettling",
-    "difficulty": 3,
+    "hint": "cookware finally spotless and a self-congratulation",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:08.991Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
+  },
+  {
+    "id": "p_c4531a52c42a7291",
+    "text": "THE PARKING LOT IS FULL AGAIN. I HAD TO WALK",
+    "raw": "THE PARKING LOT IS FULL AGAIN. I HAD TO WALK",
+    "category": "Text from your mom",
+    "hint": "every space at the shopping center was taken",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
+  },
+  {
+    "id": "p_b1537a9be30c5ba3",
+    "text": "THE SKY IS DOING IT AGAIN. BRING A JACKET",
+    "raw": "THE SKY IS DOING IT AGAIN. BRING A JACKET",
+    "category": "Text from your mom",
+    "hint": "unpredictable weather calls for an extra layer",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.509Z"
+  },
+  {
+    "id": "p_250ad14bd978d985",
+    "text": "THE STORM IS OVER. EVERYTHING IS QUIET NOW",
+    "raw": "THE STORM IS OVER. EVERYTHING IS QUIET NOW",
+    "category": "Text from your mom",
+    "hint": "the bad weather has passed and calm returned",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
     "id": "p_e108709ce87cbfc2",
@@ -172,8 +304,8 @@
     "hint": "daylight returned after absence and the household is shocked",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.597Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
     "id": "p_ac893462a18e8c2b",
@@ -183,8 +315,8 @@
     "hint": "air movement is recurring and causing insomnia",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.598Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   },
   {
     "id": "p_09ecf3bbc94888c1",
@@ -194,7 +326,7 @@
     "hint": "a sibling reached out repeatedly, the sender ignored it on purpose",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:38.595Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.510Z"
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "_comment": "Deliberately invalid candidates. The validator test suite asserts every one of these is rejected, and rejected for the named reason. Design doc §14 makes 'validator rejects known-bad fixtures' the exit criterion for M5. `expect` is a subset assertion: the entry may fail additional rules, but it must fail at least these.",
+  "_comment": "Deliberately invalid candidates. The validator test suite asserts every one of these is rejected, and rejected for the named reason. Design doc \u00a714 makes 'validator rejects known-bad fixtures' the exit criterion for M5. `expect` is a subset assertion: the entry may fail additional rules, but it must fail at least these.",
   "corpusSeed": [
     "THEY MOVED THE FROZEN AISLE AND I AM SHAKEN",
     "WHY IS THERE A SECOND FRIDGE",
@@ -64,7 +64,7 @@
       "expect": [
         "PROPER_NOUN"
       ],
-      "note": "trademarked retailer — the legal posture in §4.2 says no"
+      "note": "trademarked retailer \u2014 the legal posture in \u00a74.2 says no"
     },
     {
       "id": "proper-noun-capitalization",
@@ -108,7 +108,7 @@
     },
     {
       "id": "non-ascii",
-      "raw": "PICK UP THE MILK AND SOME BREAD 🥛",
+      "raw": "PICK UP THE MILK AND SOME BREAD \ud83e\udd5b",
       "hint": "dairy and a baked staple to collect",
       "category": "Grocery list",
       "expect": [
@@ -174,7 +174,7 @@
       "expect": [
         "HINT_LEAKS_PHRASE"
       ],
-      "note": "DOORS/door — the leak check compares stems, not exact strings"
+      "note": "DOORS/door \u2014 the leak check compares stems, not exact strings"
     },
     {
       "id": "hint-too-short",
@@ -199,7 +199,7 @@
     {
       "id": "hint-non-ascii",
       "raw": "STIR UNTIL IT LOOKS LIKE THE PICTURE",
-      "hint": "mix it until it matches the drawing 🥄",
+      "hint": "mix it until it matches the drawing \ud83e\udd44",
       "category": "Instructions on the back of a box",
       "expect": [
         "HINT_NON_ASCII"
@@ -225,6 +225,26 @@
         "HINT_PROFANITY"
       ],
       "note": "profanity screen applies to the hint too, not just the phrase"
+    },
+    {
+      "id": "uncommon-vocabulary",
+      "raw": "THE VESTIBULE ACOUSTICS PERTURB MY EQUILIBRIUM",
+      "hint": "the entry hall sound upsets a sense of steadiness",
+      "category": "Yelp review, one star",
+      "expect": [
+        "UNCOMMON_VOCABULARY"
+      ],
+      "note": "grammatical, in band, and made of words no player owns - unguessable, which is the whole failure mode this rule exists for"
+    },
+    {
+      "id": "uncommon-vocabulary-single-outlier",
+      "raw": "THE SOUP TASTED OF INEFFABLE SADNESS",
+      "hint": "the broth carried an emotion beyond words",
+      "category": "Yelp review, one star",
+      "expect": [
+        "UNCOMMON_VOCABULARY"
+      ],
+      "note": "one word outside the list is allowed by MAX_UNCOMMON_WORDS, but only if the fraction still clears the floor; six words with one outlier does not"
     }
   ],
   "valid": [

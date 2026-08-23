@@ -14,7 +14,7 @@ import { buildPrompt, BRIEFS, SYSTEM_PROMPT } from './prompts.js';
 import type { Provider } from './providers/index.js';
 import type { Candidate, CorpusEntry, RejectedEntry } from './types.js';
 import { makeEntry, makeRejection } from './corpus.js';
-import { validateCandidate, type CorpusIndex } from './validator.js';
+import { RULES, validateCandidate, type CorpusIndex } from './validator.js';
 
 export interface GenerateCategoryOptions {
   provider: Provider;
@@ -28,6 +28,12 @@ export interface GenerateCategoryOptions {
   batchSize?: number;
   /** Stop after this many model calls even if the target was not reached. */
   maxRounds?: number;
+  /**
+   * Length ceiling for NEW material. Defaults to `RULES.TARGET_MAX_LENGTH`, not
+   * to §4.3's 60 — the hard cap exists for the occasional long one already in
+   * the corpus, and is the wrong thing to generate against.
+   */
+  maxLength?: number;
   onLog?: (line: string) => void;
 }
 
@@ -49,10 +55,19 @@ export async function generateCategory(opts: GenerateCategoryOptions): Promise<C
     existing,
     batchSize = 15,
     maxRounds = 6,
+    maxLength = RULES.TARGET_MAX_LENGTH,
     onLog = () => {},
   } = opts;
 
   const brief = BRIEFS[category];
+  // Per-category validator relaxations live in the brief, next to the voice
+  // that justifies them — see CategoryBrief.commonWordFloor.
+  const validateOpts = {
+    index,
+    maxLength,
+    ...(brief.commonWordFloor !== undefined ? { commonWordFloor: brief.commonWordFloor } : {}),
+    ...(brief.maxUncommonWords !== undefined ? { maxUncommonWords: brief.maxUncommonWords } : {}),
+  };
   const accepted: CorpusEntry[] = [];
   const rejected: RejectedEntry[] = [];
   const seenThisRun = [...existing];
@@ -92,9 +107,11 @@ export async function generateCategory(opts: GenerateCategoryOptions): Promise<C
         hint: item.hint,
         category,
         source: brief.source,
+        rightsTier: brief.rightsTier,
+        ...(brief.rightsNote ? { rightsNote: brief.rightsNote } : {}),
         provider: provider.name,
       };
-      const result = validateCandidate(candidate, { index });
+      const result = validateCandidate(candidate, validateOpts);
       if (result.ok) {
         const entry = makeEntry(candidate, result);
         accepted.push(entry);

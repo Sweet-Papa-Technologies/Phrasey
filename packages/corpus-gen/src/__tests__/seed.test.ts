@@ -17,6 +17,7 @@ function entry(text: string, over: Partial<CorpusEntry> = {}): CorpusEntry {
     hint: 'a plausible one line nudge',
     difficulty: deriveDifficulty(text),
     source: 'generated',
+    rightsTier: 'core',
     generatedAt: '2026-08-23T00:00:00.000Z',
     ...over,
   };
@@ -27,7 +28,7 @@ describe('toPuzzleDoc', () => {
 
   it('emits exactly the §6.4 puzzle fields', () => {
     expect(Object.keys(doc).sort()).toEqual(
-      ['active', 'category', 'difficulty', 'hint', 'id', 'letterStats', 'source', 'text', 'updatedAt'].sort(),
+      ['active', 'category', 'difficulty', 'hint', 'id', 'letterStats', 'rightsTier', 'source', 'text', 'updatedAt'].sort(),
     );
   });
   it('marks the puzzle active', () => {

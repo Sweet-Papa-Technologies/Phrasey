@@ -149,8 +149,8 @@ If a "famous quotes" category is wanted later, sourcing and rights are a separat
 A Node CLI in `packages/corpus-gen`. Runtime **never** calls an LLM.
 
 ```
-INFINITY (Qwen 3.8 27B, OpenAI-compatible)
-  http://192.168.1.99:8080/v1
+Local model server (Qwen 3.8 27B, OpenAI-compatible)
+  $PHRASEY_INFINITY_URL
     ↓ batch generate per category
   validator (deterministic, no LLM)
     ↓

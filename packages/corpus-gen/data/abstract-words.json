@@ -1,0 +1,30 @@
+{
+  "_comment": "Vocabulary that signals the abstract/surreal register the corpus is moving away from. Used ONLY by `phrasey-corpus triage`, which moves matching entries to corpus/review-queue.json for a human rather than deleting them (they may be wanted later as a hard-mode set). Not a rejection rule: a phrase is not wrong for containing one of these, it is just unlikely to be guessable.",
+  "words": [
+    "abstraction", "absence", "aesthetic", "affect", "agency", "algorithm", "alignment",
+    "ambiguity", "ambivalence", "anomaly", "aperture", "apparatus", "archetype", "artifact",
+    "aspect", "assertion", "attribute", "autonomy", "axiom", "boundary", "capacity",
+    "cognition", "coherence", "concept", "condition", "configuration", "consciousness",
+    "consequence", "construct", "context", "continuum", "contradiction", "convergence",
+    "criteria", "declaration", "deference", "denial", "dialectic", "dimension", "discourse",
+    "disposition", "dissonance", "domain", "duality", "dynamic", "elegy", "embodiment",
+    "emergence", "entity", "entropy", "epiphany", "equilibrium", "essence", "eternity",
+    "ethos", "existence", "expanse", "extremity", "finality", "format", "framework",
+    "futility", "grief", "hierarchy", "hypothesis", "identity", "ideology", "immanence",
+    "impermanence", "inertia", "inevitability", "infinity", "infrastructure", "instance",
+    "intent", "interface", "interval", "iteration", "liminal", "logic", "longing",
+    "manifest", "mechanism", "melancholy", "metaphor", "methodology", "modality", "modality",
+    "monologue", "mortality", "narrative", "negation", "nihilism", "nonexistence", "notion",
+    "nuance", "objectivity", "obligation", "ontology", "opacity", "paradigm", "paradox",
+    "parameter", "particularity", "perception", "permanence", "phenomenon", "philosophy",
+    "posture", "potentiality", "precedent", "predicate", "premise", "presence", "principle",
+    "probability", "process", "proposition", "protocol", "provenance", "proximity",
+    "quantum", "recursion", "reference", "reflection", "relativity", "resonance",
+    "resignation", "sanctity", "schema", "semantics", "sentiment", "sequence", "signifier",
+    "simulation", "singularity", "solitude", "specificity", "spectrum", "stasis",
+    "structure", "subjectivity", "substance", "symmetry", "syntax", "system", "taxonomy",
+    "teleology", "temporality", "tendency", "threshold", "trajectory", "transcendence",
+    "transience", "typology", "unbeing", "uncertainty", "unreality", "vacancy", "validity",
+    "variable", "vector", "velocity", "veracity", "vessel", "void", "volition"
+  ]
+}

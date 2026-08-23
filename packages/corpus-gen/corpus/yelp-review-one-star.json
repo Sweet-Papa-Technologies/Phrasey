@@ -7,8 +7,8 @@
     "hint": "requested payment, received biography",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
   },
   {
     "id": "p_42195075941554d2",
@@ -16,10 +16,10 @@
     "raw": "DO YOU KNOW WHAT HUNGER FEELS LIKE",
     "category": "Yelp review, one star",
     "hint": "a rhetorical question that nobody asked",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.451Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.524Z"
   },
   {
     "id": "p_fdeae611e0b153bb",
@@ -29,8 +29,8 @@
     "hint": "unrequested grammatical completeness",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
     "id": "p_9c32c152fd88c927",
@@ -38,10 +38,10 @@
     "raw": "I APOLOGIZED FOR THE NOISE I WAS MAKING",
     "category": "Yelp review, one star",
     "hint": "expressed regret about one's own sound",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
     "id": "p_d782ee959fbce0bb",
@@ -49,21 +49,43 @@
     "raw": "I DID NOT ASK FOR A SECOND OPINION ON MY PAIN",
     "category": "Yelp review, one star",
     "hint": "unsolicited medical commentary at a restaurant table",
-    "difficulty": 3,
-    "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.451Z",
-    "provider": "infinity"
-  },
-  {
-    "id": "p_033ab7e1fa81430c",
-    "text": "I ORDERED SOUP NOT A LECTURE ON SOUP",
-    "raw": "I ORDERED SOUP NOT A LECTURE ON SOUP",
-    "category": "Yelp review, one star",
-    "hint": "asked for broth, got a monologue about it",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.140Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
+  },
+  {
+    "id": "p_de1b28dd3228dd4a",
+    "text": "I DID NOT COME HERE TO BE PARENTED",
+    "raw": "I DID NOT COME HERE TO BE PARENTED",
+    "category": "Yelp review, one star",
+    "hint": "feeling scolded by the service",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
+  },
+  {
+    "id": "p_19e84c4c482f5f17",
+    "text": "I JUST WANTED A SNACK, NOT A THERAPY SESSION",
+    "raw": "I JUST WANTED A SNACK, NOT A THERAPY SESSION",
+    "category": "Yelp review, one star",
+    "hint": "simple meal turned into an emotional deep-dive",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
+  },
+  {
+    "id": "p_920856bdbb1f4fc9",
+    "text": "I ORDERED QUIET AND GOT A STORM",
+    "raw": "I ORDERED QUIET AND GOT A STORM",
+    "category": "Yelp review, one star",
+    "hint": "requested stillness, received chaos",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
     "id": "p_09ce3d939505c94a",
@@ -73,8 +95,8 @@
     "hint": "a solo act went by with zero audience engagement",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.448Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
     "id": "p_65f5a6ff9572dbc8",
@@ -84,19 +106,19 @@
     "hint": "declared an intolerance to lack of attention",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.141Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
-    "id": "p_06f0adc28d4566d0",
-    "text": "MY ORDER WAS PERFECT AND I HATED EVERYTHING ABOUT IT",
-    "raw": "MY ORDER WAS PERFECT AND I HATED EVERYTHING ABOUT IT",
+    "id": "p_81a1f2d2a73cd701",
+    "text": "SOMEONE HERE IS NOT READY FOR THIS JOB",
+    "raw": "SOMEONE HERE IS NOT READY FOR THIS JOB",
     "category": "Yelp review, one star",
-    "hint": "flawless meal, unbearable atmosphere",
-    "difficulty": 3,
+    "hint": "a staff member clearly underqualified",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.449Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.525Z"
   },
   {
     "id": "p_9d0a1e9d644c44f1",
@@ -106,8 +128,8 @@
     "hint": "low lighting, bleak outlook",
     "difficulty": 3,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
     "id": "p_04cc8f706749c843",
@@ -117,8 +139,19 @@
     "hint": "old sandwich, emotional vulnerability",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.140Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
+  },
+  {
+    "id": "p_d3d017055ab5db4f",
+    "text": "THE CANDLE ON MY TABLE WAS JUDGING ME",
+    "raw": "THE CANDLE ON MY TABLE WAS JUDGING ME",
+    "category": "Yelp review, one star",
+    "hint": "a small flame that felt critical",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
     "id": "p_421217a6d7b34b91",
@@ -128,8 +161,19 @@
     "hint": "kitchen staff directed blame at the customer",
     "difficulty": 3,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.141Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
+  },
+  {
+    "id": "p_7593b9c0735add68",
+    "text": "THE COFFEE WAS FINE, THE VIBES WERE NOT",
+    "raw": "THE COFFEE WAS FINE, THE VIBES WERE NOT",
+    "category": "Yelp review, one star",
+    "hint": "decent brew, uncomfortable atmosphere",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
     "id": "p_90e527cb59e875d0",
@@ -137,21 +181,32 @@
     "raw": "THE DOOR WAS STUCK AND SO WAS THE WAITER",
     "category": "Yelp review, one star",
     "hint": "jammed entry, also a frozen server",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.141Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
-    "id": "p_d913a7338f977594",
-    "text": "THE MENU HAD TWENTY-SEVEN OPTIONS AND I CHOSE WRONG",
-    "raw": "THE MENU HAD TWENTY-SEVEN OPTIONS AND I CHOSE WRONG",
+    "id": "p_920fa164296da5f1",
+    "text": "THE FLOOR WAS WET AND SO WAS THE TONE",
+    "raw": "THE FLOOR WAS WET AND SO WAS THE TONE",
     "category": "Yelp review, one star",
-    "hint": "too much freedom, no safe answer",
-    "difficulty": 3,
+    "hint": "slippery ground, equally sharp atmosphere",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.451Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
+  },
+  {
+    "id": "p_20d90e48d9eb04f2",
+    "text": "THE KITCHEN SMELLED LIKE REGRET",
+    "raw": "THE KITCHEN SMELLED LIKE REGRET",
+    "category": "Yelp review, one star",
+    "hint": "an unpleasant odor suggesting second thoughts",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
     "id": "p_fd2744157d372b0a",
@@ -159,21 +214,54 @@
     "raw": "THE MUSIC WAS LOUD AND SO WAS THE MAN",
     "category": "Yelp review, one star",
     "hint": "volume issue shared by two parties",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.141Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.526Z"
   },
   {
-    "id": "p_a7ce3dad87e62ead",
-    "text": "THE PLATE CAME OUT AND I FORGOT WHY I CAME",
-    "raw": "THE PLATE CAME OUT AND I FORGOT WHY I CAME",
+    "id": "p_014bed0d166c027a",
+    "text": "THE PARKING LOT WAS FULL AND SO WAS MY CUP",
+    "raw": "THE PARKING LOT WAS FULL AND SO WAS MY CUP",
     "category": "Yelp review, one star",
-    "hint": "food arrived, purpose evaporated",
-    "difficulty": 3,
+    "hint": "no spots available, drink overfilled",
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.142Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
+  },
+  {
+    "id": "p_a9039b08562c1de0",
+    "text": "THE PASTA WAS GOOD BUT THE GAZE WAS NOT",
+    "raw": "THE PASTA WAS GOOD BUT THE GAZE WAS NOT",
+    "category": "Yelp review, one star",
+    "hint": "fine food, uncomfortable eye contact",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
+  },
+  {
+    "id": "p_9c10aeb2ef34312a",
+    "text": "THE SALT WAS IN THE WRONG SPOT ON THE TABLE",
+    "raw": "THE SALT WAS IN THE WRONG SPOT ON THE TABLE",
+    "category": "Yelp review, one star",
+    "hint": "condiment placement felt personally offensive",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
+  },
+  {
+    "id": "p_5f0bf68c7f2d9b20",
+    "text": "THE WAIT WAS LONG, THE SILENCE LONGER",
+    "raw": "THE WAIT WAS LONG, THE SILENCE LONGER",
+    "category": "Yelp review, one star",
+    "hint": "slow service, even slower conversation",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   },
   {
     "id": "p_ef90bc2586103c19",
@@ -183,8 +271,8 @@
     "hint": "a staff member was deeply sorry to be alive",
     "difficulty": 3,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.449Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   },
   {
     "id": "p_8b94d9d83abb471d",
@@ -192,10 +280,10 @@
     "raw": "THE WIFI WORKED FINE I JUST HAD NOWHERE TO GO",
     "category": "Yelp review, one star",
     "hint": "good signal, terrible destination",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:17:23.448Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   },
   {
     "id": "p_cb2397ddb6169629",
@@ -205,7 +293,7 @@
     "hint": "meat in tortillas, not alarm bells",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:10:21.141Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.527Z"
   }
 ]

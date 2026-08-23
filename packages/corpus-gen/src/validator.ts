@@ -16,7 +16,7 @@ import {
 } from '@phrasey/shared';
 import { hashSeed, mulberry32, shuffle } from './rng.js';
 import type { Candidate } from './types.js';
-import { profanityList, properNounAllowlist, properNounLexicon } from './wordlists.js';
+import { abstractWords, commonWords, profanityList, properNounAllowlist, properNounLexicon } from './wordlists.js';
 
 // ---------------------------------------------------------------------------
 // Thresholds — all in one place so they can be tuned from evidence, not vibes.
@@ -25,6 +25,13 @@ import { profanityList, properNounAllowlist, properNounLexicon } from './wordlis
 export const RULES = {
   MIN_LENGTH: 12,
   MAX_LENGTH: 60,
+  /**
+   * The band we actually want. §4.3's hard cap stays at 60 for the occasional
+   * long one, but `generate` defaults to this so new material lands short:
+   * a 40-character phrase is one you can complete from three letters, and a
+   * 55-character one is a reading comprehension exercise.
+   */
+  TARGET_MAX_LENGTH: 44,
   MIN_WORDS: 3,
   MIN_DISTINCT_LETTERS: 6,
   HINT_MIN_LENGTH: 10,
@@ -32,12 +39,54 @@ export const RULES = {
   /** Fraction of letter tiles the simulation reveals (§4.3). */
   REVEAL_FRACTION: 0.4,
   SOLVABILITY_TRIALS: 24,
-  /** Two most common letters revealing more than this much of the board is a giveaway. */
-  MAX_TWO_LETTER_COVERAGE: 0.55,
-  /** ...as is having almost nothing left hidden after those two letters. */
-  MIN_HIDDEN_AFTER_TWO: 4,
-  /** Share of long words fully exposed at the 40% mark before the board reads itself out. */
-  MAX_WORDS_EXPOSED_AT_40: 0.5,
+
+  // --- guessability --------------------------------------------------------
+  /**
+   * Minimum share of a phrase's words that are on the bundled common-word list.
+   * A board only gives you traction if you can *guess ahead*, and you cannot
+   * guess ahead at vocabulary you do not own. Measured against the corpus and
+   * against known-good phrases: ordinary English lands at 1.00, and a phrase
+   * with one specialist word in six still reads fine, so the floor sits just
+   * below that.
+   */
+  MIN_COMMON_WORD_FRACTION: 0.85,
+  /**
+   * ...and an absolute cap, because a long phrase can hide several rare words
+   * behind a good-looking fraction. One unusual word is a flavour; two is a
+   * phrase nobody completes.
+   */
+  MAX_UNCOMMON_WORDS: 1,
+
+  // --- solvability ---------------------------------------------------------
+  /**
+   * Two commonest letters revealing more than this much of the board.
+   *
+   * Was 0.55, which was tuned to reject *easy* phrases back when the corpus
+   * needed to be harder. It is now the wrong way round: E and T alone are ~20%
+   * of written English, so on the 15-40 character phrases we now want, two
+   * letters exposing half the board is simply what a familiar phrase looks
+   * like — and it is exactly the "you get three letters and it clicks" moment
+   * the game is for. Raised to 0.70, which still catches the degenerate case
+   * of a phrase built from two repeated letters.
+   */
+  MAX_TWO_LETTER_COVERAGE: 0.7,
+  /**
+   * Secondary coverage bar, applied only when there is also almost nothing
+   * left: high coverage is a giveaway when the remainder is unguessable-small,
+   * not on its own. This pair is what "falls out from two letters" means.
+   */
+  ELEVATED_TWO_LETTER_COVERAGE: 0.55,
+  MIN_HIDDEN_WHEN_ELEVATED: 6,
+  /** ...and a floor on what is left after those two letters, whatever the coverage. */
+  MIN_HIDDEN_AFTER_TWO: 3,
+  /**
+   * Share of long words fully exposed at the 40% mark. Was 0.5, which threw out
+   * repetitive familiar material ("ROW ROW ROW YOUR BOAT", "BAA BAA BLACK
+   * SHEEP") whose whole appeal is that the repetition makes it guessable.
+   * Raised to 0.75; above that the board really does read itself out.
+   */
+  MAX_WORDS_EXPOSED_AT_40: 0.75,
+
   /** Token overlap with an existing entry sharing the same word-length shape. */
   NEAR_DUP_JACCARD_SAME_SHAPE: 0.6,
   /** Token overlap high enough to be a near-duplicate whatever the shape. */
@@ -52,6 +101,7 @@ export const REJECTION_REASONS = [
   'DISALLOWED_PUNCTUATION',
   'PROPER_NOUN',
   'PROFANITY',
+  'UNCOMMON_VOCABULARY',
   'DUPLICATE',
   'TRIVIALLY_SOLVABLE',
   'PATTERN_NEAR_DUPLICATE',
@@ -164,6 +214,89 @@ export function findProfanity(text: string): string[] {
     if (squashed.includes(sub)) hits.add(sub);
   }
   return [...hits].sort();
+}
+
+// ---------------------------------------------------------------------------
+// Common vocabulary (guessability)
+// ---------------------------------------------------------------------------
+
+/**
+ * Is this a word an ordinary player owns?
+ *
+ * The bundled list is stored in base forms, so the lookup has to undo the
+ * inflection the phrase happens to use. Everything here is cheap string work:
+ * exact, apostrophe-stripped, stemmed, then the three spelling repairs the
+ * crude stemmer needs (doubled consonant, dropped silent e, -ies -> -y).
+ * Hyphenated compounds pass when every part passes.
+ */
+export function isCommonWord(word: string): boolean {
+  const { set } = commonWords();
+  const w = word.toLowerCase();
+  if (set.has(w)) return true;
+  const bare = w.replace(/'/g, '');
+  // A one-letter word ("A", "I", the U in "U TURN") is never the thing that
+  // makes a phrase unguessable.
+  if (bare.length <= 1) return true;
+  if (set.has(bare)) return true;
+  const s = stem(bare);
+  if (set.has(s)) return true;
+  if (/([a-z])\1$/.test(s) && set.has(s.slice(0, -1))) return true; // stopping -> stop
+  if (set.has(`${s}e`)) return true; // making -> make
+  if (set.has(`${s}y`)) return true; // tries -> try
+  if (bare.includes('-')) return bare.split('-').every((part) => part.length < 2 || isCommonWord(part));
+  return false;
+}
+
+/**
+ * Frequency rank of a word, 1 = commonest. `Infinity` when it is not on the
+ * list at all. Used by the difficulty scorer, which wants a gradient rather
+ * than the in/out verdict the reject rule uses.
+ */
+export function wordRank(word: string): number {
+  const { rank } = commonWords();
+  const w = word.toLowerCase();
+  const bare = w.replace(/'/g, '');
+  const s = stem(bare);
+  return Math.min(
+    rank(w),
+    rank(bare),
+    rank(s),
+    /([a-z])\1$/.test(s) ? rank(s.slice(0, -1)) : Number.POSITIVE_INFINITY,
+    rank(`${s}e`),
+    rank(`${s}y`),
+  );
+}
+
+export interface VocabularyReport {
+  words: number;
+  /** Share of words on the common list. 1 = every word is ordinary English. */
+  commonFraction: number;
+  /** The words that are not, in order of appearance. */
+  uncommon: string[];
+  /** Share of words outside the top 3000 by frequency — the "reaching" measure. */
+  rareBandFraction: number;
+}
+
+/** Frequency rank past which a word is common but not *instantly* available. */
+export const RARE_BAND_RANK = 3000;
+
+export function vocabularyReport(text: string): VocabularyReport {
+  const words = tokenize(text).filter((w) => w.length > 0);
+  if (words.length === 0) {
+    return { words: 0, commonFraction: 1, uncommon: [], rareBandFraction: 0 };
+  }
+  const uncommon: string[] = [];
+  let rareBand = 0;
+  for (const w of words) {
+    if (!isCommonWord(w)) uncommon.push(w);
+    if (wordRank(w) > RARE_BAND_RANK) rareBand++;
+  }
+  return {
+    words: words.length,
+    commonFraction: (words.length - uncommon.length) / words.length,
+    uncommon,
+    rareBandFraction: rareBand / words.length,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -380,6 +513,22 @@ export class CorpusIndex {
 export interface ValidateOptions {
   /** Existing corpus to dedupe against. Omit for a standalone check. */
   index?: CorpusIndex;
+  /**
+   * Overrides `RULES.MAX_LENGTH`. `generate` passes `TARGET_MAX_LENGTH` so new
+   * material lands in the short, guessable band, while re-validating what is
+   * already committed keeps §4.3's 60-character hard cap.
+   */
+  maxLength?: number;
+  /**
+   * Overrides `RULES.MIN_COMMON_WORD_FRACTION` / `MAX_UNCOMMON_WORDS`.
+   *
+   * Categories whose whole point is a *named* thing — a film title, a nursery
+   * rhyme — are familiar because the title is famous, not because its words are
+   * frequent. "ITSY BITSY SPIDER" is instantly guessable and scores 0.33 on a
+   * frequency list. Those categories declare a lower floor in their brief.
+   */
+  commonWordFloor?: number;
+  maxUncommonWords?: number;
 }
 
 export function validateCandidate(candidate: Candidate, opts: ValidateOptions = {}): ValidationResult {
@@ -390,10 +539,11 @@ export function validateCandidate(candidate: Candidate, opts: ValidateOptions = 
   const hash = normalizedHash(text);
 
   // --- phrase: shape -------------------------------------------------------
-  if (text.length < RULES.MIN_LENGTH || text.length > RULES.MAX_LENGTH) {
+  const maxLength = opts.maxLength ?? RULES.MAX_LENGTH;
+  if (text.length < RULES.MIN_LENGTH || text.length > maxLength) {
     failures.push({
       reason: 'LENGTH',
-      detail: `${text.length} chars, need ${RULES.MIN_LENGTH}-${RULES.MAX_LENGTH}`,
+      detail: `${text.length} chars, need ${RULES.MIN_LENGTH}-${maxLength}`,
     });
   }
 
@@ -431,6 +581,19 @@ export function validateCandidate(candidate: Candidate, opts: ValidateOptions = 
     failures.push({ reason: 'PROFANITY', detail: `profanity: ${profane.join(', ')}` });
   }
 
+  // --- phrase: guessable vocabulary ----------------------------------------
+  const vocab = vocabularyReport(text);
+  const floor = opts.commonWordFloor ?? RULES.MIN_COMMON_WORD_FRACTION;
+  const uncommonCap = opts.maxUncommonWords ?? RULES.MAX_UNCOMMON_WORDS;
+  if (vocab.words > 0 && (vocab.commonFraction < floor - 1e-9 || vocab.uncommon.length > uncommonCap)) {
+    failures.push({
+      reason: 'UNCOMMON_VOCABULARY',
+      detail:
+        `${Math.round(vocab.commonFraction * 100)}% common words (floor ${Math.round(floor * 100)}%), ` +
+        `${vocab.uncommon.length} outside the list (cap ${uncommonCap}): ${vocab.uncommon.join(', ')}`,
+    });
+  }
+
   // --- phrase: dedupe ------------------------------------------------------
   const index = opts.index;
   if (index) {
@@ -448,8 +611,15 @@ export function validateCandidate(candidate: Candidate, opts: ValidateOptions = 
   }
 
   // --- phrase: solvability -------------------------------------------------
+  //
+  // "Trivially solvable" now means the board is HANDED OVER by two cards, not
+  // merely that it is easy. Coverage alone is no longer disqualifying — it is
+  // disqualifying together with there being nothing left to deduce.
   const sim = simulateSolvability(text);
   if (sim.totalTiles > 0) {
+    const elevated =
+      sim.twoLetterCoverage > RULES.ELEVATED_TWO_LETTER_COVERAGE &&
+      sim.hiddenAfterTwo < RULES.MIN_HIDDEN_WHEN_ELEVATED;
     if (sim.twoLetterCoverage > RULES.MAX_TWO_LETTER_COVERAGE) {
       failures.push({
         reason: 'TRIVIALLY_SOLVABLE',
@@ -459,6 +629,13 @@ export function validateCandidate(candidate: Candidate, opts: ValidateOptions = 
       failures.push({
         reason: 'TRIVIALLY_SOLVABLE',
         detail: `only ${sim.hiddenAfterTwo} tiles left hidden after two letters`,
+      });
+    } else if (elevated) {
+      failures.push({
+        reason: 'TRIVIALLY_SOLVABLE',
+        detail:
+          `two commonest letters expose ${Math.round(sim.twoLetterCoverage * 100)}% of tiles ` +
+          `and leave only ${sim.hiddenAfterTwo} hidden`,
       });
     } else if (sim.meanWordsExposedAt40 > RULES.MAX_WORDS_EXPOSED_AT_40) {
       failures.push({
@@ -522,25 +699,192 @@ export function leakedWords(text: string, hint: string): string[] {
 // Difficulty
 // ---------------------------------------------------------------------------
 
-const RARE_LETTERS = new Set(['J', 'Q', 'X', 'Z', 'K', 'V', 'W', 'Y']);
+/** The four letters §3.2 keeps out of the noise pool entirely. */
+const RARE_LETTERS = new Set(['J', 'Q', 'X', 'Z']);
+/** Awkward but not exotic — a K or a V costs you a turn, not a round. */
+const AWKWARD_LETTERS = new Set(['K', 'V', 'W', 'F', 'B']);
+
+export interface DifficultyReport {
+  difficulty: 1 | 2 | 3;
+  score: number;
+  reasons: string[];
+  length: number;
+  tiles: number;
+  distinctLetters: number;
+  commonFraction: number;
+  rareBandFraction: number;
+}
 
 /**
- * Difficulty 1–3, derived from phrase length, distinct-letter count and the
- * presence of rare letters. Longer phrases with a wide alphabet and awkward
- * letters take more of the board to crack.
+ * Difficulty 1–3, derived from what actually makes a board hard to *guess*
+ * rather than from length alone.
+ *
+ * Four inputs, in the order they matter at the table:
+ *
+ *  1. **Vocabulary.** A word you do not own cannot be guessed ahead, only
+ *     spelled out one card at a time. This is the dominant term.
+ *  2. **Length.** More tiles is more board to fill before the shape reads.
+ *  3. **Distinct letters.** A wide alphabet means each card you hold covers
+ *     less of the board, so deduction converges more slowly.
+ *  4. **Rare letters.** J/Q/X/Z are excluded from the deck's noise pool
+ *     (§3.2), so a phrase containing one can sit unsolved waiting for it.
+ *
+ * The bands are deliberately generous at the easy end: after the playtest
+ * feedback the corpus is supposed to *skew* easy/medium, and a scorer that
+ * calls everything a 2 tells nobody anything.
  */
-export function deriveDifficulty(text: string): 1 | 2 | 3 {
+export interface DifficultyOptions {
+  /**
+   * The phrase is recognized as a whole rather than word by word — a title, a
+   * proverb, a nursery rhyme. Suppresses the vocabulary term: "BAA BAA BLACK
+   * SHEEP" is not hard because "baa" is not on a frequency list.
+   */
+  recalled?: boolean;
+}
+
+export function difficultyReport(text: string, opts: DifficultyOptions = {}): DifficultyReport {
   const norm = normalizePuzzleText(text);
   const distinct = distinctLetters(norm);
   const tiles = totalLetterCount(norm);
+  const vocab = vocabularyReport(norm);
+  const reasons: string[] = [];
   let score = 0;
-  if (norm.length >= 30) score += 1;
-  if (norm.length >= 45) score += 1;
-  if (distinct.length >= 13) score += 1;
-  if (distinct.length >= 17) score += 1;
-  if (distinct.some((l) => RARE_LETTERS.has(l))) score += 1;
-  if (tiles >= 40) score += 1;
-  if (score <= 1) return 1;
-  if (score <= 3) return 2;
-  return 3;
+
+  const add = (n: number, why: string) => {
+    score += n;
+    reasons.push(`+${n} ${why}`);
+  };
+
+  // 1. vocabulary
+  if (!opts.recalled) {
+    if (vocab.uncommon.length >= 1) add(2, `unfamiliar word(s): ${vocab.uncommon.join(', ')}`);
+    if (vocab.rareBandFraction > 0.34) {
+      add(1, `${Math.round(vocab.rareBandFraction * 100)}% of words outside the top ${RARE_BAND_RANK}`);
+    }
+  }
+
+  // 2. length
+  if (norm.length >= 30) add(1, 'over 30 characters');
+  if (norm.length >= 44) add(1, 'over 44 characters');
+
+  // 3. alphabet width
+  if (distinct.length >= 14) add(1, `${distinct.length} distinct letters`);
+  if (distinct.length >= 18) add(1, `${distinct.length} distinct letters`);
+
+  // 4. awkward letters
+  const rare = distinct.filter((l) => RARE_LETTERS.has(l));
+  const awkward = distinct.filter((l) => AWKWARD_LETTERS.has(l));
+  // §3.2 excludes J/Q/X/Z from the noise pool only when the puzzle does not
+  // contain them, so a phrase with an X still gets X's dealt from the 65%
+  // puzzle-letter share. The cost is a slower find, not a dead board — one
+  // point, and a second only when there are several.
+  if (rare.length > 0) add(1, `contains ${rare.join('/')}, thin in the deck's noise pool`);
+  if (rare.length >= 2) add(1, `several deck-thin letters: ${rare.join('/')}`);
+  if (awkward.length >= 3) add(1, `awkward letters ${awkward.join('/')}`);
+
+  const difficulty: 1 | 2 | 3 = score <= 2 ? 1 : score <= 5 ? 2 : 3;
+  return {
+    difficulty,
+    score,
+    reasons,
+    length: norm.length,
+    tiles,
+    distinctLetters: distinct.length,
+    commonFraction: vocab.commonFraction,
+    rareBandFraction: vocab.rareBandFraction,
+  };
+}
+
+export function deriveDifficulty(text: string, opts: DifficultyOptions = {}): 1 | 2 | 3 {
+  return difficultyReport(text, opts).difficulty;
+}
+
+// ---------------------------------------------------------------------------
+// Triage — the abstract tail
+// ---------------------------------------------------------------------------
+
+/**
+ * Why an already-valid entry might still not be worth guessing.
+ *
+ * This is deliberately NOT a validator rule. Everything here passes `validate`;
+ * it is a shortlist for a human, and the entries it names are moved to the
+ * review queue rather than deleted — they are a plausible "hard mode" set later
+ * (§4.3 keeps rejects for a skim for exactly this reason).
+ */
+export interface TriageVerdict {
+  flagged: boolean;
+  reasons: string[];
+}
+
+export interface TriageOptions {
+  /** Entries longer than this are too much board to fill. */
+  maxLength?: number;
+  /** Entries scoring above this on the new difficulty derivation. */
+  maxDifficulty?: 1 | 2 | 3;
+  /** Look for the surreal-tautology tell and abstract vocabulary. */
+  checkRegister?: boolean;
+  /** See `DifficultyOptions.recalled`. Also turns the register checks off. */
+  recalled?: boolean;
+}
+
+/**
+ * The tautology tell: a content word repeated inside one short phrase.
+ *
+ * This is the signature of the register the corpus is moving away from — "THE
+ * DEPOSIT WAS FOR THE DEPOSIT", "INVERT THE TRAY BEFORE THE TRAY EXISTS",
+ * "REMOVE ALL PARTS BEFORE REMOVING ANY PARTS". They read as jokes and play as
+ * dead ends, because the repetition is the whole content and there is nothing
+ * to deduce toward.
+ */
+export function repeatedContentWords(text: string): string[] {
+  const seen = new Map<string, number>();
+  for (const t of tokenize(text)) {
+    if (t.length < 4 || STOPWORDS.has(t)) continue;
+    const key = stem(t);
+    seen.set(key, (seen.get(key) ?? 0) + 1);
+  }
+  return [...seen.entries()]
+    .filter(([, n]) => n > 1)
+    .map(([w]) => w)
+    .sort();
+}
+
+/** Abstract nouns present in the phrase, from the advisory bundled list. */
+export function abstractVocabulary(text: string): string[] {
+  const list = abstractWords();
+  const hits = new Set<string>();
+  for (const t of tokenize(text)) {
+    const bare = t.replace(/'/g, '');
+    if (list.has(bare) || list.has(stem(bare))) hits.add(bare);
+  }
+  return [...hits].sort();
+}
+
+export function triage(text: string, opts: TriageOptions = {}): TriageVerdict {
+  const { maxLength = RULES.TARGET_MAX_LENGTH, maxDifficulty = 2, recalled = false } = opts;
+  // Repetition is a smell in an invented line and the point of a remembered
+  // one, so the register checks never run against recalled material.
+  const checkRegister = (opts.checkRegister ?? true) && !recalled;
+  const norm = normalizePuzzleText(text);
+  const reasons: string[] = [];
+
+  if (norm.length > maxLength) {
+    reasons.push(`TOO_LONG: ${norm.length} chars, target band tops out at ${maxLength}`);
+  }
+  const d = difficultyReport(norm, { recalled });
+  if (d.difficulty > maxDifficulty) {
+    reasons.push(`TOO_HARD: difficulty ${d.difficulty} (${d.reasons.join('; ')})`);
+  }
+  if (checkRegister) {
+    const repeated = repeatedContentWords(norm);
+    if (repeated.length > 0) {
+      reasons.push(`SELF_REFERENTIAL: repeats "${repeated.join('", "')}" - the surreal-tautology shape, funny to read and dead to guess`);
+    }
+    const abstract = abstractVocabulary(norm);
+    if (abstract.length > 0) {
+      reasons.push(`ABSTRACT_VOCABULARY: ${abstract.join(', ')}`);
+    }
+  }
+
+  return { flagged: reasons.length > 0, reasons };
 }

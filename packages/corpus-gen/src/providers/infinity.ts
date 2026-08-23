@@ -1,6 +1,12 @@
 /**
- * INFINITY — the local llama.cpp box running Qwen 3.8 27B, OpenAI-compatible,
- * no auth. Plain fetch, no SDK.
+ * A local llama.cpp box running Qwen 3.8 27B, OpenAI-compatible, no auth.
+ * Plain fetch, no SDK.
+ *
+ * The address is deliberately NOT hardcoded: this is a public repo, and the
+ * endpoint is an unauthenticated model server on somebody's LAN. Set
+ * `PHRASEY_INFINITY_URL` (see .env.example). Without it the provider points at
+ * localhost, which fails fast and obviously rather than quietly reaching for a
+ * host that is not yours.
  *
  * Qwen is a reasoning model: it emits `reasoning_content` before `content`. A
  * response can therefore come back with a full reasoning trace and an EMPTY
@@ -9,7 +15,7 @@
  */
 import { DEFAULTS, ProviderError, withRetries, type GenerateOptions, type Provider } from './types.js';
 
-export const INFINITY_BASE_URL = process.env.PHRASEY_INFINITY_URL ?? 'http://192.168.1.99:8080/v1';
+export const INFINITY_BASE_URL = process.env.PHRASEY_INFINITY_URL ?? 'http://127.0.0.1:8080/v1';
 export const INFINITY_MODEL = process.env.PHRASEY_INFINITY_MODEL ?? 'Qwen3.8-27B';
 
 interface ChatChoice {

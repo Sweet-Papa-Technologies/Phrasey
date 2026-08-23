@@ -1,14 +1,69 @@
 [
   {
+    "id": "p_ac3cd2aa665cea62",
+    "text": "BREAD, HONEY, I CANT FIND THE PARKING",
+    "raw": "BREAD, HONEY, I CANT FIND THE PARKING",
+    "category": "Grocery list",
+    "hint": "the list becomes a complaint before the store closes",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.495Z"
+  },
+  {
+    "id": "p_a62b0b13c88dff09",
+    "text": "BREAD, MILK, IS ANYONE HOME",
+    "raw": "BREAD, MILK, IS ANYONE HOME",
+    "category": "Grocery list",
+    "hint": "the shopper is checking on a household that feels empty",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.497Z"
+  },
+  {
+    "id": "p_355eda3b0afa80ed",
+    "text": "BREAD, OIL, AND A SECOND CHANCE",
+    "raw": "BREAD, OIL, AND A SECOND CHANCE",
+    "category": "Grocery list",
+    "hint": "the last item is not something you can buy",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.498Z"
+  },
+  {
+    "id": "p_a17e9de99c935896",
+    "text": "BREAD, RICE, AND THE FACT THAT",
+    "raw": "BREAD, RICE, AND THE FACT THAT",
+    "category": "Grocery list",
+    "hint": "a fragment that trails off mid-sentence",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.498Z"
+  },
+  {
     "id": "p_6b38225edcc796d4",
     "text": "BREAD, SYRUP, AND A REASON TO WAKE UP TOMORROW",
     "raw": "BREAD, SYRUP, AND A REASON TO WAKE UP TOMORROW",
     "category": "Grocery list",
     "hint": "breakfast items plus a fundamental need for motivation",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.176Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
+  },
+  {
+    "id": "p_85e8b8c6d3c363f5",
+    "text": "BREAD, TAPE, I AM SORRY",
+    "raw": "BREAD, TAPE, I AM SORRY",
+    "category": "Grocery list",
+    "hint": "an apology slipped into the aisles",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
   },
   {
     "id": "p_6e56b14c63e1a146",
@@ -16,10 +71,21 @@
     "raw": "BREAD, TAPE, I CANT DO THIS ANOTHER TIME",
     "category": "Grocery list",
     "hint": "baking staple and adhesive, then a limit being reached",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.995Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
+  },
+  {
+    "id": "p_cd68ef7d970efc18",
+    "text": "CHEESE, ONIONS, AND A CANCELLED PLAN",
+    "raw": "CHEESE, ONIONS, AND A CANCELLED PLAN",
+    "category": "Grocery list",
+    "hint": "dinner prep meets a sudden change of schedule",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
   },
   {
     "id": "p_66069be626f26284",
@@ -27,10 +93,21 @@
     "raw": "CHEESE, VINEGAR, AND A SIGN THAT I AM OKAY",
     "category": "Grocery list",
     "hint": "dairy and an acid product, then a request for reassurance",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
+  },
+  {
+    "id": "p_936f7ae3d1391a8b",
+    "text": "COFFEE, MILK, AND A QUIET EVENING",
+    "raw": "COFFEE, MILK, AND A QUIET EVENING",
+    "category": "Grocery list",
+    "hint": "the final item is a state of mind, not a product",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.993Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
   },
   {
     "id": "p_31e10dedc58e43b4",
@@ -38,10 +115,10 @@
     "raw": "EGGS, BREAD, SOMETHING TO FIX WHAT IS BROKEN",
     "category": "Grocery list",
     "hint": "staples plus a push for mending the fractured thing",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.992Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.499Z"
   },
   {
     "id": "p_a3f09a0db7b7c18b",
@@ -51,8 +128,30 @@
     "hint": "protein and sweetener plus a correction about the mood",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.996Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
+  },
+  {
+    "id": "p_1339a919bca544dc",
+    "text": "EGGS, OIL, AND A DEEP BREATH",
+    "raw": "EGGS, OIL, AND A DEEP BREATH",
+    "category": "Grocery list",
+    "hint": "the final item is something you do with your lungs",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
+  },
+  {
+    "id": "p_dcc537d1a2fd3871",
+    "text": "EGGS, PASTA, WHY IS NO ONE CALLING ME",
+    "raw": "EGGS, PASTA, WHY IS NO ONE CALLING ME",
+    "category": "Grocery list",
+    "hint": "the shopper has noticed a pattern in their phone",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
   },
   {
     "id": "p_d816cd07d1d63f25",
@@ -62,8 +161,8 @@
     "hint": "produce plus carbs then a desperate plea",
     "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.992Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
   },
   {
     "id": "p_8f3602388266414d",
@@ -71,10 +170,10 @@
     "raw": "HONEY, LETTUCE, AND SOMETHING THAT IS NOT A LIE",
     "category": "Grocery list",
     "hint": "sweet and leafy plus a demand for the truth",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.175Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
   },
   {
     "id": "p_a88520f259fd9b09",
@@ -82,10 +181,10 @@
     "raw": "HONEY, OIL, AND WHY DOES NO ONE GET THIS",
     "category": "Grocery list",
     "hint": "sweetener and a liquid fat, then a rhetorical complaint about others",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.994Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
   },
   {
     "id": "p_0e3622cb665d2c42",
@@ -95,8 +194,52 @@
     "hint": "dairy and fruit followed by a boundary about hours",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.995Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
+  },
+  {
+    "id": "p_c9d0e1d1b3788eab",
+    "text": "MILK, COFFEE, DO NOT ANSWER THE DOOR",
+    "raw": "MILK, COFFEE, DO NOT ANSWER THE DOOR",
+    "category": "Grocery list",
+    "hint": "the last item is an instruction for arriving home",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.500Z"
+  },
+  {
+    "id": "p_a1b5f9f82e40d946",
+    "text": "MILK, HONEY, I FORGOT WHAT I WANTED",
+    "raw": "MILK, HONEY, I FORGOT WHAT I WANTED",
+    "category": "Grocery list",
+    "hint": "the shopper has already forgotten the point",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
+  },
+  {
+    "id": "p_cf84821a306b28f0",
+    "text": "MILK, PASTA, I AM NOT FINE",
+    "raw": "MILK, PASTA, I AM NOT FINE",
+    "category": "Grocery list",
+    "hint": "a flat denial added after the staples",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
+  },
+  {
+    "id": "p_27198b5afb2395b5",
+    "text": "MILK, RICE, AND A WALK OUTSIDE",
+    "raw": "MILK, RICE, AND A WALK OUTSIDE",
+    "category": "Grocery list",
+    "hint": "the third item is the only one that actually helps",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
   },
   {
     "id": "p_bd16e00aafeaeff8",
@@ -104,10 +247,10 @@
     "raw": "MILK, TOAST, WHY AM I LIKE THIS",
     "category": "Grocery list",
     "hint": "breakfast items followed by a sudden self-awareness",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.991Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
   },
   {
     "id": "p_a5609d87390d609c",
@@ -115,21 +258,32 @@
     "raw": "OIL, ONIONS, AM I ALLOWED TO CRY IN THE AISLE",
     "category": "Grocery list",
     "hint": "cooking supplies followed by a public emotional breakdown at the store",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.173Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
   },
   {
-    "id": "p_f6f4c31b2b572968",
-    "text": "PASTA, GARLIC, I CANT BELIEVE I SAID THAT OUT LOUD",
-    "raw": "PASTA, GARLIC, I CANT BELIEVE I SAID THAT OUT LOUD",
+    "id": "p_f7ea17fe1fbf4400",
+    "text": "PASTA, EGGS, AND A DOCTOR",
+    "raw": "PASTA, EGGS, AND A DOCTOR",
     "category": "Grocery list",
-    "hint": "dinner ingredients plus the shock of hearing yourself talk",
-    "difficulty": 3,
+    "hint": "the third item is a person you need to see soon",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.173Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
+  },
+  {
+    "id": "p_efb9a9391aec6e73",
+    "text": "PASTA, RICE, I AM NOT THE SAME PERSON",
+    "raw": "PASTA, RICE, I AM NOT THE SAME PERSON",
+    "category": "Grocery list",
+    "hint": "a transformation claimed between aisle two and aisle three",
+    "difficulty": 1,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
   },
   {
     "id": "p_1b55e1817964beff",
@@ -137,10 +291,10 @@
     "raw": "POTATOES, YOGURT, DO NOT ANSWER THE PHONE",
     "category": "Grocery list",
     "hint": "starches and dairy plus a boundary for incoming calls",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.994Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.501Z"
   },
   {
     "id": "p_f5e4da6ffedc8471",
@@ -150,30 +304,30 @@
     "hint": "a pantry run that becomes an existential crisis",
     "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.991Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
   },
   {
-    "id": "p_cd8a069c6215eaed",
-    "text": "RICE, BUTTER, AND THE COURAGE TO LEAVE A VOICEMAIL",
-    "raw": "RICE, BUTTER, AND THE COURAGE TO LEAVE A VOICEMAIL",
+    "id": "p_6abf10ff59329ac9",
+    "text": "RICE, BEANS, IS THIS WHAT I WANT",
+    "raw": "RICE, BEANS, IS THIS WHAT I WANT",
     "category": "Grocery list",
-    "hint": "staples plus the guts to hit send on a recorded message",
-    "difficulty": 3,
+    "hint": "a question asked mid-cart at the checkout",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.172Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
   },
   {
-    "id": "p_9545501294776241",
-    "text": "RICE, CHILI, I DONT EVEN KNOW WHAT I AM COOKING FOR",
-    "raw": "RICE, CHILI, I DONT EVEN KNOW WHAT I AM COOKING FOR",
+    "id": "p_ee3fd6b52a246298",
+    "text": "RICE, BREAD, I AM LATE",
+    "raw": "RICE, BREAD, I AM LATE",
     "category": "Grocery list",
-    "hint": "grains and spice plus a question about who this meal is for",
-    "difficulty": 3,
+    "hint": "the list doubles as a text message to a friend",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.176Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
   },
   {
     "id": "p_e1c8fa25ca0b2237",
@@ -181,10 +335,21 @@
     "raw": "RICE, SPICES, I HAVE TOLD YOU I AM FINE",
     "category": "Grocery list",
     "hint": "grains and flavorings plus a repeated denial of distress",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:23:15.481Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
+  },
+  {
+    "id": "p_ad1979eb87950529",
+    "text": "SOUP, BREAD, WHERE IS EVERYONE",
+    "raw": "SOUP, BREAD, WHERE IS EVERYONE",
+    "category": "Grocery list",
+    "hint": "the shopper is alone and has noticed it",
+    "difficulty": 2,
+    "source": "generated",
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
   },
   {
     "id": "p_c7a2f4d2a4e9ef94",
@@ -192,10 +357,10 @@
     "raw": "SOUP, BREAD, WHOEVER TAUGHT ME THIS IS WRONG",
     "category": "Grocery list",
     "hint": "comfort food paired with a blame assignment to an unknown teacher",
-    "difficulty": 3,
+    "difficulty": 2,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.994Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.502Z"
   },
   {
     "id": "p_432f90de8467383d",
@@ -203,20 +368,20 @@
     "raw": "SOUP, CRACKERS, IS ANYONE EVEN LISTENING",
     "category": "Grocery list",
     "hint": "comfort food paired with a question about being heard",
-    "difficulty": 2,
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:06:58.995Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.503Z"
   },
   {
-    "id": "p_7d9a2fa6337db349",
-    "text": "TOFU, PEPPERS, WHY DOES THE CASHIER SMELL LIKE FEAR",
-    "raw": "TOFU, PEPPERS, WHY DOES THE CASHIER SMELL LIKE FEAR",
+    "id": "p_46f6d61d3085f011",
+    "text": "TAPE, BREAD, WHY AM I DOING THIS",
+    "raw": "TAPE, BREAD, WHY AM I DOING THIS",
     "category": "Grocery list",
-    "hint": "plant-based items plus an unsettling scent at the register",
-    "difficulty": 3,
+    "hint": "the adhesive item comes first for a reason",
+    "difficulty": 1,
     "source": "generated",
-    "generatedAt": "2026-08-23T20:15:25.174Z",
-    "provider": "infinity"
+    "rightsTier": "core",
+    "generatedAt": "2026-08-23T22:58:22.503Z"
   }
 ]

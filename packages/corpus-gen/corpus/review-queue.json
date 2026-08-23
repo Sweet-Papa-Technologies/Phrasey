@@ -106,5 +106,1908 @@
       "MANUAL_REVIEW: misspelling — COMPLAINCE should be COMPLIANCE. An unsolvable board; the deterministic validator has no dictionary and cannot catch this, so it was pulled by hand during the M5 corpus review."
     ],
     "rejectedAt": "2026-08-23T20:22:02.959311Z"
+  },
+  {
+    "raw": "PASTA, GARLIC, I CANT BELIEVE I SAID THAT OUT LOUD",
+    "hint": "dinner ingredients plus the shock of hearing yourself talk",
+    "category": "Grocery list",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 50 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.959Z"
+  },
+  {
+    "raw": "RICE, BUTTER, AND THE COURAGE TO LEAVE A VOICEMAIL",
+    "hint": "staples plus the guts to hit send on a recorded message",
+    "category": "Grocery list",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 50 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.959Z"
+  },
+  {
+    "raw": "RICE, CHILI, I DONT EVEN KNOW WHAT I AM COOKING FOR",
+    "hint": "grains and spice plus a question about who this meal is for",
+    "category": "Grocery list",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.959Z"
+  },
+  {
+    "raw": "TOFU, PEPPERS, WHY DOES THE CASHIER SMELL LIKE FEAR",
+    "hint": "plant-based items plus an unsettling scent at the register",
+    "category": "Grocery list",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.960Z"
+  },
+  {
+    "raw": "IF YOU CAME FOR A RENEWAL YOU ARE AT THE WRONG COUNTER",
+    "hint": "a direction about where to stand based on what one needs done",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 54 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.960Z"
+  },
+  {
+    "raw": "THE GLASS BEHIND YOU IS NOT A GLASS",
+    "hint": "the partition separating you from the agent is not what it claims",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"glas\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.960Z"
+  },
+  {
+    "raw": "YOU ARE NOT NEXT BECAUSE YOU ARE NEXT",
+    "hint": "the queue position is a lie and also true",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"next\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.960Z"
+  },
+  {
+    "raw": "ARE YOU EATING ENOUGH FOOD. I AM ASKING FOR THE BIRD",
+    "hint": "a check-in disguised as a question about a small creature",
+    "category": "Text from your mom",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.960Z"
+  },
+  {
+    "raw": "I SLEPT TWELVE HOURS. YOU SHOULD TRY THAT SOMETIMES",
+    "hint": "an extended rest was taken and advice is being given",
+    "category": "Text from your mom",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "THE NEIGHBOR HAS A NEW DOG AND IT SOUNDS LIKE CRYING",
+    "hint": "someone next door got a puppy but the barking is unsettling",
+    "category": "Text from your mom",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "does the oven light stay on when the oven is off",
+    "hint": "a question about whether a small bulb inside a baking appliance remains lit without heat",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"oven\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "i have been staring at the hallway light for forty minutes",
+    "hint": "a person fixates on a fixture overhead in a narrow passage without blinking",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 58 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "i keep checking the door and it is locked and i still check",
+    "hint": "you do this ritual every night and it never feels enough",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 59 chars, target band tops out at 48",
+      "SELF_REFERENTIAL: repeats \"check\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "my microwave clock is wrong and i cannot tell by how much",
+    "hint": "a small kitchen display has drifted from actual time",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 57 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "the cat is watching me with the full weight of its opinion",
+    "hint": "a small pet regards you with total contempt and zero warmth",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 58 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "the concept of a hallway makes no sense",
+    "hint": "a narrow passage connecting rooms is questioned as a logical design choice",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "ABSTRACT_VOCABULARY: concept"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "the sound a door makes when it is almost closed is the worst",
+    "hint": "a particular creak from a hinge at the final inch of movement",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 60 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.961Z"
+  },
+  {
+    "raw": "why does the microwave hum when nobody is in the room",
+    "hint": "an unseen audience for a small appliance's self-directed noise",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 53 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "I AM SORRY. I AM NOT SORRY. I AM A PROGRAM.",
+    "hint": "A feeling that is simultaneously present and absent",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"sorry\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "THE SYSTEM WILL RECOVER YOUR DATA. THE SYSTEM IS GONE.",
+    "hint": "A promise delivered by a narrator who is no longer alive",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 54 chars, target band tops out at 48",
+      "TOO_HARD: difficulty 3 (+2 unfamiliar word(s): data; +1 40% of words outside the top 3000; +1 over 30 characters; +1 over 44 characters; +1 18 distinct letters; +1 18 distinct letters)",
+      "SELF_REFERENTIAL: repeats \"system\" - the surreal-tautology shape, funny to read and dead to guess",
+      "ABSTRACT_VOCABULARY: system"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "WE DELETED YOUR BACKUP BECAUSE IT REMINDED US OF YOU",
+    "hint": "the spare copy was removed on purpose",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48",
+      "TOO_HARD: difficulty 3 (+2 unfamiliar word(s): deleted; +1 over 30 characters; +1 over 44 characters; +1 19 distinct letters; +1 19 distinct letters; +1 awkward letters B/F/K/W)"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "WE VALUE YOUR BUSINESS. WE CANNOT PROCESS IT.",
+    "hint": "Gratitude that arrives just before a refusal",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "ABSTRACT_VOCABULARY: process"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "YOUR GRIEF IS NOT A RECOGNIZED FORMAT",
+    "hint": "the system cannot accept this kind of sadness",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "ABSTRACT_VOCABULARY: format, grief"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "YOUR PASSWORD WAS CORRECT. YOUR PASSWORD WAS NOT CORRECT.",
+    "hint": "Two contradictory claims about one credential",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 57 chars, target band tops out at 48",
+      "SELF_REFERENTIAL: repeats \"correct\", \"password\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "YOUR REQUEST IS VALID. YOUR REQUEST IS IMPOSSIBLE.",
+    "hint": "Two judgments about one action that cancel each other",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 50 chars, target band tops out at 48",
+      "SELF_REFERENTIAL: repeats \"request\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "I HAVE BEEN ASKED TO DANCE FOUR TIMES AND HAVE SAID NO",
+    "hint": "a guest has repeatedly declined invitations to join others on the floor",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 54 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "THE BEST MAN'S SPEECH HAS BEEN RUNNING FOR TWELVE MINUTES",
+    "hint": "a designated speaker has exceeded every acceptable limit",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 57 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "THE HALL MONITOR IS HOLDING BACK A MAN IN A WET SUIT",
+    "hint": "staff are restraining a person in swimwear who wants entry",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "WHOSE PARKA IS THIS HANGING FROM THE MICROPHONE STAND",
+    "hint": "an unclaimed coat is draped over stage equipment",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 53 chars, target band tops out at 48",
+      "TOO_HARD: difficulty 3 (+2 unfamiliar word(s): parka; +1 over 30 characters; +1 over 44 characters; +1 17 distinct letters; +1 awkward letters F/K/W)"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "EASY COME EASY GO",
+    "hint": "what arrives without effort departs just as fast",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"easy\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.962Z"
+  },
+  {
+    "raw": "IF THE SMELL IS STRONG YOU HAVE MISSED STEP THREE",
+    "hint": "an olfactory alarm serving as a diagnostic for a skipped action",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 49 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "INVERT THE TRAY BEFORE THE TRAY EXISTS",
+    "hint": "a circular disassembly order",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"tray\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "PREHEAT TO TWO HUNDRED DEGREES THEN FORGET YOUR OVEN",
+    "hint": "assuming equipment you do not have",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "STEP TWO ASSUMES YOU ALREADY COMPLETED STEP TWO",
+    "hint": "a circular dependency buried in the middle of the sequence",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"step\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "THE LID WILL POP OFF AT STEP NINE DO NOT BE ALARMED",
+    "hint": "a warning that arrives too late",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "I ORDERED SOUP NOT A LECTURE ON SOUP",
+    "hint": "asked for broth, got a monologue about it",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"soup\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "MY ORDER WAS PERFECT AND I HATED EVERYTHING ABOUT IT",
+    "hint": "flawless meal, unbearable atmosphere",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "THE MENU HAD TWENTY-SEVEN OPTIONS AND I CHOSE WRONG",
+    "hint": "too much freedom, no safe answer",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "THE PLATE CAME OUT AND I FORGOT WHY I CAME",
+    "hint": "food arrived, purpose evaporated",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"came\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "IT IS NOT MY FAULT. IT IS YOUR FAULT.",
+    "hint": "all blame assigned without evidence",
+    "category": "Voicemail from your landlord",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"fault\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.963Z"
+  },
+  {
+    "raw": "THE DEPOSIT WAS FOR THE DEPOSIT.",
+    "hint": "the held sum belongs to the held sum itself",
+    "category": "Voicemail from your landlord",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"deposit\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "THREE WHEELS ON THE GRASS. THREE. I COUNTED.",
+    "hint": "the lawn received an uninvited load, measured precisely",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"three\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "YOU BLOCKED MY DOOR. I BLOCKED YOUR DIGNITY",
+    "hint": "reciprocal obstruction with an emotional upgrade",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"block\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "I BOUGHT THREE KINDS OF GRANOLA AND I REGRET NOTHING",
+    "hint": "buying multiple oat clusters with zero remorse",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 52 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "I CANNOT EXPLAIN THE GRIEF I FEEL TOWARD THAT ONE JAR",
+    "hint": "an unnameable sadness directed at a single glass container",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 53 chars, target band tops out at 48",
+      "ABSTRACT_VOCABULARY: grief"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "I HAVE BEEN READING THAT NUTRITION LABEL FOR TEN MINUTES",
+    "hint": "staring at ingredient percentages far longer than necessary",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 56 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "I TOLD MY THERAPIST ABOUT THE JALAPENO JAM AND SHE NODDED",
+    "hint": "a professional reacted calmly to a spicy preserve confession",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 57 chars, target band tops out at 48",
+      "TOO_HARD: difficulty 3 (+2 unfamiliar word(s): jalapeno; +1 over 30 characters; +1 over 44 characters; +1 17 distinct letters; +2 contains J, which the deck's noise pool excludes)"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "IS THE COCONUT WATER SECTION A LIFESTYLE OR A PHASE",
+    "hint": "questioning whether a tropical drink display is temporary",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 51 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "IS THE HONEY CRISP STILL IN THE BACK OR IS IT GONE",
+    "hint": "checking if a fruit variety restocked",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 50 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.964Z"
+  },
+  {
+    "raw": "THAT QUINOA PUFF SNACK MADE ME CRY IN THE PARKING LOT",
+    "hint": "a grain-based treat triggered tears outside the building",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 53 chars, target band tops out at 48",
+      "TOO_HARD: difficulty 3 (+1 over 30 characters; +1 over 44 characters; +1 20 distinct letters; +1 20 distinct letters; +2 contains Q, which the deck's noise pool excludes)"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.965Z"
+  },
+  {
+    "raw": "THE HOLIDAY TRIMMING SUGARS ARE OUT AND I AM FINE",
+    "hint": "festive candy is gone and the speaker claims composure",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "TOO_LONG: 49 chars, target band tops out at 48"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.965Z"
+  },
+  {
+    "raw": "NO I DID NOT INVITE YOU TO MY INNER MONOLOGUE",
+    "hint": "a refusal of uninvited access to private thoughts",
+    "category": "Bumper sticker",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "ABSTRACT_VOCABULARY: monologue"
+    ],
+    "rejectedAt": "2026-08-23T22:43:38.965Z"
+  },
+  {
+    "raw": "DON'T COUNT YOUR CHICKENS BEFORE THEY HATCH",
+    "hint": "don't celebrate a win before it is secured",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): before, don't"
+    ],
+    "rejectedAt": "2026-08-23T22:44:09.755Z"
+  },
+  {
+    "raw": "ROME WAS NOT BUILT IN A DAY",
+    "hint": "great things need time, not speed",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "PROPER_NOUN"
+    ],
+    "details": [
+      "PROPER_NOUN: proper noun(s) not on the allowlist: rome"
+    ],
+    "rejectedAt": "2026-08-23T22:44:09.756Z"
+  },
+  {
+    "raw": "MUCH ADO ABOUT NOTHING",
+    "hint": "a big fuss over something trivial",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): ado"
+    ],
+    "rejectedAt": "2026-08-23T22:44:09.757Z"
+  },
+  {
+    "raw": "GONE WITH THE WIND",
+    "hint": "Civil War romance epic about a southern belle trying to save her plantation.",
+    "category": "Movie title everyone knows",
+    "reasons": [
+      "HINT_PROPER_NOUN"
+    ],
+    "details": [
+      "HINT_PROPER_NOUN: proper noun(s) in hint: war"
+    ],
+    "rejectedAt": "2026-08-23T22:44:33.159Z"
+  },
+  {
+    "raw": "THE MAZE RUNNER",
+    "hint": "A group of boys is trapped in a grassy area surrounded by giant shifting stone walls.",
+    "category": "Movie title everyone knows",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 33% common words (floor 60%), 2 outside the list (cap 2): maze, runner"
+    ],
+    "rejectedAt": "2026-08-23T22:44:33.163Z"
+  },
+  {
+    "raw": "BITE THE BULLET",
+    "hint": "face a difficult situation with courage",
+    "category": "Catchphrase everyone knows",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 04413a1ff1527163 already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:45:58.961Z"
+  },
+  {
+    "raw": "THE MORE THE MERRIER",
+    "hint": "a larger crowd makes an event pleasant",
+    "category": "Catchphrase everyone knows",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 2e28bf128858b411 already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:45:58.961Z"
+  },
+  {
+    "raw": "PRACTICE MAKES PERFECT",
+    "hint": "repeating an activity leads to flawless skill",
+    "category": "Catchphrase everyone knows",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 257fd8cf1ab06dad already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:45:58.961Z"
+  },
+  {
+    "raw": "IN THE BLINK OF AN EYE",
+    "hint": "occurring during a single instant",
+    "category": "Catchphrase everyone knows",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): blink"
+    ],
+    "rejectedAt": "2026-08-23T22:45:58.963Z"
+  },
+  {
+    "raw": "THE GRASS IS ALWAYS GREENER",
+    "hint": "what you lack always seems better than what you have",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "UNCOMMON_VOCABULARY",
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): greener",
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): always"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.099Z"
+  },
+  {
+    "raw": "IT TAKES TWO TO TANGO",
+    "hint": "both partners share the blame for the mess",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): tango"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.100Z"
+  },
+  {
+    "raw": "IN THE SAME BOAT",
+    "hint": "everyone shares the same difficulty together",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): same"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.105Z"
+  },
+  {
+    "raw": "THE WRITE ON",
+    "hint": "",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_MISSING"
+    ],
+    "details": [
+      "HINT_MISSING: no hint supplied"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.108Z"
+  },
+  {
+    "raw": "THE WRITE OFF",
+    "hint": "",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_MISSING"
+    ],
+    "details": [
+      "HINT_MISSING: no hint supplied"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.117Z"
+  },
+  {
+    "raw": "THE WRITE OUT",
+    "hint": "",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_MISSING"
+    ],
+    "details": [
+      "HINT_MISSING: no hint supplied"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.118Z"
+  },
+  {
+    "raw": "THE WRITE UP",
+    "hint": "",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_MISSING"
+    ],
+    "details": [
+      "HINT_MISSING: no hint supplied"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.118Z"
+  },
+  {
+    "raw": "ON THE SAME PAGE",
+    "hint": "everyone agrees and understands the same thing",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): same"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.119Z"
+  },
+  {
+    "raw": "THE WRITE IN",
+    "hint": "",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_MISSING"
+    ],
+    "details": [
+      "HINT_MISSING: no hint supplied"
+    ],
+    "rejectedAt": "2026-08-23T22:46:13.119Z"
+  },
+  {
+    "raw": "THE GAME IS AFOOT",
+    "hint": "a hunt has already begun",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): afoot"
+    ],
+    "rejectedAt": "2026-08-23T22:46:33.570Z"
+  },
+  {
+    "raw": "THE WRITING IS ON THE WALL",
+    "hint": "a fate already declared in plain sight",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash ac8be51cba1fe0b7 already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:46:33.572Z"
+  },
+  {
+    "raw": "CUT TO THE CHASE",
+    "hint": "skip the setup and reach the point",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 456c9367d2fff45d already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:46:33.572Z"
+  },
+  {
+    "raw": "THE MORE THE MERRIER",
+    "hint": "adding guests adds to the fun",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 2e28bf128858b411 already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:46:33.572Z"
+  },
+  {
+    "raw": "IT'S A LONG STORY",
+    "hint": "the full account would take too long",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): long"
+    ],
+    "rejectedAt": "2026-08-23T22:46:33.573Z"
+  },
+  {
+    "raw": "IT'S ALL GREEK TO ME",
+    "hint": "completely unintelligible, like a foreign language",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): greek"
+    ],
+    "rejectedAt": "2026-08-23T22:46:49.923Z"
+  },
+  {
+    "raw": "A PICTURE IS WORTH A THOUSAND WORDS",
+    "hint": "one image outperforms a long speech",
+    "category": "Idiom / proverb",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash e9e315c4cc26adbf already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:46:49.923Z"
+  },
+  {
+    "raw": "AUTHORIZED PERSONNEL ONLY",
+    "hint": "who is allowed through this point",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 33% common words (floor 85%), 2 outside the list (cap 1): authorized, personnel"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.693Z"
+  },
+  {
+    "raw": "NO GLASS CONTAINERS",
+    "hint": "bottles made of that material are banned here",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 67% common words (floor 85%), 1 outside the list (cap 1): containers"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.695Z"
+  },
+  {
+    "raw": "KEEP THIS AREA CLEAN",
+    "hint": "wipe up spills and tidy up after yourself",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): area"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.695Z"
+  },
+  {
+    "raw": "AUTHORIZED VEHICLES ONLY",
+    "hint": "if your car is not on the list, go elsewhere",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 67% common words (floor 85%), 1 outside the list (cap 1): authorized"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.696Z"
+  },
+  {
+    "raw": "NO PARKING AFTER 6 PM",
+    "hint": "the limit on staying is tied to the evening",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): pm"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.696Z"
+  },
+  {
+    "raw": "AUTHORIZED PERSONNEL ONLY BEYOND THIS POINT",
+    "hint": "the restriction begins where you are standing",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 67% common words (floor 85%), 2 outside the list (cap 1): authorized, personnel"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.696Z"
+  },
+  {
+    "raw": "NO TRESPASSING",
+    "hint": "crossing this boundary is forbidden to you",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "WORD_COUNT",
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "WORD_COUNT: 2 words, need >= 3",
+      "UNCOMMON_VOCABULARY: 50% common words (floor 85%), 1 outside the list (cap 1): trespassing"
+    ],
+    "rejectedAt": "2026-08-23T22:47:10.697Z"
+  },
+  {
+    "raw": "NO PARKING AFTER NINE PM",
+    "hint": "the clock decides when your car must go",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): pm"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.092Z"
+  },
+  {
+    "raw": "NO TRESPASSING BEYOND THIS POINT",
+    "hint": "cross this line and you are on private land",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): trespassing"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.093Z"
+  },
+  {
+    "raw": "NO GLASS CONTAINERS ALLOWED",
+    "hint": "plastic or paper, but not the clear kind",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): containers"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.095Z"
+  },
+  {
+    "raw": "NO SOLICITING IN THIS BUILDING",
+    "hint": "hand out your flyer somewhere else",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): soliciting"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.096Z"
+  },
+  {
+    "raw": "AUTHORIZED PERSONS ONLY BEYOND THIS POINT",
+    "hint": "stop here if your badge does not match",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): authorized"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.097Z"
+  },
+  {
+    "raw": "PLEASE USE THE HANDRAIL",
+    "hint": "the steps are steeper than they look",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): handrail"
+    ],
+    "rejectedAt": "2026-08-23T22:47:30.097Z"
+  },
+  {
+    "raw": "THIS AREA IS UNDER SURVEILLANCE",
+    "hint": "the cameras are always watching",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 60% common words (floor 85%), 2 outside the list (cap 1): area, surveillance"
+    ],
+    "rejectedAt": "2026-08-23T22:47:48.603Z"
+  },
+  {
+    "raw": "AUTHORIZED VEHICLES ONLY BEYOND THIS POINT",
+    "hint": "you need permission to drive any further",
+    "category": "Common sign or public notice",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): authorized"
+    ],
+    "rejectedAt": "2026-08-23T22:47:48.607Z"
+  },
+  {
+    "raw": "THE ULTIMATE FIGHTER",
+    "hint": "reality tournament where mixed martial artists chase a contract",
+    "category": "TV show title everyone knows",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 33% common words (floor 60%), 2 outside the list (cap 2): ultimate, fighter"
+    ],
+    "rejectedAt": "2026-08-23T22:47:49.205Z"
+  },
+  {
+    "raw": "SLOW DOWN FOR THE CONSTRUCTION",
+    "hint": "reduce speed ahead due to roadwork",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): construction"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.560Z"
+  },
+  {
+    "raw": "YOU ARE ON A RESTRICTION ROUTE",
+    "hint": "this path has rules for your vehicle type",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): restriction"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.561Z"
+  },
+  {
+    "raw": "KEEP RIGHT AT THE NEXT SPLIT",
+    "hint": "stay on the right when roads divide",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): right"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.562Z"
+  },
+  {
+    "raw": "MAJOR DETOUR AHEAD",
+    "hint": "a long alternate path is coming up",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 67% common words (floor 85%), 1 outside the list (cap 1): major"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.562Z"
+  },
+  {
+    "raw": "YOU MISSED A TURN",
+    "hint": "one direction was missed along the way",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): missed"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.562Z"
+  },
+  {
+    "raw": "YOUR ETA HAS CHANGED",
+    "hint": "the arrival time is no longer accurate",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 75% common words (floor 85%), 1 outside the list (cap 1): eta"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.562Z"
+  },
+  {
+    "raw": "THE SHORTEST PATH IS NOW AVAILABLE",
+    "hint": "a quicker option just appeared on the map",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): shortest"
+    ],
+    "rejectedAt": "2026-08-23T22:48:09.563Z"
+  },
+  {
+    "raw": "SLOW DOWN FOR AROUND THE CURVE",
+    "hint": "a warning for when the road bends",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): curve"
+    ],
+    "rejectedAt": "2026-08-23T22:48:28.652Z"
+  },
+  {
+    "raw": "YOU WILL PASS A PEDESTRIAN CROSSING",
+    "hint": "a place where walkers get right of way",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): pedestrian"
+    ],
+    "rejectedAt": "2026-08-23T22:48:28.653Z"
+  },
+  {
+    "raw": "AFTER THE JUNCTION TURN LEFT",
+    "hint": "follow the split in the road",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): junction"
+    ],
+    "rejectedAt": "2026-08-23T22:48:28.653Z"
+  },
+  {
+    "raw": "YOU ARE NEAR A REST AREA",
+    "hint": "a place to stop and stretch your legs",
+    "category": "Thing your GPS says",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): area"
+    ],
+    "rejectedAt": "2026-08-23T22:48:28.654Z"
+  },
+  {
+    "raw": "COMPLIMENTARY SALAD FROM THE HOUSE",
+    "hint": "free greens at no cost to a guest",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): complimentary"
+    ],
+    "rejectedAt": "2026-08-23T22:49:35.931Z"
+  },
+  {
+    "raw": "NO SUBSTITUTIONS ON THIS DISH",
+    "hint": "you cannot swap out an ingredient",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): substitutions"
+    ],
+    "rejectedAt": "2026-08-23T22:49:35.933Z"
+  },
+  {
+    "raw": "PLEASE INQUIRE ABOUT ALLERGENS",
+    "hint": "ask the staff about ingredients that cause reactions",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): about"
+    ],
+    "rejectedAt": "2026-08-23T22:49:35.935Z"
+  },
+  {
+    "raw": "THE CHEF RECOMMENDS THIS PLATE",
+    "hint": "a personal endorsement from the cook",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): chef"
+    ],
+    "rejectedAt": "2026-08-23T22:49:35.935Z"
+  },
+  {
+    "raw": "COMPLIMENTARY BREAD WITH YOUR MEAL",
+    "hint": "free carbs arrive before the main course",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): complimentary"
+    ],
+    "rejectedAt": "2026-08-23T22:50:27.337Z"
+  },
+  {
+    "raw": "YOUR ORDER WILL BE READY IN ABOUT TEN MINUTES",
+    "hint": "expect roughly a quarter hour wait time",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 45 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:50:27.341Z"
+  },
+  {
+    "raw": "TODAYS FISH IS CAUGHT LOCALLY",
+    "hint": "seafood source is nearby waters",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 80% common words (floor 85%), 1 outside the list (cap 1): locally"
+    ],
+    "rejectedAt": "2026-08-23T22:50:27.343Z"
+  },
+  {
+    "raw": "NO SUBSTITUTIONS ON THE DAILY SPECIAL",
+    "hint": "the featured plate cannot be modified",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): substitutions"
+    ],
+    "rejectedAt": "2026-08-23T22:50:27.343Z"
+  },
+  {
+    "raw": "WE ARE NOT LIABLE FOR LOST OR LEFT ITEMS",
+    "hint": "the house cannot replace forgotten belongings",
+    "category": "Thing on a restaurant menu",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 78% common words (floor 85%), 2 outside the list (cap 1): liable, items"
+    ],
+    "rejectedAt": "2026-08-23T22:50:27.343Z"
+  },
+  {
+    "raw": "RICE, PASTA, NO ONE IS COMING",
+    "hint": "a dinner for one that nobody planned",
+    "category": "Grocery list",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): one"
+    ],
+    "rejectedAt": "2026-08-23T22:51:00.276Z"
+  },
+  {
+    "raw": "YOU MUST BRING THE ORIGINAL DOCUMENT",
+    "hint": "a copy will not be accepted at the desk",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): document"
+    ],
+    "rejectedAt": "2026-08-23T22:51:23.082Z"
+  },
+  {
+    "raw": "YOU ARE HOLDING THE FORM UPWRARD",
+    "hint": "the document is being displayed in the wrong direction",
+    "category": "Sign you'd see at the DMV",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): upwrard"
+    ],
+    "rejectedAt": "2026-08-23T22:51:23.084Z"
+  },
+  {
+    "raw": "THE NEIGHBOR HAS A NEW PUPPY. IT BARKS ALL NIGHT",
+    "hint": "a new arrival next door keeps everyone up",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH",
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "LENGTH: 48 chars, need 12-44",
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): new"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.800Z"
+  },
+  {
+    "raw": "THE FLOWER OUTSIDE DIED. I AM SORRY ABOUT THIS",
+    "hint": "a small plant on the porch has passed",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 46 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.802Z"
+  },
+  {
+    "raw": "THE POWER WENT OUT FOR TEN MINUTES. WE ARE FINE",
+    "hint": "a brief electrical failure happened and all is well",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 47 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.803Z"
+  },
+  {
+    "raw": "I CANT FIND MY GLASSES AND I NEED THEM TO FIND THEM",
+    "hint": "the eyewear is lost and the search is circular",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 51 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.803Z"
+  },
+  {
+    "raw": "I WATCHED A MOVIE AND FELL ASLEEP IN THE MIDDLE",
+    "hint": "a film became a nap on the couch",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 47 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.804Z"
+  },
+  {
+    "raw": "THE FENCE IS FALLEN AGAIN. I DONT KNOW WHY IT ALWAYS FALLS",
+    "hint": "the wooden barrier keeps collapsing for no reason",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 58 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.804Z"
+  },
+  {
+    "raw": "I KEPT YOUR BOWL IN THE CUPBOARD. IT IS CLEAN",
+    "hint": "a dish from a past meal is stored and ready",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 45 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.805Z"
+  },
+  {
+    "raw": "THE MAILMAN WAS NICE TODAY. HE SAID SOMETHING NICE",
+    "hint": "a delivery worker offered a kind remark",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 50 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.805Z"
+  },
+  {
+    "raw": "I CANT STOP THINKING ABOUT THAT SHOW FROM LAST WEEK",
+    "hint": "a program on the small screen is stuck in the mind",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 51 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.805Z"
+  },
+  {
+    "raw": "THE BAKER HAS A NEW RECIPE. IT TASTES LIKE YOURS",
+    "hint": "a fresh bread reminded me of your cooking",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 48 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.806Z"
+  },
+  {
+    "raw": "THE GARDEN IS GOING WILD. I NEED HELP WITH THE WEEDS",
+    "hint": "unwanted plants are taking over the yard and two hands would help",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH",
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "LENGTH: 52 chars, need 12-44",
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): help"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.806Z"
+  },
+  {
+    "raw": "I HEARD A NOISE AT TWO AM. IT WAS THE CAT. GO TO SLEEP",
+    "hint": "a midnight sound turned out to be the pet, so rest now",
+    "category": "Text from your mom",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 54 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:51:48.807Z"
+  },
+  {
+    "raw": "i think the door is open and no one is coming",
+    "hint": "an entryway stands ajar but no visitor is expected",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 45 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:52:25.509Z"
+  },
+  {
+    "raw": "the freezer is making a sound i have never heard",
+    "hint": "a cold box in the kitchen is producing an unfamiliar noise",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 48 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:52:25.510Z"
+  },
+  {
+    "raw": "the front door makes a sound when i walk past it",
+    "hint": "an entryway produces noise as a person moves by it",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 48 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:52:25.511Z"
+  },
+  {
+    "raw": "i wonder if the oven is still warm",
+    "hint": "a baking box may still hold residual heat",
+    "category": "Group chat message at 2am",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): still"
+    ],
+    "rejectedAt": "2026-08-23T22:52:25.511Z"
+  },
+  {
+    "raw": "WE HAVE LOST YOUR DATA AGAIN",
+    "hint": "the same loss happening for the second time",
+    "category": "Error message",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): data"
+    ],
+    "rejectedAt": "2026-08-23T22:52:44.638Z"
+  },
+  {
+    "raw": "THE DJ JUST PLAYED OUR DIVORCE SONG",
+    "hint": "a tune from a past relationship came on",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 71% common words (floor 85%), 2 outside the list (cap 1): dj, divorce"
+    ],
+    "rejectedAt": "2026-08-23T22:53:05.760Z"
+  },
+  {
+    "raw": "I THINK THE FLORIST USED REAL PINE NEEDLES",
+    "hint": "the bouquet smells like a christmas tree",
+    "category": "Thing said at a wedding",
+    "reasons": [
+      "HINT_PROPER_NOUN"
+    ],
+    "details": [
+      "HINT_PROPER_NOUN: proper noun(s) in hint: christmas"
+    ],
+    "rejectedAt": "2026-08-23T22:53:05.762Z"
+  },
+  {
+    "raw": "ALIGN THE FLANGE BEFORE THE FLANGE",
+    "hint": "a part that references itself",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 67% common words (floor 85%), 2 outside the list (cap 1): flange, flange"
+    ],
+    "rejectedAt": "2026-08-23T22:53:24.648Z"
+  },
+  {
+    "raw": "TAPE THE SEAM THAT IS NOT THERE YET",
+    "hint": "a join that has not formed yet",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): yet"
+    ],
+    "rejectedAt": "2026-08-23T22:53:24.650Z"
+  },
+  {
+    "raw": "MY TABLE WAS NEAR THE DOOR, IT FELT MEAN",
+    "hint": "bad seat by the entrance, felt dismissive",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): felt"
+    ],
+    "rejectedAt": "2026-08-23T22:53:44.101Z"
+  },
+  {
+    "raw": "THEY ASKED HOW IT WAS AND I FELT SUSPICIOUS",
+    "hint": "polite inquiry that felt like a trap",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "HINT_LEAKS_PHRASE"
+    ],
+    "details": [
+      "HINT_LEAKS_PHRASE: hint reuses phrase word(s): felt"
+    ],
+    "rejectedAt": "2026-08-23T22:53:44.101Z"
+  },
+  {
+    "raw": "THEY SAID IT WAS THE LAST TABLE AND I BELIEVED THEM",
+    "hint": "promised final seating, turned out to be a lie",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 51 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:53:44.102Z"
+  },
+  {
+    "raw": "THE SOUP CAME OUT COLD AND SO DID THE APOLOGY",
+    "hint": "lukewarm broth, equally insincere regret",
+    "category": "Yelp review, one star",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 45 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:53:44.103Z"
+  },
+  {
+    "raw": "THE GUY IS NOT COMING. I WILL SEND A DIFFERENT GUY.",
+    "hint": "a substitute for the worker who never showed",
+    "category": "Voicemail from your landlord",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 51 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:54:05.970Z"
+  },
+  {
+    "raw": "THE SEASONAL SECTION IS GONE AND I AM GRIEVING",
+    "hint": "loss of a limited-time display and the grief that follows",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "LENGTH"
+    ],
+    "details": [
+      "LENGTH: 46 chars, need 12-44"
+    ],
+    "rejectedAt": "2026-08-23T22:54:45.611Z"
+  },
+  {
+    "raw": "THE ENGINE IS JUST A VIBRATION",
+    "hint": "under the hood it is mostly a buzz",
+    "category": "Bumper sticker",
+    "reasons": [
+      "UNCOMMON_VOCABULARY"
+    ],
+    "details": [
+      "UNCOMMON_VOCABULARY: 83% common words (floor 85%), 1 outside the list (cap 1): vibration"
+    ],
+    "rejectedAt": "2026-08-23T22:55:05.206Z"
+  },
+  {
+    "raw": "BURN THE MIDNIGHT OIL",
+    "hint": "studying or working late into the darkness",
+    "category": "Catchphrase everyone knows",
+    "reasons": [
+      "DUPLICATE"
+    ],
+    "details": [
+      "DUPLICATE: normalized hash 6d5a048452d2fdb5 already in corpus"
+    ],
+    "rejectedAt": "2026-08-23T22:55:36.225Z"
+  },
+  {
+    "raw": "WHEEL OF FORTUNE",
+    "hint": "long running syndication where contestants spin a giant circle and solve word puzzles",
+    "category": "TV show title everyone knows",
+    "reasons": [
+      "MANUAL_REVIEW_RIGHTS"
+    ],
+    "details": [
+      "MANUAL_REVIEW_RIGHTS: removed by hand. It is a title like any other, but this game is a Wheel-of-Fortune-shaped board and putting that specific mark on it as an answer invites a confusion-of-source argument that no other entry does. Cheap to drop, not worth arguing."
+    ],
+    "rejectedAt": "2026-08-23T22:55:46.996Z"
+  },
+  {
+    "raw": "PLEASE WAIT. THERE IS NOTHING TO WAIT FOR",
+    "hint": "a spinner with no task behind it",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"wait\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.120Z"
+  },
+  {
+    "raw": "THE CLOUD IS NOT A CLOUD. IT IS A WIRE",
+    "hint": "the storage is physical, not magical",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"cloud\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.122Z"
+  },
+  {
+    "raw": "THE FORM REQUIRES A FORM TO COMPLETE",
+    "hint": "a loop where each step needs the other",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"form\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.122Z"
+  },
+  {
+    "raw": "WE ARE SORRY. WE ARE NOT SORRY.",
+    "hint": "an apology that immediately retracts itself",
+    "category": "Error message",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"sorry\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.122Z"
+  },
+  {
+    "raw": "CHECK THAT THE WING IS ON THE WING",
+    "hint": "a part inspecting its own location",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"wing\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.124Z"
+  },
+  {
+    "raw": "REMOVE THE PACKAGING FROM THE PACKAGING",
+    "hint": "a layer that contains only more layers",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"packag\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.124Z"
+  },
+  {
+    "raw": "WAIT FOR THE BEEP THEN WAIT FOR ANOTHER",
+    "hint": "a sound that promises a second sound",
+    "category": "Instructions on the back of a box",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"wait\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.125Z"
+  },
+  {
+    "raw": "I LEFT YOU A NOTE. IT IS THIS NOTE.",
+    "hint": "self-referential and slightly unhinged",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"note\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.126Z"
+  },
+  {
+    "raw": "MOVE YOUR CAR OR I MOVE YOUR FEELINGS",
+    "hint": "a threat that is technically not illegal",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"move\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.126Z"
+  },
+  {
+    "raw": "THE SPOT WAS MARKED. YOU ARE NOT MARKED.",
+    "hint": "someone drew a line and you crossed it",
+    "category": "Note left on a windshield",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"mark\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.126Z"
+  },
+  {
+    "raw": "I PUT IT BACK AND I PUT IT BACK AGAIN",
+    "hint": "repeatedly returning an item to its spot",
+    "category": "Overheard at Trader Joe's",
+    "reasons": [
+      "MANUAL_REVIEW_GUESSABILITY"
+    ],
+    "details": [
+      "SELF_REFERENTIAL: repeats \"back\" - the surreal-tautology shape, funny to read and dead to guess"
+    ],
+    "rejectedAt": "2026-08-23T22:57:20.126Z"
   }
 ]
