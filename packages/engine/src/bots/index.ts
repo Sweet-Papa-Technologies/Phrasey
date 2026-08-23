@@ -10,6 +10,7 @@
  * Everything else is exported for tests and the balance simulator.
  */
 export {
+  cardKeepValue,
   createBotPolicy,
   rankLetterPlays,
   SOLVE_GATES,

@@ -31,6 +31,13 @@ export const BOT_TUNING = {
   priorStrength: 0.75,
 
   /**
+   * The same pseudo-count for whole-phrase evidence. Smaller, because a phrase
+   * that still matches the board is a joint constraint across every word at
+   * once — far stronger evidence than one word matching one shape.
+   */
+  poolPriorStrength: 0.25,
+
+  /**
    * Points a bot charges itself for one unit of gauge risk at full headroom.
    * Scales up as the gauge fills — see `missCost` in letterScore.ts.
    */
@@ -48,8 +55,13 @@ export const BOT_TUNING = {
 
   /** Expected occurrences a letter needs before DOUBLE DOWN is worth arming. */
   doubleDownMinOccurrences: 1.2,
-  /** Hit probability DOUBLE DOWN demands. A miss costs 2x pressure (§3.5). */
-  doubleDownMinHit: { chill: 0.8, sharp: 0.9, ruthless: 0.95 } as Record<BotTier, number>,
+  /**
+   * Hit probability DOUBLE DOWN demands, since a miss costs 2x pressure (§3.5).
+   * Note the ceiling: a *single* surviving candidate is still shrunk toward the
+   * prior, so the most a sole-candidate letter ever scores is around 0.82. These
+   * thresholds are set against that scale, not against a theoretical 1.0.
+   */
+  doubleDownMinHit: { chill: 0.65, sharp: 0.72, ruthless: 0.78 } as Record<BotTier, number>,
 
   /** Candidate-pool size above which a bot considers itself "in the dark". */
   ambiguousPool: 6,

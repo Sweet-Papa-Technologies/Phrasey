@@ -115,8 +115,20 @@ export interface LetterPlay {
 /** WILD is flexible; a bot should not burn it to save four points. */
 const WILD_HOLD_MARGIN: Record<BotTier, number> = { chill: 0, sharp: 4, ruthless: 8 };
 
-/** Keep-value used when deciding what to throw away. */
-function keepValue(card: Card, view: PlayerView, values: Map<string, number>, usesInterrupts: boolean): number {
+/**
+ * What a card is worth keeping, in the same rough points currency as a letter
+ * play. Drives discard selection, and it is where "Ruthless holds BLOCK and
+ * SWIPE for the right moment" actually lives: a tier that cannot play
+ * interrupts prices them as dead weight and throws them away, and a tier that
+ * can prices them above almost anything else in the hand.
+ */
+export function cardKeepValue(
+  card: Card,
+  view: PlayerView,
+  /** Letter -> net point value, for the letters still in play. */
+  values: Map<string, number>,
+  usesInterrupts: boolean,
+): number {
   if (isLetterCard(card)) {
     const v = values.get(card.letter);
     if (v === undefined) return 0; // already played this round: dead weight
@@ -205,7 +217,7 @@ function discardAction(
   for (const [letter, est] of estimates) values.set(letter, letterValue(est, view, balance, tier));
 
   const ranked = view.hand
-    .map((c) => ({ id: c.id, keep: keepValue(c, view, values, usesInterrupts) }))
+    .map((c) => ({ id: c.id, keep: cardKeepValue(c, view, values, usesInterrupts) }))
     .sort((a, b) => a.keep - b.keep);
 
   const ids: string[] = [];

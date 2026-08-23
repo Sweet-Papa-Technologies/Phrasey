@@ -133,7 +133,7 @@ function estimateFromWords(ded: Deduction, index: CorpusIndex, prior: Map<string
 
 /** Layer 3: the joint constraint, when the phrase pool is still non-empty. */
 function estimateFromPool(ded: Deduction, wordLevel: Acc): Acc {
-  const { priorStrength } = BOT_TUNING;
+  const priorStrength = BOT_TUNING.poolPriorStrength;
   const acc = newAcc(ded.open);
   const n = ded.pool.length;
   const denom = n + priorStrength;

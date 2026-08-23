@@ -104,13 +104,15 @@ export function planActionCards(input: PlanInput): ActionPlan[] {
   const ambiguous = ded.pool.length === 0 || ded.pool.length > BOT_TUNING.ambiguousPool;
   const first = (kind: ActionCardKind) => cards.find((c) => c.action === kind);
 
-  // RELIEF VALVE — the gauge is a shared consequence, and the bot prices the
-  // relief as the drop in what the table's next miss will cost (§3.4).
+  // RELIEF VALVE — the gauge is a shared consequence (§3.4), so the relief is
+  // priced against every play that happens before this bot's next turn, not
+  // just its own: one seat's bad letter blows it for the whole table.
   const relief = first('RELIEF_VALVE');
   if (relief) {
+    const exposure = Math.min(4, Math.max(1.5, view.players.length));
     const now = costAtPressure(view, balance, tier, view.pressure);
     const after = costAtPressure(view, balance, tier, view.pressure + balance.pressure.reliefValve);
-    const benefit = (now - after) * 1.5;
+    const benefit = (now - after) * exposure;
     plans.push({
       kind: 'RELIEF_VALVE',
       cardId: relief.id,
@@ -159,7 +161,9 @@ export function planActionCards(input: PlanInput): ActionPlan[] {
   // hint for nothing, and so effectively never plays it.
   const crack = first('CRACK');
   if (crack && !view.board?.hint) {
-    const worth = tier === 'ruthless' ? 2 : 9;
+    // Negative for Ruthless: it would rather discard and redraw than spend a
+    // turn handing a human opponent a hint it cannot itself read.
+    const worth = tier === 'ruthless' ? -5 : 9;
     plans.push({ kind: 'CRACK', cardId: crack.id, intent: { type: 'action', cardId: crack.id }, advantage: worth - V });
   }
 
