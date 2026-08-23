@@ -1,5 +1,5 @@
 import { applyPressure } from '../pressure.js';
-import { drawCards } from '../state.js';
+import { deadLettersFor, drawCards } from '../state.js';
 import type { CardContext, CardOutcome } from './types.js';
 
 /**
@@ -10,7 +10,7 @@ import type { CardContext, CardOutcome } from './types.js';
  */
 export function applyVandal(ctx: CardContext): CardOutcome {
   const room = Math.max(0, ctx.balance.setup.handCap - ctx.player.hand.length);
-  const drawn = drawCards(ctx.round, Math.min(2, room));
+  const drawn = drawCards(ctx.round, Math.min(2, room), deadLettersFor(ctx.round, ctx.player.hand));
   ctx.player.hand.push(...drawn);
   if (drawn.length > 0) ctx.events.push({ t: 'draw', playerId: ctx.player.id, count: drawn.length });
   const res = applyPressure(ctx.round, ctx.balance.pressure.vandal, 'vandal', ctx.player.id, ctx.balance, ctx.events);

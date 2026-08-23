@@ -60,13 +60,27 @@ export interface MusicManifest {
 }
 
 export interface PlayMusicOptions {
-  /** Track-to-track crossfade length in seconds. Default 1.5. */
+  /** Track-to-track fade length in seconds. Default 1.5. */
   crossfadeSeconds?: number;
   /** Per-track trim, 0..1. Default 1. */
   gain?: number;
   /** Start position in seconds. Default 0. */
   startAt?: number;
+  /**
+   * Overlap the two tracks instead of handing off. Off by default: the beds
+   * share a tempo, so overlapping them phases one against the other and sounds
+   * like a doubled copy of the same track rather than a crossfade.
+   */
+  overlap?: boolean;
 }
+
+/**
+ * How far the outgoing deck must fall before the incoming one starts rising.
+ * Not zero — a hard gap between beds is its own kind of ugly — but low enough
+ * that the two are never both audible at a level where they can beat against
+ * each other.
+ */
+export const HANDOFF_LEVEL = 0.12;
 
 export const DEFAULT_MANIFEST_URL = '/audio/music/manifest.json';
 /** Music bus default. See `prefs.ts` — ~18% effective under the 40% master. */
@@ -187,6 +201,12 @@ interface DeckCommon {
   gain: number;
   /** 0..1 track-to-track fade position, multiplied into the deck output. */
   fade: number;
+  /**
+   * Wait for the outgoing deck to clear before fading in, rather than
+   * overlapping it. Set for every track change unless the caller opted into
+   * an overlap.
+   */
+  sequential?: boolean;
 }
 
 interface ElementDeck extends DeckCommon {
@@ -638,10 +658,16 @@ function ensureFadeLoop(stepMs: number, perStep: number): void {
   if (fadeTimer) return;
   fadeTimer = setInterval(() => {
     let busy = false;
-    if (current && current.fade < 1) {
+    // Sequential by default: hold the incoming deck at silence until the
+    // outgoing one has nearly gone. Overlapping two beds that share a tempo
+    // makes them phase against each other, which reads as the same track
+    // playing doubled rather than as a crossfade.
+    const clearing = outgoing.some((d) => d.fade > HANDOFF_LEVEL);
+    if (current && current.fade < 1 && !(current.sequential && clearing)) {
       current.fade = Math.min(1, current.fade + perStep);
       busy = true;
     }
+    if (clearing) busy = true;
     for (const d of outgoing) {
       d.fade = Math.max(0, d.fade - perStep);
       if (d.fade > 0) busy = true;
@@ -698,6 +724,9 @@ export async function playMusic(
     return true;
   }
 
+  // Overlap only when the caller explicitly asks for it. The default track
+  // change is a handoff, not a crossfade — see the note in the fade loop.
+  deck.sequential = opts.overlap !== true && current !== null;
   if (current) outgoing.push(current);
   current = deck;
   applyVolumes();

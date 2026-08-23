@@ -312,10 +312,49 @@ export function toPublic(p: PlayerState): PlayerPublic {
 }
 
 /** Deal `n` cards off the top of the deck. Short-deals rather than throwing. */
-export function drawCards(round: RoundState, n: number): Card[] {
+/**
+ * Letters that would be dead weight in a hand right now: anything already
+ * played this round (a hit reveals every occurrence, so the card can never
+ * score again) plus anything the player is already holding.
+ *
+ * Holding two E's is not a strategic choice, it is a wasted card — you can
+ * only ever cash one. The deck is deliberately built from the puzzle's letter
+ * multiset (§3.2), which makes duplicates common rather than rare, so this has
+ * to be handled at the draw rather than left to chance.
+ */
+export function deadLettersFor(round: RoundState, hand: readonly Card[]): Set<Letter> {
+  const dead = new Set<Letter>([...round.revealed, ...round.missed]);
+  for (const c of hand) if (c.kind === 'letter') dead.add(c.letter);
+  return dead;
+}
+
+/**
+ * Draw `n` cards off the top of the deck, preferring cards that are not dead
+ * for this hand.
+ *
+ * Skipped cards stay in the deck in their original order — this reorders what
+ * a player receives, never the deck's composition, so card conservation and
+ * the seeded-RNG guarantees are untouched. If every remaining card is dead the
+ * top card is taken anyway: a hand that cannot be filled would deadlock the
+ * round, and a dead card can still be discarded.
+ */
+export function drawCards(round: RoundState, n: number, avoid?: ReadonlySet<Letter>): Card[] {
   const out: Card[] = [];
+  const taken = new Set<Letter>(avoid ?? []);
   for (let i = 0; i < n && round.deck.length > 0; i++) {
-    out.push(round.deck.pop() as Card);
+    let idx = round.deck.length - 1;
+    if (taken.size > 0) {
+      for (let j = round.deck.length - 1; j >= 0; j--) {
+        const c = round.deck[j] as Card;
+        if (c.kind !== 'letter' || !taken.has(c.letter)) {
+          idx = j;
+          break;
+        }
+      }
+    }
+    const [card] = round.deck.splice(idx, 1) as [Card];
+    if (card.kind === 'letter') taken.add(card.letter);
+    out.push(card);
   }
   return out;
 }
@@ -328,7 +367,7 @@ export function drawUp(round: RoundState, player: PlayerState, balance: Balance)
   const target = Math.min(balance.setup.handMinimum, balance.setup.handCap);
   const want = target - player.hand.length;
   if (want <= 0) return 0;
-  const cards = drawCards(round, want);
+  const cards = drawCards(round, want, deadLettersFor(round, player.hand));
   player.hand.push(...cards);
   return cards.length;
 }
@@ -385,7 +424,8 @@ export function startRound(state: GameState, puzzle: Puzzle, nowMs: number, even
 
   for (const p of seated) {
     p.roundScore = 0;
-    p.hand = drawCards(round, state.balance.setup.startingHand);
+    // Same rule at the deal: no player starts holding a pair of the same letter.
+    p.hand = drawCards(round, state.balance.setup.startingHand, new Set());
     p.peeks = {};
     p.solveLocked = false;
     p.lockedNextTurn = false;
