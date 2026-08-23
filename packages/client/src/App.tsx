@@ -2,13 +2,17 @@ import { useEffect } from 'react';
 import { Landing } from './screens/Landing';
 import { Join } from './screens/Join';
 import { Room } from './screens/Room';
-import { LegalStub } from './screens/LegalStub';
+import { Legal } from './screens/Legal';
+import { ConsentBanner } from './components/ConsentBanner';
+import { ConsentManager } from './components/ConsentManager';
+import { useConsentStore } from './store/consentStore';
 import { Link, useRoute } from './lib/router';
 import { initSound, setMuted, setVolume } from './lib/sound';
 import { useGameStore } from './store/gameStore';
 
 export function App() {
   const route = useRoute();
+  const initConsent = useConsentStore((s) => s.init);
   const muted = useGameStore((s) => s.muted);
   const volume = useGameStore((s) => s.volume);
 
@@ -23,6 +27,22 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Consent Mode defaults must be installed before anything could load GA4,
+  // so this runs before any screen mounts (§8).
+  useEffect(() => {
+    initConsent();
+  }, [initConsent]);
+
+  return (
+    <>
+      {renderScreen(route)}
+      <ConsentBanner />
+      <ConsentManager />
+    </>
+  );
+}
+
+function renderScreen(route: ReturnType<typeof useRoute>) {
   switch (route.name) {
     case 'landing':
       return <Landing />;
@@ -31,7 +51,7 @@ export function App() {
     case 'room':
       return <Room code={route.code} />;
     case 'legal':
-      return <LegalStub page={route.page} />;
+      return <Legal page={route.page} />;
     default:
       return (
         <div className="grid min-h-full place-items-center gap-4 px-4 text-center">

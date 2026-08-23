@@ -19,3 +19,6 @@ packages/server/dist/
 *.tsbuildinfo
 sa-key.json
 service-account*.json
+
+# Playwright MCP scratch output
+.playwright-mcp/

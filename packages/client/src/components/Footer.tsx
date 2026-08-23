@@ -1,9 +1,9 @@
 /**
- * Footer. The privacy controls (consent manager, /privacy, /cookies, the
- * California opt-out icon) are M7 and owned elsewhere — the slots are marked
- * with `data-m7` so that work has somewhere to land without touching layout.
+ * Footer. Carries the §8 privacy controls: the consent-manager trigger with
+ * the California opt-out icon, plus the two policy pages.
  */
 import { Link } from '../lib/router';
+import { PrivacyChoices } from './PrivacyChoices';
 
 export function Footer({ className }: { className?: string }) {
   return (
@@ -12,8 +12,8 @@ export function Footer({ className }: { className?: string }) {
         className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 font-mono text-[0.625rem] tracking-[0.12em] uppercase opacity-60"
         aria-label="Footer"
       >
-        {/* M7 mounts the consent manager trigger + California opt-out icon here. */}
-        <span data-m7="privacy-choices" />
+        <PrivacyChoices />
+        <span aria-hidden="true">·</span>
         <Link to="/privacy" className="hover:opacity-100 hover:underline">
           Privacy
         </Link>

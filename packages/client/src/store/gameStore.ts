@@ -33,6 +33,7 @@ import {
   setVolume as setSfxVolume,
 } from '../lib/sound';
 import { feedItemsFor, type FeedItem } from './feed';
+import { track } from '../compliance/analytics';
 
 const IDENTITY_KEY = 'phrasey.identity.v1';
 const AUDIO_KEY = 'phrasey.audio.v1';
@@ -204,6 +205,10 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (e.t === 'blowout') {
         playSfx('boom');
         set({ blownOut: true });
+        track({ name: 'blowout', params: { round_number: get().round?.roundNumber ?? 0 } });
+      }
+      if (e.t === 'solve:success') {
+        track({ name: 'solve_success', params: { hidden_letters: e.hiddenAtSolve } });
       }
       if (e.t === 'round:start') {
         setPressureLevel(0);
@@ -223,12 +228,32 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     offs.push(
       transport.on('room:state', (room) => {
+        // A seat that was a human and is now disconnected or a bot is a drop
+        // (section 7). Diffed here rather than trusting a dedicated event, so it
+        // works whichever way the server reports it. No ids leave this call.
+        const before = get().room?.players ?? [];
+        for (const p of room.players) {
+          const was = before.find((q) => q.id === p.id);
+          if (!was || was.isBot || was.connection === p.connection) continue;
+          if (p.connection === 'disconnected' || (p.isBot && was.wasHuman !== true)) {
+            track({ name: 'player_dropped', params: { became_bot: p.isBot } });
+          }
+        }
         set({ room, pressureMax: BALANCE.pressure.max });
       }),
     );
 
     offs.push(
       transport.on('game:started', ({ round, board }) => {
+        const room = get().room;
+        track({
+          name: 'game_started',
+          params: {
+            player_count: room?.players.length ?? 0,
+            bot_count: room?.players.filter((p) => p.isBot).length ?? 0,
+            turn_seconds: room?.settings.turnSeconds ?? 0,
+          },
+        });
         set({
           round,
           board,
@@ -294,8 +319,26 @@ export const useGameStore = create<GameStore>((set, get) => {
       }),
     );
 
-    offs.push(transport.on('round:end', (result) => set({ roundResult: result, interrupt: null, solveOpen: false })));
-    offs.push(transport.on('match:end', (result) => set({ matchResult: result })));
+    offs.push(
+      transport.on('round:end', (result) => {
+        // Reason and round number only. Never the answer, though it is in the
+        // payload — a round-end result legitimately carries it (section 11).
+        track({
+          name: 'round_completed',
+          params: { reason: result.reason, round_number: result.roundNumber, turns: get().feed.length },
+        });
+        set({ roundResult: result, interrupt: null, solveOpen: false });
+      }),
+    );
+    offs.push(
+      transport.on('match:end', (result) => {
+        track({
+          name: 'match_completed',
+          params: { rounds_played: result.roundsPlayed, player_count: Object.keys(result.totals).length },
+        });
+        set({ matchResult: result });
+      }),
+    );
     offs.push(transport.on('error', (error) => set({ lastError: error })));
 
     return () => {
@@ -387,6 +430,10 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (res.ok) {
         const data = res.data as { sessionToken: string; playerId: string; room: RoomPublic };
         set({ sessionToken: data.sessionToken, playerId: data.playerId, room: data.room });
+        track({
+          name: 'room_created',
+          params: { match_mode: data.room.settings.matchMode, bot_count: data.room.settings.botCount },
+        });
       }
       return res;
     },
@@ -398,6 +445,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       if (res.ok) {
         const data = res.data as { sessionToken: string; playerId: string; room: RoomPublic };
         set({ sessionToken: data.sessionToken, playerId: data.playerId, room: data.room });
+        track({ name: 'room_joined', params: { player_count: data.room.players.length } });
       }
       return res;
     },
@@ -412,11 +460,18 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     async playLetterCard(cardId) {
       playSfx('snap');
+      // Section 11: card TYPE only. Never which letter — that is board state.
+      track({ name: 'card_played', params: { card_type: 'letter' } });
       await send('turn:playCard', { type: 'letter', cardId });
     },
 
     async playActionCard(cardId, letter, targetPlayerId) {
       playSfx('snap');
+      const card = get().hand.find((c) => c.id === cardId);
+      track({
+        name: 'card_played',
+        params: { card_type: 'action', ...(card && card.kind === 'action' ? { action: card.action } : {}) },
+      });
       await send('turn:playCard', { type: 'action', cardId, letter, targetPlayerId });
     },
 
@@ -426,6 +481,15 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     async solve(guess) {
       set({ solveOpen: false });
+      // Never the guess itself, and never the puzzle. Just how far along the
+      // board was, which is the only interesting part (section 11).
+      const board = get().board;
+      track({
+        name: 'solve_attempt',
+        params: {
+          hidden_fraction: board && board.totalLetters > 0 ? Math.round((board.hiddenLetters / board.totalLetters) * 100) / 100 : 0,
+        },
+      });
       await send('turn:solve', { guess });
     },
 

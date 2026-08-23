@@ -8,8 +8,7 @@ export type Route =
   | { name: 'landing' }
   | { name: 'join'; code: string }
   | { name: 'room'; code: string }
-  /** Owned by M7. Rendered as a stub here so the link is never a hard 404. */
-  | { name: 'legal'; page: 'privacy' | 'cookies' }
+  | { name: 'legal'; page: 'privacy' | 'cookies' | 'terms' }
   | { name: 'notfound'; path: string };
 
 const NAV_EVENT = 'phrasey:navigate';
@@ -22,6 +21,7 @@ export function parseRoute(pathname: string): Route {
   if (head === 'room' && tail) return { name: 'room', code: tail.toUpperCase().slice(0, 4) };
   if (head === 'privacy') return { name: 'legal', page: 'privacy' };
   if (head === 'cookies') return { name: 'legal', page: 'cookies' };
+  if (head === 'terms') return { name: 'legal', page: 'terms' };
   return { name: 'notfound', path: pathname };
 }
 

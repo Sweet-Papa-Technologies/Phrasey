@@ -73,6 +73,9 @@ export { playerView, roundPublic, type InterruptWindowView, type PlayerView } fr
 // --- Bot seam (M4 implements PlayerPolicy) -------------------------------------
 export { passivePolicy, randomPolicy, unguessedLetters, type PlayerPolicy } from './policy.js';
 
+// --- Bots (M4, design doc §5) --------------------------------------------------
+export * from './bots/index.js';
+
 // --- Rules modules ------------------------------------------------------------
 export { buildDeck, deckSizeFor, isVowel, noiseLetterPool, puzzleLetterPool, puzzleLetterSet, actionPool } from './deck.js';
 export { applyPressure, isBlown, type PressureResult } from './pressure.js';
