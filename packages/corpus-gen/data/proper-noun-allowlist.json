@@ -1,0 +1,14 @@
+{
+  "_comment": "Proper nouns the corpus is ALLOWED to contain (design doc 4.3: 'no proper nouns outside an explicit allowlist'). Kept deliberately small: calendar words, a few generic institutional abbreviations that carry the DMV/landlord categories, and the pronoun I. Anything added here should be defensible as generic, non-trademarked, and not a real person.",
+  "allow": [
+    "i",
+    "monday","tuesday","wednesday","thursday","friday","saturday","sunday",
+    "january","february","march","april","may","june","july","august",
+    "september","october","november","december",
+    "dmv","dot","hoa","atm","pin","id","ok","okay","tv","ac","dvd","wifi","gps",
+    "usb","pdf","http","https","url","cpu","ram","ssn","irs","mri","er",
+    "monday's","friday's","sunday's",
+    "god","lord","heaven","earth","sunday school",
+    "english","spanish"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@phrasey/corpus-gen",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": { "phrasey-corpus": "./dist/cli.js" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "cli": "tsx src/cli.ts",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@phrasey/shared": "workspace:*",
+    "@google-cloud/firestore": "^7.11.0",
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.5",
+    "tsx": "^4.19.2",
+    "@types/node": "^22.10.5"
+  }
+}
