@@ -1,0 +1,73 @@
+# CI for Phrasey.
+#
+# Deliberately has NO deploy credentials and no cloud access: deployment is
+# manual, via scripts/deploy.sh, run by a human with their own gcloud/firebase
+# login. Nothing here can touch fofoapps-934be.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  workspace:
+    name: typecheck / test / build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version comes from the "packageManager" field in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Build first: packages use TypeScript project output (dist/) to resolve
+      # each other, so shared/engine must exist before server/client typecheck.
+      - name: Build
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+  terraform:
+    name: terraform fmt / validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.9
+          terraform_wrapper: false
+
+      - name: terraform fmt -check
+        run: terraform fmt -check -recursive infra
+
+      # -backend=false: no GCS state access, no credentials needed.
+      - name: terraform init
+        run: terraform init -backend=false -input=false
+        working-directory: infra
+
+      - name: terraform validate
+        run: terraform validate
+        working-directory: infra

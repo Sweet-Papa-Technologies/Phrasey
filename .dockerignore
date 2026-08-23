@@ -1,0 +1,47 @@
+# Build context is the repo root (see packages/server/Dockerfile).
+# Keep it to source + manifests; everything else is noise or a cache-buster.
+
+.git
+.github
+.firebase
+node_modules
+**/node_modules
+**/dist
+**/build
+**/coverage
+**/.turbo
+**/.vite
+**/*.tsbuildinfo
+**/.vitest-cache
+
+infra
+docs
+scripts
+corpus
+
+# The server image never needs the client or the offline corpus CLI — but pnpm
+# does need their manifests to validate the lockfile, so those two files are
+# re-included. (An excluded path that a COPY names is a hard build error.)
+packages/client
+!packages/client/package.json
+packages/corpus-gen
+!packages/corpus-gen/package.json
+
+firebase.json
+.firebaserc
+firestore.rules
+cloudbuild.yaml
+*.md
+LICENSE
+
+.env
+.env.*
+!.env.example
+*.tfstate
+*.tfstate.*
+*.tfvars
+sa-key.json
+service-account*.json
+
+.DS_Store
+*.log

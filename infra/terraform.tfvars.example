@@ -1,0 +1,29 @@
+# Copy to terraform.tfvars and edit. Every value below is already the default in
+# variables.tf, so an empty terraform.tfvars is a valid production config.
+
+project_id = "fofoapps-934be"
+region     = "us-central1"
+
+service_name          = "phrasey-server"
+registry_repo_id      = "phrasey"
+firestore_database_id = "phrasey"
+hosting_site_id       = "phrasey"
+
+# Leave unset to keep the public hello-world placeholder. scripts/deploy.sh
+# pushes the real image and updates the service out-of-band; Terraform ignores
+# image drift either way.
+# image = "us-central1-docker.pkg.dev/fofoapps-934be/phrasey/phrasey-server:latest"
+
+# One instance, always warm: rooms live in server memory and turn timers run
+# between requests. Do not raise max_instances without a room registry.
+min_instances = 1
+max_instances = 1
+concurrency   = 250
+cpu           = "1"
+memory        = "512Mi"
+
+cors_origins = [
+  "https://phrasey.web.app",
+  "https://phrasey.firebaseapp.com",
+  "http://localhost:5173",
+]

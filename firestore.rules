@@ -1,0 +1,20 @@
+rules_version = '2';
+
+// Phrasey — client SDK access is denied, completely and on purpose.
+//
+// Design doc 6.2 (server authority, non-negotiable): the full puzzle string
+// never leaves the server, and live room state lives in memory on the Cloud Run
+// instance, not in Firestore. Firestore is written only by the game server via
+// the Admin SDK / google-cloud/firestore using the phrasey-server service
+// account, and Admin credentials bypass these rules entirely.
+//
+// Nothing in the client bundle should ever instantiate a Firestore client. If a
+// future feature needs one, the answer is a server endpoint, not a rule
+// exception here — a party game whose answers are one F12 away is a dead game.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
