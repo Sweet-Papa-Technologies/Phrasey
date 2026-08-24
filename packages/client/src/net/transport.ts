@@ -40,6 +40,20 @@ export interface Transport {
   /** Human-readable id, surfaced in the UI so "am I on the mock?" is never a guess. */
   readonly kind: 'socket' | 'mock';
   connect(): Promise<void>;
+  /**
+   * Is there a live link right now?
+   *
+   * Deliberately NOT "what did `onState` last say". A phone that was frozen
+   * comes back with a socket the browser tore down underneath it while no
+   * JavaScript was running to notice, so the last state event can claim
+   * `connected` about a dead socket. This asks the socket itself.
+   */
+  isHealthy(): boolean;
+  /**
+   * Force a connection attempt now, even if one is already in flight.
+   * Safe to call repeatedly — that is the whole point of it existing.
+   */
+  reconnect(): Promise<void>;
   emit<E extends keyof ClientToServerEvents>(event: E, payload: PayloadOf<E>): Promise<AckResult<AckDataOf<E>>>;
   /** Subscribe. Returns an unsubscribe function. */
   on<E extends keyof ServerToClientEvents>(event: E, cb: ServerToClientEvents[E]): () => void;

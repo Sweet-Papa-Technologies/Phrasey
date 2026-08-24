@@ -81,16 +81,42 @@
    Base
    --------------------------------------------------------------------------- */
 
+/* ---------------------------------------------------------------------------
+   Custom variants.
+
+   A phone gets rotated at a party, and a landscape phone is a genuinely
+   different shape from a portrait one: short, wide, and with no room for a
+   stacked layout. It gets its own variant rather than being lumped in with
+   tablets by width alone.
+   --------------------------------------------------------------------------- */
+
+@custom-variant short-landscape (@media (orientation: landscape) and (max-height: 560px));
+@custom-variant coarse (@media (pointer: coarse));
+
 @layer base {
   :root {
     color-scheme: light;
     --stagger: 40ms; /* reveal cascade, §9 */
+    /* Minimum comfortable touch target. Used as a floor, never as a size. */
+    --tap: 2.75rem; /* 44px */
   }
 
   html,
   body,
   #root {
     height: 100%;
+  }
+
+  /*
+   * Safe areas (notch, rounded corners, home indicator). Handled once, at the
+   * root, so no component has to know whether it happens to be near an edge.
+   * The bottom inset is *not* done here: elements pinned to the bottom of the
+   * screen — the hand, the solve box, the interrupt prompt — need it inside
+   * their own padding, and doubling it would leave a dead strip on every page.
+   */
+  #root {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
   body {
@@ -123,6 +149,28 @@
     outline: 3px solid var(--color-grape);
     outline-offset: 2px;
     border-radius: 6px;
+  }
+
+  /*
+   * Touch targets. Every control is at least 44×44, set at the base layer so a
+   * component has to opt *out* deliberately instead of remembering to opt in.
+   *
+   * `min-inline-size`/`min-block-size` beat a smaller `height`/`width`, so this
+   * also corrects the handful of places that hard-code a 36px chip — without
+   * touching how anything already larger lays out.
+   */
+  :where(button, [role='button'], summary, select) {
+    min-height: var(--tap);
+    min-width: var(--tap);
+  }
+
+  :where(input, textarea):not([type='checkbox']):not([type='radio']) {
+    min-height: var(--tap);
+  }
+
+  /* A slider's track is a hairline; the box around it is what a thumb hits. */
+  :where(input[type='range']) {
+    min-height: var(--tap);
   }
 
   ::selection {
@@ -158,8 +206,18 @@
   line-height: 1.4;
 }
 
-/* A quiet scrollbar for the hand rail, which scrolls sideways on small screens. */
+/* A quiet scrollbar for the hand rail, which scrolls sideways on small screens.
+ *
+ * `position: relative` is load-bearing, not decoration. `sr-only` is
+ * `position: absolute`, and an absolutely positioned box is only clipped by an
+ * ancestor scroller if that scroller is also its containing block. Without this
+ * every screen-reader-only span inside a sideways rail escapes the rail, lands
+ * at its static position hundreds of pixels off-screen, and drags the whole
+ * page's scroll width out with it — a horizontal scrollbar caused entirely by
+ * text nobody can see.
+ */
 @utility rail-scroll {
+  position: relative;
   scrollbar-width: thin;
   scrollbar-color: rgba(20, 18, 31, 0.18) transparent;
   &::-webkit-scrollbar {
@@ -195,6 +253,141 @@
     opacity: 0.07;
     mix-blend-mode: overlay;
     pointer-events: none;
+  }
+}
+
+/* A control that is really a link. Gives it a 44px box without making the
+   surrounding prose lurch. */
+@utility tap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap);
+}
+
+/* ---------------------------------------------------------------------------
+   The play surface.
+
+   Four screens want four genuinely different arrangements of the same six
+   pieces, so this is grid *areas* rather than a pile of breakpoint-ordered
+   flex classes. DOM order is status → bottle → board → hand → players → feed,
+   which is also the phone's visual order, so tab order and reading order agree
+   with the pixels on the surface that matters most.
+   --------------------------------------------------------------------------- */
+
+@utility game-layout {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'status  bottle'
+    'players bottle'
+    'board   board'
+    'feed    feed'
+    'hand    hand';
+}
+
+@utility game-status {
+  grid-area: status;
+  min-width: 0;
+}
+
+@utility game-bottle {
+  grid-area: bottle;
+}
+
+@utility game-board {
+  grid-area: board;
+  min-width: 0;
+}
+
+@utility game-hand {
+  grid-area: hand;
+  min-width: 0;
+}
+
+@utility game-players {
+  grid-area: players;
+  min-width: 0;
+}
+
+@utility game-feed {
+  grid-area: feed;
+  min-width: 0;
+}
+
+/* The hand is the thing a thumb reaches for, so on anything phone- or
+   tablet-shaped it stays pinned to the bottom of the screen while the rest of
+   the page scrolls under it. */
+@media (max-width: 1023px) {
+  .game-hand {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+    padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--color-chill) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+  }
+}
+
+/* A landscape phone is short and wide: the bottle goes back to being a rail so
+   the board keeps the vertical room it has left. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .game-layout {
+    gap: 0.4rem;
+    grid-template-areas:
+      'status  bottle'
+      'board   bottle'
+      'hand    bottle'
+      'players players'
+      'feed    feed';
+  }
+
+  /*
+   * …and the hand stops being sticky. With 390px of height the whole surface
+   * very nearly fits, so a bar pinned to the bottom of the viewport would spend
+   * all its time sitting on top of the board it is meant to be played onto.
+   * A short scroll to reach the hand beats never seeing the last row of tiles.
+   */
+  .game-layout .game-hand {
+    position: static;
+    margin-inline: 0;
+    padding-inline: 0;
+    padding-bottom: 0;
+    background: none;
+    backdrop-filter: none;
+    border-top: 0;
+  }
+}
+
+/* Tablet: same rail arrangement, with room to breathe. */
+@media (min-width: 768px) {
+  .game-layout {
+    gap: 0.75rem;
+    grid-template-areas:
+      'status  bottle'
+      'board   bottle'
+      'hand    bottle'
+      'players players'
+      'feed    feed';
+  }
+}
+
+/* Desktop (§9): players and feed on the left, board and hand in the middle,
+   the bottle on its own right rail. */
+@media (min-width: 1024px) {
+  .game-layout {
+    gap: 1rem;
+    grid-template-columns: 15rem minmax(0, 1fr) 13rem;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      'players status bottle'
+      'players board  bottle'
+      'feed    hand   bottle';
   }
 }
 

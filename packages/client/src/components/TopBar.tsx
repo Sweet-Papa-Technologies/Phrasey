@@ -56,8 +56,14 @@ export function TopBar({
 }: TopBarProps) {
   const conn = CONNECTION_COPY[connection];
   return (
-    <header className="flex w-full flex-wrap items-center gap-3 px-4 py-3">
-      <Link to="/" aria-label="Phrasey home">
+    /*
+     * The top bar is overhead, and on a phone it was costing four wrapped rows
+     * — a quarter of the screen — before the game even started. Everything
+     * optional now collapses: the two volume sliders hide behind the mute
+     * button (which still works), and the labels shorten.
+     */
+    <header className="flex w-full flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 short-landscape:py-1">
+      <Link to="/" aria-label="Phrasey home" className="tap">
         <Logo />
       </Link>
 

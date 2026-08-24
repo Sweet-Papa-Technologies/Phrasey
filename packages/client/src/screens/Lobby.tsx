@@ -180,21 +180,48 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
             </div>
           </div>
 
-          <label className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={s.interruptsEnabled}
-              disabled={!isHost}
-              onChange={(e) => onSettings({ interruptsEnabled: e.target.checked })}
-              className="h-5 w-5 accent-fanta"
-            />
-            <span>
-              <span className="block text-sm font-semibold">Interrupt cards</span>
+          {/*
+            A switch rather than a checkbox: a 20px checkbox is under half the
+            44px a thumb needs, and there is no way to grow one without it
+            looking like a mistake. This is the same control, at a size you can
+            actually hit, and it reads its state as a word as well as a colour.
+          */}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={s.interruptsEnabled}
+            disabled={!isHost}
+            onClick={() => onSettings({ interruptsEnabled: !s.interruptsEnabled })}
+            className={[
+              'flex w-full items-center gap-3 rounded-card border-2 p-2.5 text-left',
+              s.interruptsEnabled ? 'border-fanta bg-fanta/10' : 'border-ink/12',
+              !isHost ? 'cursor-not-allowed opacity-55' : 'hover:bg-ink/5',
+            ].join(' ')}
+          >
+            <span
+              aria-hidden="true"
+              className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+                s.interruptsEnabled ? 'bg-fanta' : 'bg-ink/20'
+              }`}
+            >
+              <span
+                className={`absolute top-1 h-5 w-5 rounded-full bg-chill shadow transition-[left] ${
+                  s.interruptsEnabled ? 'left-6' : 'left-1'
+                }`}
+              />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold">
+                Interrupt cards{' '}
+                <span className="font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-60">
+                  {s.interruptsEnabled ? 'on' : 'off'}
+                </span>
+              </span>
               <span className="block text-xs opacity-65">
                 Swipe, Block and Buzz In — playable out of turn inside a {BALANCE.interrupt.windowMs / 1000}s window.
               </span>
             </span>
-          </label>
+          </button>
 
           <button
             type="button"

@@ -27,7 +27,12 @@ export type AnalyticsEvent =
   /** Type only — never which letter, and never the puzzle. */
   | { name: 'card_played'; params: { card_type: 'letter' | 'action'; action?: string } }
   | { name: 'match_completed'; params: { rounds_played: number; player_count: number } }
-  | { name: 'player_dropped'; params: { became_bot: boolean } };
+  | { name: 'player_dropped'; params: { became_bot: boolean } }
+  // The counterpart to `player_dropped`: did the player actually get back in?
+  // `same_seat` false means the reclaim window had passed and they were seated
+  // fresh. No ids, no room code — just the outcome.
+  | { name: 'reconnected'; params: { same_seat: boolean } }
+  | { name: 'seat_lost'; params: { reason: string } };
 
 const GTAG_SRC = 'https://www.googletagmanager.com/gtag/js';
 

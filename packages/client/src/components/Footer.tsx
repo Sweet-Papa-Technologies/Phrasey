@@ -14,10 +14,10 @@ export function Footer({ className }: { className?: string }) {
       >
         <PrivacyChoices />
         <span aria-hidden="true">·</span>
-        <Link to="/privacy" className="hover:opacity-100 hover:underline">
+        <Link to="/privacy" className="tap hover:opacity-100 hover:underline">
           Privacy
         </Link>
-        <Link to="/cookies" className="hover:opacity-100 hover:underline">
+        <Link to="/cookies" className="tap hover:opacity-100 hover:underline">
           Cookies
         </Link>
         <span aria-hidden="true">·</span>

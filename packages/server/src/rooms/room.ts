@@ -229,7 +229,25 @@ export class Room {
     return playerId;
   }
 
-  /** §7 reconnect: the sessionToken in JoinRoomPayload reclaims a held seat. */
+  /**
+   * §7 reconnect: the sessionToken in JoinRoomPayload reclaims a held seat.
+   *
+   * IDEMPOTENT BY CONSTRUCTION, because a phone reconnects far more often than
+   * once. The token is a *lookup key*, never a consumable: it stays valid, it
+   * is never rotated, and every step below is a write of a known value rather
+   * than a mutation of a counter.
+   *
+   *   - `byToken` is only ever read here; nothing is deleted.
+   *   - `attachSocket` overwrites `seat.socketId`, so calling it twice with the
+   *     same socket is a no-op and calling it with a new socket MOVES the seat
+   *     rather than creating a second one. There is exactly one `Seat` per
+   *     `playerId` for the life of the room, so double-seating is not
+   *     representable.
+   *   - No engine action is dispatched, so no hand is dealt and no score moves.
+   *
+   * Safe mid-round: the seat is already inside `round.order`, so the caller
+   * just needs to `resync` and the player is back on their own turn clock.
+   */
   reclaim(token: string, socketId: string, now: number): string | null {
     const playerId = this.byToken.get(hashToken(token));
     if (!playerId) return null;
@@ -237,7 +255,8 @@ export class Room {
     const player = this.state.players.find((p) => p.id === playerId);
     if (!seat || !player || player.removed) return null;
 
-    if (seat.isBotSeat) {
+    const wasBot = seat.isBotSeat;
+    if (wasBot) {
       // The hold expired and the seat became a bot. Hand it back: the score and
       // the hand are still theirs.
       // ENGINE GAP: there is no `convertSeatFromBot` action, so these three
@@ -246,9 +265,24 @@ export class Room {
       player.botTier = undefined;
       player.botPersona = undefined;
       seat.isBotSeat = false;
+      // `convertSeatToBot` reassigns the host away from a botified seat, and
+      // its pick is `activePlayers().find(p => !p.isBot)` — which on a solo
+      // host + bots table is a BOT. Left alone, the human comes back to a room
+      // whose host is a bot: settings frozen, next match unstartable. Give it
+      // back if nobody human is holding it.
+      const host = this.state.players.find((p) => p.id === this.state.hostId);
+      if (!host || host.removed || host.isBot) {
+        for (const p of this.state.players) p.isHost = false;
+        player.isHost = true;
+        this.state.hostId = playerId;
+      }
     }
     player.connection = 'connected';
     this.attachSocket(playerId, socketId, now);
+    // The rest of the table watched this player go grey (`detachSocket` fans
+    // out on the way down). Without a matching fan-out on the way back up they
+    // stay grey — or worse, stay tagged "(bot)" — on every other device.
+    this.deps.fanout.roomState(this.recipients(), this.roomPublic(), null);
     return playerId;
   }
 
@@ -639,7 +673,11 @@ export class Room {
         disconnectedAt: s.isBot ? null : now,
         isBotSeat: s.isBot,
       });
-      if (!s.isBot) this.byToken.set(s.tokenHash, s.playerId);
+      // Register the token even for a seat that had already botified. `reclaim`
+      // un-botifies, so dropping the mapping here is the difference between
+      // "the server restarted while my phone was locked and I got my seat and
+      // score back" and "…and I am gone forever".
+      this.byToken.set(s.tokenHash, s.playerId);
     }
     for (const p of this.state.players) {
       if (!p.isBot && !p.removed) p.connection = 'disconnected';

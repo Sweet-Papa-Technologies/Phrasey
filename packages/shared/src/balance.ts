@@ -153,8 +153,21 @@ export const BALANCE = {
 
   /** §7 Session flow */
   session: {
-    /** Seconds a disconnected player's seat is held before it becomes a bot. */
-    reconnectWindowSeconds: 90,
+    /**
+     * Seconds a disconnected player's seat is held before it becomes a bot.
+     *
+     * §7 specified 90s, which was written for a laptop losing wifi. Phones are
+     * the actual client: iOS auto-locks after 30s–2min, and a locked screen or
+     * a backgrounded tab freezes timers and tears down the websocket within
+     * seconds. Glancing at one notification routinely costs more than 90s, and
+     * coming back to find yourself replaced by a bot is the single worst thing
+     * this game can do to a player. Three minutes covers a normal glance-away;
+     * it is still short enough that a table is not left waiting on someone who
+     * actually walked off, and the seat is a bot — not empty — the whole time,
+     * so play never stalls. Reclaiming works after conversion too, so this is
+     * a comfort window rather than a hard deadline.
+     */
+    reconnectWindowSeconds: 180,
     /** Firestore room doc TTL (§6.4). */
     roomTtlHours: 6,
     /** §6.2 snapshot cadence for crash recovery. */

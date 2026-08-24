@@ -2,6 +2,12 @@
  * The hand: fans across the bottom, cards lift and tilt on hover, and snap to
  * the board with a settle (§9).
  *
+ * A fanned eight-card hand does not fit a 390px phone, and a fan you cannot
+ * see the ends of is worse than no fan. So the fan is conditional: where there
+ * is room it fans, tilts and lifts exactly as §9 asks; on a phone it becomes a
+ * flat, snap-scrolling tray of slightly smaller cards. The tap settle stays in
+ * both — it is the half of the feel that a touch screen can actually deliver.
+ *
  * Cards that need a decision before they can be played — WILD and VOWEL RUSH
  * need a letter, LOCKOUT needs a target — open a small chooser rather than
  * guessing for you.
@@ -11,6 +17,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ACTION_CARD_META, ALPHABET, VOWELS, type Card, type PlayerPublic } from '@phrasey/shared';
 import { BALANCE } from '@phrasey/shared';
 import { useReducedMotion } from '../lib/motion';
+import { useMediaQuery } from '../lib/viewport';
 import { PlayingCard } from './PlayingCard';
 
 export interface HandProps {
@@ -40,6 +47,10 @@ export function Hand({
   highlightCardId,
 }: HandProps) {
   const reduced = useReducedMotion();
+  // A fan needs width for the spread *and* height for the lift. A landscape
+  // phone has the first and none of the second, so it gets the flat tray too.
+  const fanned = useMediaQuery('(min-width: 640px) and (min-height: 561px)');
+  const density = fanned ? 'roomy' : 'snug';
   const [discardMode, setDiscardMode] = useState(false);
   const [picked, setPicked] = useState<string[]>([]);
   const [pending, setPending] = useState<Pending>(null);
@@ -69,7 +80,7 @@ export function Hand({
   const spread = Math.min(4.5 * Math.max(0, n - 1), 34);
 
   function geometry(i: number): { rotate: number; lift: number } {
-    if (n <= 1) return { rotate: 0, lift: 0 };
+    if (!fanned || n <= 1) return { rotate: 0, lift: 0 };
     const t = i / (n - 1) - 0.5;
     return { rotate: t * spread, lift: Math.abs(t) * Math.abs(t) * 34 };
   }
@@ -100,7 +111,7 @@ export function Hand({
   const others = players.filter((p) => p.id !== selfId);
 
   return (
-    <div className="relative flex w-full flex-col items-center gap-3">
+    <div className="relative flex w-full min-w-0 flex-col items-center gap-1.5 sm:gap-3">
       <AnimatePresence>
         {pending && (
           <motion.div
@@ -108,7 +119,7 @@ export function Hand({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: reduced ? 0.01 : 0.18 }}
-            className="w-full max-w-xl rounded-slab border-2 border-ink/12 bg-chill p-4 shadow-card"
+            className="max-h-[58vh] w-full max-w-xl overflow-y-auto rounded-slab border-2 border-ink/12 bg-chill p-3 shadow-card sm:p-4"
             role="dialog"
             aria-label={`${pending.name}: choose`}
           >
@@ -205,40 +216,56 @@ export function Hand({
         )}
       </div>
 
+      {/*
+        The scroller and the row are two elements on purpose. A single flex box
+        with `justify-center` and `overflow-x: auto` centres its overflow, which
+        pushes the first and last cards past *both* edges and makes the leading
+        ones unreachable — that is the "cut off on the left and right" this
+        screen was reported for. An auto-margined `w-max` row centres when the
+        hand fits and starts flush left when it does not.
+      */}
       <div
-        className="rail-scroll flex w-full items-end justify-center gap-1 overflow-x-auto overflow-y-hidden px-2 pt-10 pb-6 sm:gap-2"
+        className={[
+          'rail-scroll -mx-1 flex w-full overflow-x-auto overflow-y-hidden px-1',
+          fanned ? 'pt-10 pb-6' : 'snap-x snap-mandatory scroll-px-3 pt-3 pb-2',
+        ].join(' ')}
         role="group"
         aria-label="Your hand"
       >
-        <AnimatePresence initial={false}>
-          {hand.map((card, i) => {
-            const g = geometry(i);
-            const spent = card.kind === 'letter' && guessed.includes(card.letter);
-            return (
-              <motion.div
-                key={card.id}
-                layout={!reduced}
-                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.85 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={reduced ? { opacity: 0 } : { opacity: 0, y: -160, scale: 0.7 }}
-                transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.22, 1.2, 0.36, 1] }}
-                className={highlightCardId === card.id ? 'drop-shadow-[0_0_18px_rgba(184,255,60,0.9)]' : undefined}
-              >
-                <PlayingCard
-                  card={card}
-                  rotate={g.rotate}
-                  lift={g.lift}
-                  spent={spent}
-                  selected={picked.includes(card.id)}
-                  disabled={!discardMode && (!myTurn || spent)}
-                  reducedMotion={reduced}
-                  onClick={() => activate(card)}
-                />
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
-        {hand.length === 0 && <p className="py-8 text-sm opacity-50">No cards yet.</p>}
+        <div className={`m-auto flex w-max items-end ${fanned ? 'gap-2' : 'gap-1.5 px-2'}`}>
+          <AnimatePresence initial={false}>
+            {hand.map((card, i) => {
+              const g = geometry(i);
+              const spent = card.kind === 'letter' && guessed.includes(card.letter);
+              return (
+                <motion.div
+                  key={card.id}
+                  layout={!reduced}
+                  initial={reduced ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.85 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={reduced ? { opacity: 0 } : { opacity: 0, y: -160, scale: 0.7 }}
+                  transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.22, 1.2, 0.36, 1] }}
+                  className={
+                    highlightCardId === card.id ? 'drop-shadow-[0_0_18px_rgba(184,255,60,0.9)]' : undefined
+                  }
+                >
+                  <PlayingCard
+                    card={card}
+                    density={density}
+                    rotate={g.rotate}
+                    lift={g.lift}
+                    spent={spent}
+                    selected={picked.includes(card.id)}
+                    disabled={!discardMode && (!myTurn || spent)}
+                    reducedMotion={reduced}
+                    onClick={() => activate(card)}
+                  />
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+          {hand.length === 0 && <p className="px-2 py-8 text-sm opacity-50">No cards yet.</p>}
+        </div>
       </div>
     </div>
   );

@@ -67,13 +67,19 @@ export function InterruptPrompt({
 
   if (fraction <= 0 || cards.length === 0) return null;
 
+  /*
+   * Four seconds is not enough time to reach the top of a phone with a thumb.
+   * On small screens the prompt sits at the bottom of the screen, over the
+   * hand; from `sm` up it goes back to the top of the board, where it covers
+   * nothing anyone is reading.
+   */
   return (
     <motion.div
       initial={reduced ? { opacity: 0 } : { opacity: 0, y: -24, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: reduced ? 0.01 : 0.18 }}
-      className="fixed inset-x-0 top-20 z-50 flex justify-center px-4 sm:top-32"
+      className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:top-32 sm:bottom-auto sm:px-4 sm:pb-0"
       role="alertdialog"
       aria-label="Interrupt window"
     >
@@ -89,7 +95,7 @@ export function InterruptPrompt({
             {seconds}
           </span>
         </div>
-        <div className="flex gap-2 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 px-4 py-3">
           {cards.map((c) => (
             <button
               key={c.id}

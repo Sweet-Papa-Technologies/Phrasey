@@ -44,8 +44,8 @@ export function RoomCode({ code, roomKey = null, compact = false }: RoomCodeProp
   }, [copied]);
 
   return (
-    <div className={`flex flex-wrap items-center gap-5 ${compact ? '' : 'sm:gap-8'}`}>
-      <div>
+    <div className={`flex min-w-0 flex-wrap items-center gap-5 ${compact ? '' : 'sm:gap-8'}`}>
+      <div className="min-w-0">
         <p className="sticker mb-1 bg-ink text-chill">Room code</p>
         <button
           type="button"
@@ -54,7 +54,7 @@ export function RoomCode({ code, roomKey = null, compact = false }: RoomCodeProp
           }}
           aria-label={`Room code ${code.split('').join(' ')}. Copy code.`}
           className={`block font-mono leading-none font-extrabold tracking-[0.08em] ${
-            compact ? 'text-5xl' : 'text-[clamp(3.5rem,13vw,8rem)]'
+            compact ? 'text-5xl' : 'text-[clamp(3.25rem,13vw,8rem)]'
           }`}
         >
           {code}
@@ -64,16 +64,23 @@ export function RoomCode({ code, roomKey = null, compact = false }: RoomCodeProp
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/*
+        `min-w-0` all the way down, and the URL truncates rather than setting
+        the width. Without it the invite link — which grew a room key — is the
+        widest thing on a phone and pushes the whole lobby off the screen.
+      */}
+      <div className="flex min-w-0 flex-1 basis-56 items-center gap-3">
         {qr && (
           <img
             src={qr}
             alt={`QR code linking to ${url}`}
-            className={`rounded-card border-2 border-ink/12 ${compact ? 'h-24 w-24' : 'h-32 w-32 sm:h-40 sm:w-40'}`}
+            className={`shrink-0 rounded-card border-2 border-ink/12 ${
+              compact ? 'h-24 w-24' : 'h-32 w-32 sm:h-40 sm:w-40'
+            }`}
           />
         )}
-        <div className="flex flex-col items-start gap-2">
-          <code className="max-w-[16rem] truncate rounded-lg bg-ink/6 px-2 py-1 font-mono text-xs">{url}</code>
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-2">
+          <code className="block w-full truncate rounded-lg bg-ink/6 px-2 py-1 font-mono text-xs">{url}</code>
           <button
             type="button"
             onClick={async () => {

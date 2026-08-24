@@ -76,7 +76,7 @@ export function Room({ code }: { code: string }) {
       {!room ? (
         <main id="main" className="grid flex-1 place-items-center gap-3 px-4 text-center">
           <p className="font-mono text-sm tracking-[0.16em] uppercase opacity-55">Looking for room {code}…</p>
-          <Link to={`/join/${code}`} className="rounded-full bg-fanta px-5 py-2.5 font-bold text-ink shadow-pop">
+          <Link to={`/join/${code}`} className="tap rounded-full bg-fanta px-5 py-2.5 font-bold text-ink shadow-pop">
             Join it
           </Link>
         </main>

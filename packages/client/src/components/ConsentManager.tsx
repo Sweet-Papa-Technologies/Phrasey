@@ -95,11 +95,11 @@ export function ConsentManager() {
 
         <p className="mt-4 text-xs opacity-60">
           More detail in the{' '}
-          <Link to="/privacy" className="underline">
+          <Link to="/privacy" className="tap underline">
             Privacy Policy
           </Link>{' '}
           and{' '}
-          <Link to="/cookies" className="underline">
+          <Link to="/cookies" className="tap underline">
             Cookie Policy
           </Link>
           .

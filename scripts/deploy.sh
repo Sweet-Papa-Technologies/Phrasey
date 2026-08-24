@@ -69,6 +69,13 @@ deploy_client() {
   require firebase
   resolve_server_url
 
+  # Build the workspace deps first. `--filter @phrasey/client build` does NOT
+  # rebuild @phrasey/shared, so a change to a shared constant would compile
+  # against a stale dist and ship silently wrong values.
+  say "Building workspace dependencies (@phrasey/shared, @phrasey/engine)"
+  pnpm --filter @phrasey/shared build
+  pnpm --filter @phrasey/engine build
+
   say "Building the client (@phrasey/client -> packages/client/dist)"
   echo "    VITE_SERVER_URL=${SERVER_URL}"
   echo "    VITE_GA4_MEASUREMENT_ID=${GA4_ID:-<unset, analytics inert>}"

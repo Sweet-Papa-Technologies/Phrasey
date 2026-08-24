@@ -24,6 +24,8 @@ import {
 import type { AckResult, ConnectionState, Transport } from '../net/transport';
 import { createMockTransport } from '../net/mockTransport';
 import { createSocketTransport } from '../net/socketTransport';
+import { installResumeTriggers, type ResumeReason } from '../net/resume';
+import { clearSession, readSession, sessionFor, writeSession } from '../net/session';
 import { cascadeDelayMap, collectRevealPositions, planRevealCascade } from '../lib/reveal';
 import { prefersReducedMotion } from '../lib/motion';
 import {
@@ -64,11 +66,52 @@ export interface PressurePulse {
 
 export type TransportKind = 'mock' | 'socket';
 
+/**
+ * What the player's LINK to their seat is doing — which is a different
+ * question from what the socket is doing (`connection`), and the one the UI
+ * actually has to answer.
+ *
+ * A socket can be `connected` while the player holds no seat at all: every
+ * reconnect gets a brand-new socket id, and the server binds seats to socket
+ * ids, so until the session token has been presented again the tab is a ghost.
+ * That gap — socket up, seat not reclaimed — is exactly the frozen-board bug,
+ * and it is only visible as its own state.
+ *
+ *   idle ──connect──▶ live ──drop──▶ reconnecting ──socket back──▶ resuming
+ *                       ▲                                             │
+ *                       └───────────── seat reclaimed ────────────────┤
+ *                                                                     │
+ *                            token no longer matches anything ──▶ seat-lost
+ */
+export type LinkPhase = 'idle' | 'live' | 'reconnecting' | 'resuming' | 'seat-lost';
+
+export interface SeatLost {
+  code: string;
+  message: string;
+  /**
+   * True when we are back at the table, just not in the old seat (a fresh seat,
+   * score reset, dealt in next round). False when we are not in the room at all
+   * and the player has to make a decision.
+   */
+  recovered: boolean;
+}
+
 export interface GameStore {
   transport: Transport | null;
   transportKind: TransportKind;
   connection: ConnectionState;
   connectionDetail: string | null;
+
+  /** The seat-level view of the connection. See `LinkPhase`. */
+  linkPhase: LinkPhase;
+  /** Why the last resume ran. Diagnostic; surfaced nowhere but the console. */
+  lastResumeReason: string | null;
+  /** Bumped on every successful reclaim, so the UI can flash "Reconnected". */
+  resumeToken: number;
+  /** Epoch ms of the last successful reclaim after an actual drop. */
+  recoveredAt: number | null;
+  /** Set when the old seat could not be reclaimed. Explains itself to the player. */
+  seatLost: SeatLost | null;
 
   identity: Identity;
   playerId: string | null;
@@ -113,6 +156,15 @@ export interface GameStore {
   // ---- actions ----
   setIdentity(patch: Partial<Identity>): void;
   connect(kind?: TransportKind): Promise<void>;
+  /**
+   * Get back to the seat. Idempotent and safe to call from anywhere, any
+   * number of times: concurrent calls share one in-flight attempt, and the
+   * server's `reclaim` is a lookup, not a mutation.
+   */
+  resume(reason?: string): Promise<boolean>;
+  /** Cold load of `/room/:code`: try the stored credential before giving up. */
+  reclaimInto(code: string): Promise<boolean>;
+  dismissSeatLost(): void;
   disconnect(): void;
   createRoom(settings?: Partial<RoomSettings>): Promise<AckResult<unknown>>;
   joinRoom(code: string, key?: string): Promise<AckResult<unknown>>;
@@ -213,10 +265,58 @@ export function defaultTransportKind(): TransportKind {
 
 // ---------------------------------------------------------------------------
 
+/**
+ * How a transport gets built. Overridable so the reconnect behaviour can be
+ * tested against a scripted link that can be dropped on demand — the one thing
+ * neither the real socket nor the mock lets a test do.
+ */
+export type TransportFactory = (kind: TransportKind) => Transport;
+
+const defaultTransportFactory: TransportFactory = (kind) =>
+  kind === 'socket' ? createSocketTransport() : createMockTransport();
+
+let transportFactory: TransportFactory = defaultTransportFactory;
+
+/** Test seam. Pass `null` to restore the real factories. */
+export function setTransportFactory(factory: TransportFactory | null): void {
+  transportFactory = factory ?? defaultTransportFactory;
+}
+
+/** Ack codes that mean "try again in a moment", not "you are out". */
+const RETRYABLE = new Set(['NOT_CONNECTED', 'TIMEOUT', 'EMPTY_ACK', 'RATE_LIMITED', 'TOO_MANY_ATTEMPTS', 'INTERNAL']);
+
+/** Ack codes on a game action that mean "this socket holds no seat any more". */
+const UNSEATED = new Set(['NOT_IN_ROOM', 'NO_SEAT', 'NOT_CONNECTED', 'NO_TRANSPORT']);
+
+function seatLostMessage(error: { code: string }): string {
+  switch (error.code) {
+    case 'MATCH_OVER':
+      return 'That match finished while you were away.';
+    case 'ROOM_FULL':
+      return 'Your seat expired and the room filled up while you were away.';
+    default:
+      return 'That room has closed.';
+  }
+}
+
 const audio0: AudioPrefs = typeof window === 'undefined' ? { ...AUDIO_DEFAULTS } : readAudio();
 
 export const useGameStore = create<GameStore>((set, get) => {
   let detach: (() => void) | null = null;
+  /** Uninstaller for the wake-up listeners. Null when nothing is installed. */
+  let stopResumeTriggers: (() => void) | null = null;
+  /**
+   * The single in-flight reclaim. THIS is what makes `resume()` safe to call
+   * from four DOM events, a socket `connect`, a failed game action and a cold
+   * page load all at once: they share one attempt instead of racing four
+   * `room:join`s, which is how a client double-seats itself.
+   */
+  let resumeInFlight: Promise<boolean> | null = null;
+  /**
+   * Set by `reclaimInto` for a cold load, where the store is empty and the
+   * route is the only thing that knows which room we are trying to get back to.
+   */
+  let reclaimTarget: string | null = null;
 
   function nameOf(playerId: string | null | undefined): string {
     if (!playerId) return 'Somebody';
@@ -258,7 +358,29 @@ export const useGameStore = create<GameStore>((set, get) => {
   function wire(transport: Transport): () => void {
     const offs: (() => void)[] = [];
 
-    offs.push(transport.onState((connection, detail) => set({ connection, connectionDetail: detail ?? null })));
+    offs.push(
+      transport.onState((connection, detail) => {
+        set({ connection, connectionDetail: detail ?? null });
+        const inRoom = !!get().room || !!readSession();
+
+        if (connection === 'connected') {
+          // THE fix for the frozen board. socket.io reconnecting is only half
+          // the job: the new socket has a new id and the server binds seats to
+          // socket ids, so until the token is presented again this tab is a
+          // ghost — connected, receiving nothing, able to do nothing.
+          if (inRoom) void get().resume('socket-connected');
+          else set({ linkPhase: 'idle' });
+          return;
+        }
+
+        if (connection === 'reconnecting' || connection === 'error') {
+          if (inRoom && get().linkPhase !== 'seat-lost') set({ linkPhase: 'reconnecting' });
+          return;
+        }
+
+        if (connection === 'closed') set({ linkPhase: 'idle' });
+      }),
+    );
 
     offs.push(
       transport.on('room:state', (room) => {
@@ -385,10 +507,174 @@ export const useGameStore = create<GameStore>((set, get) => {
     payload: unknown,
   ): Promise<AckResult<unknown>> {
     const transport = get().transport;
-    if (!transport) return { ok: false, error: { code: 'NO_TRANSPORT', message: 'Not connected.' } };
+    if (!transport) {
+      const error = { code: 'NO_TRANSPORT', message: 'Not connected.' };
+      void get().resume('no-transport');
+      return { ok: false, error };
+    }
     const res = (await transport.emit(event as never, payload as never)) as AckResult<unknown>;
-    if (!res.ok) set({ lastError: res.error });
+    if (!res.ok) {
+      // A tap that comes back "you are not in a room" is the ghost-tab
+      // symptom, not a user error. Fix the link instead of accusing them: the
+      // overlay is already saying "Reconnecting", and a red toast on top of it
+      // would just be noise.
+      if (UNSEATED.has(res.error.code) && (get().room || readSession())) {
+        set({ linkPhase: 'reconnecting' });
+        void get().resume(`unseated:${res.error.code}`);
+      } else {
+        set({ lastError: res.error });
+      }
+    }
     return res;
+  }
+
+  /** Remember the seat wherever the credential currently is. */
+  function persistSeat(data: JoinedPayload): void {
+    writeSession({
+      code: data.room.code,
+      key: data.key,
+      sessionToken: data.sessionToken,
+      playerId: data.playerId,
+    });
+  }
+
+  /** The room code in the address bar, if the player is looking at a room. */
+  function roomCodeInUrl(): string | null {
+    if (typeof window === 'undefined') return null;
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    return parts[0] === 'room' && parts[1] ? parts[1].toUpperCase() : null;
+  }
+
+  /**
+   * The three things a reclaim needs. In-memory first (the normal reconnect —
+   * the tab never died, only the socket did), then localStorage (the tab WAS
+   * discarded and re-executed).
+   *
+   * The localStorage branch is gated on the player actually being at that
+   * room's address. A stored credential outlives the visit that created it, so
+   * without the gate a wake-up on the landing page would quietly re-seat
+   * someone in a room they had walked away from, and a wake-up on `/room/ABCD`
+   * would try to reclaim a seat in `WXYZ`.
+   */
+  function credentials(): { code: string; key: string; sessionToken: string; playerId: string } | null {
+    const s = get();
+    const code = s.room?.code;
+    if (code && s.roomKey && s.sessionToken && s.playerId) {
+      return { code, key: s.roomKey, sessionToken: s.sessionToken, playerId: s.playerId };
+    }
+    const stored = readSession();
+    if (!stored) return null;
+    const want = reclaimTarget ?? roomCodeInUrl();
+    if (!want || want !== stored.code.toUpperCase()) return null;
+    return { code: stored.code, key: stored.key, sessionToken: stored.sessionToken, playerId: stored.playerId };
+  }
+
+  /** Build (or reuse) a wired transport of the requested kind. */
+  function ensureTransport(kind: TransportKind): Transport {
+    const existing = get().transport;
+    if (existing && get().transportKind === kind) return existing;
+    detach?.();
+    existing?.disconnect();
+    const transport = transportFactory(kind);
+    detach = wire(transport);
+    set({ transport, transportKind: kind });
+    return transport;
+  }
+
+  /**
+   * Listen for the phone waking up. Installed once per connected session and
+   * torn down on `disconnect()`, so it never outlives the store it drives.
+   */
+  function armResumeTriggers(): void {
+    if (stopResumeTriggers) return;
+    stopResumeTriggers = installResumeTriggers({
+      isHealthy: () => get().transport?.isHealthy() === true && get().linkPhase === 'live',
+      onResume: (reason: ResumeReason) => {
+        void get().resume(reason);
+      },
+    });
+  }
+
+  /**
+   * One reclaim attempt. Never call directly — go through `resume()`, which
+   * owns the in-flight dedupe.
+   */
+  async function runResume(reason: string): Promise<boolean> {
+    // The mock runs in this process. It cannot drop, and re-joining it would
+    // restart the scripted demo, which is worse than doing nothing.
+    if (get().transportKind === 'mock') {
+      set({ linkPhase: 'live' });
+      return true;
+    }
+
+    const cred = credentials();
+    if (!cred) {
+      set({ linkPhase: get().room ? 'reconnecting' : 'idle' });
+      return false;
+    }
+
+    set({ linkPhase: 'resuming', lastResumeReason: reason });
+
+    const transport = ensureTransport('socket');
+    if (!transport.isHealthy()) await transport.reconnect();
+    if (!transport.isHealthy()) {
+      // socket.io owns the retry loop from here (unlimited attempts, capped
+      // backoff, jitter) and its `connect` fires this function again.
+      set({ linkPhase: 'reconnecting' });
+      return false;
+    }
+
+    const { name, color } = get().identity;
+    const res = (await transport.emit('room:join', {
+      code: cred.code,
+      key: cred.key,
+      name,
+      color,
+      sessionToken: cred.sessionToken,
+    } as never)) as AckResult<JoinedPayload>;
+
+    if (res.ok) {
+      const data = res.data;
+      // A DIFFERENT playerId means the token matched nothing and the server
+      // seated us fresh: same room, new seat, score back at zero, dealt in
+      // next round (§7 late joiner). Not a failure, but not a silent one either.
+      const sameSeat = data.playerId === cred.playerId;
+      persistSeat(data);
+      set((s) => ({
+        sessionToken: data.sessionToken,
+        roomKey: data.key,
+        playerId: data.playerId,
+        room: data.room,
+        linkPhase: 'live',
+        resumeToken: s.resumeToken + 1,
+        recoveredAt: Date.now(),
+        connectionDetail: null,
+        seatLost: sameSeat
+          ? null
+          : {
+              code: data.room.code,
+              recovered: true,
+              message: 'You were away long enough to lose your old seat. You are back in for the next round.',
+            },
+      }));
+      track({ name: 'reconnected', params: { same_seat: sameSeat } });
+      return true;
+    }
+
+    if (RETRYABLE.has(res.error.code)) {
+      set({ linkPhase: 'reconnecting' });
+      return false;
+    }
+
+    // Anything else is terminal for this seat: the room closed, the match
+    // ended, or it filled up. Say so rather than sitting on a dead board.
+    clearSession();
+    set({
+      linkPhase: 'seat-lost',
+      seatLost: { code: cred.code, recovered: false, message: seatLostMessage(res.error) },
+    });
+    track({ name: 'seat_lost', params: { reason: res.error.code } });
+    return false;
   }
 
   return {
@@ -396,6 +682,12 @@ export const useGameStore = create<GameStore>((set, get) => {
     transportKind: 'mock',
     connection: 'idle',
     connectionDetail: null,
+
+    linkPhase: 'idle',
+    lastResumeReason: null,
+    resumeToken: 0,
+    recoveredAt: null,
+    seatLost: null,
 
     identity: typeof window === 'undefined' ? { name: '', color: '#FF5C1A' } : readIdentity(),
     playerId: null,
@@ -438,15 +730,17 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     async connect(kind) {
-      const existing = get().transport;
       const want = kind ?? defaultTransportKind();
-      if (existing && get().transportKind === want && get().connection === 'connected') return;
-      detach?.();
-      existing?.disconnect();
+      const existing = get().transport;
+      // Ask the SOCKET whether it is alive, not the last state event. A phone
+      // that slept comes back with `connection === 'connected'` describing a
+      // socket the OS closed while no JavaScript was running to hear about it;
+      // trusting that flag here is what left the tab wedged.
+      if (existing && get().transportKind === want && existing.isHealthy()) return;
 
-      const transport = want === 'socket' ? createSocketTransport() : createMockTransport();
-      detach = wire(transport);
-      set({ transport, transportKind: want, connection: 'connecting' });
+      const transport = ensureTransport(want);
+      set({ connection: 'connecting' });
+      armResumeTriggers();
       try {
         await transport.connect();
       } catch (err) {
@@ -454,11 +748,90 @@ export const useGameStore = create<GameStore>((set, get) => {
       }
     },
 
+    /**
+     * Idempotent by construction:
+     *
+     *  - concurrent callers share `resumeInFlight`, so N triggers make one
+     *    `room:join`;
+     *  - that `room:join` carries the session token, and the server's
+     *    `reclaim` is a map lookup plus an overwrite of `seat.socketId` — there
+     *    is exactly one seat per player for the life of the room, so no number
+     *    of calls can produce a second one;
+     *  - the token is never rotated, so attempt N+1 presents the same
+     *    credential attempt N did.
+     */
+    resume(reason = 'manual') {
+      if (resumeInFlight) return resumeInFlight;
+      // Deferred by one microtask so `resumeInFlight` is published BEFORE any
+      // of `runResume` executes. Without that gap the attempt re-enters
+      // itself: `runResume` asks the transport to reconnect, the transport
+      // synchronously reports `connected`, the state handler calls `resume()`
+      // again — and the guard it is supposed to hit has not been assigned yet.
+      // That reentrancy is precisely how a wake-up burst turns into three
+      // simultaneous `room:join`s.
+      const p = Promise.resolve()
+        .then(() => runResume(reason))
+        .catch((err) => {
+          set({
+            linkPhase: 'reconnecting',
+            connectionDetail: err instanceof Error ? err.message : String(err),
+          });
+          return false;
+        })
+        .finally(() => {
+          if (resumeInFlight === p) resumeInFlight = null;
+        });
+      resumeInFlight = p;
+      return p;
+    },
+
+    /**
+     * A cold load of `/room/:code`. The tab was discarded (routine on mobile —
+     * the OS reclaims backgrounded tabs) and everything in memory went with it,
+     * but the seat is still held on the server and the credential is still in
+     * localStorage. Try it before falling back to the join door.
+     */
+    async reclaimInto(code) {
+      const stored = sessionFor(code);
+      if (!stored) return false;
+      reclaimTarget = stored.code.toUpperCase();
+      set({
+        sessionToken: stored.sessionToken,
+        roomKey: stored.key,
+        playerId: stored.playerId,
+        linkPhase: 'resuming',
+      });
+      await get().connect('socket');
+      return get().resume('cold-load');
+    },
+
+    dismissSeatLost() {
+      set({ seatLost: null });
+    },
+
     disconnect() {
+      stopResumeTriggers?.();
+      stopResumeTriggers = null;
       detach?.();
       detach = null;
+      resumeInFlight = null;
+      reclaimTarget = null;
       get().transport?.disconnect();
-      set({ transport: null, connection: 'closed', room: null, roomKey: null, board: null, round: null, hand: [] });
+      // A deliberate leave gives up the seat, so the credential must go too —
+      // otherwise the next visit to the landing page tries to reclaim a seat
+      // the player walked away from.
+      clearSession();
+      set({
+        transport: null,
+        connection: 'closed',
+        linkPhase: 'idle',
+        seatLost: null,
+        room: null,
+        roomKey: null,
+        board: null,
+        round: null,
+        hand: [],
+      });
     },
 
     async createRoom(settings) {
@@ -466,7 +839,16 @@ export const useGameStore = create<GameStore>((set, get) => {
       const res = await send('room:create', { name, color, settings });
       if (res.ok) {
         const data = res.data as JoinedPayload;
-        set({ sessionToken: data.sessionToken, roomKey: data.key, playerId: data.playerId, room: data.room });
+        persistSeat(data);
+        set({
+          sessionToken: data.sessionToken,
+          roomKey: data.key,
+          playerId: data.playerId,
+          room: data.room,
+          linkPhase: 'live',
+          seatLost: null,
+        });
+        armResumeTriggers();
         track({
           name: 'room_created',
           params: { match_mode: data.room.settings.matchMode, bot_count: data.room.settings.botCount },
@@ -477,8 +859,13 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     async joinRoom(code, key) {
       const { name, color } = get().identity;
-      const token = get().sessionToken;
-      const roomKey = key ?? get().roomKey ?? undefined;
+      // Prefer the credential stored FOR THIS ROOM. Someone whose phone slept
+      // and who then re-opens the invite link is reconnecting, not joining, and
+      // presenting the right token here is what gets them their seat and score
+      // back instead of a second seat at zero.
+      const stored = sessionFor(code);
+      const token = stored?.sessionToken ?? get().sessionToken;
+      const roomKey = key ?? stored?.key ?? get().roomKey ?? undefined;
       const res = await send('room:join', {
         code,
         name,
@@ -488,7 +875,16 @@ export const useGameStore = create<GameStore>((set, get) => {
       });
       if (res.ok) {
         const data = res.data as JoinedPayload;
-        set({ sessionToken: data.sessionToken, roomKey: data.key, playerId: data.playerId, room: data.room });
+        persistSeat(data);
+        set({
+          sessionToken: data.sessionToken,
+          roomKey: data.key,
+          playerId: data.playerId,
+          room: data.room,
+          linkPhase: 'live',
+          seatLost: null,
+        });
+        armResumeTriggers();
         track({ name: 'room_joined', params: { player_count: data.room.players.length } });
       }
       return res;

@@ -24,7 +24,23 @@ export interface PlayingCardProps {
   reducedMotion?: boolean;
   /** Landing-page decoration: not interactive, not focusable. */
   inert?: boolean;
+  /**
+   * A phone cannot show eight full-size cards, so it shows eight slightly
+   * smaller ones. `snug` is still 68×104 — comfortably past the 44px touch
+   * minimum — and keeps the letter large enough to read at a glance.
+   */
+  density?: 'roomy' | 'snug';
 }
+
+const CARD_BOX: Record<'roomy' | 'snug', string> = {
+  roomy: 'h-[7.5rem] w-[4.75rem] px-2 py-2.5',
+  snug: 'h-[6.5rem] w-[4.25rem] px-1.5 py-2',
+};
+
+const CARD_LETTER: Record<'roomy' | 'snug', string> = {
+  roomy: 'text-[2.1rem]',
+  snug: 'text-[1.75rem]',
+};
 
 /** How common the letter is, as one to three pips. Cheap, readable, no numbers. */
 export function frequencyPips(letter: string): number {
@@ -35,7 +51,18 @@ export function frequencyPips(letter: string): number {
 }
 
 export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(function PlayingCard(
-  { card, disabled, selected, spent, rotate = 0, lift = 0, onClick, reducedMotion = false, inert = false },
+  {
+    card,
+    disabled,
+    selected,
+    spent,
+    rotate = 0,
+    lift = 0,
+    onClick,
+    reducedMotion = false,
+    inert = false,
+    density = 'roomy',
+  },
   ref,
 ) {
   const isLetter = card.kind === 'letter';
@@ -63,8 +90,9 @@ export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(funct
       title={meta ? `${meta.name} — ${meta.blurb}` : undefined}
       aria-label={label}
       className={[
-        'relative flex h-[7.5rem] w-[4.75rem] shrink-0 flex-col items-center justify-between',
-        'rounded-card border-2 px-2 py-2.5 shadow-card',
+        'relative flex shrink-0 snap-center flex-col items-center justify-between',
+        CARD_BOX[density],
+        'rounded-card border-2 shadow-card',
         'origin-bottom transition-colors',
         surface,
         selected ? 'border-lime ring-4 ring-lime/45' : 'border-ink/15',
@@ -88,15 +116,28 @@ export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(funct
           <span className="self-start font-mono text-[0.5rem] tracking-[0.12em] opacity-45">
             {'•'.repeat(frequencyPips(card.letter))}
           </span>
-          <span className="font-mono text-[2.1rem] leading-none font-extrabold">{card.letter}</span>
+          <span className={`font-mono ${CARD_LETTER[density]} leading-none font-extrabold`}>{card.letter}</span>
           <span className="self-end rotate-180 font-mono text-[0.5rem] tracking-[0.12em] opacity-45">
             {'•'.repeat(frequencyPips(card.letter))}
           </span>
         </>
       ) : (
         <>
-          <span className="sticker bg-ink/20 text-current opacity-80">{interruptCard ? 'Out of turn' : 'Action'}</span>
-          <ActionIcon kind={card.action} className="h-9 w-9" />
+          {/*
+            §9 asks for "a single bold icon and a short name". At snug density
+            there is no room for the extra sticker as well — it wraps to three
+            lines and squeezes the name out — so the small card is the §9 card
+            exactly, and the out-of-turn distinction stays where it always was:
+            in the colour, the title and the label.
+          */}
+          {density === 'snug' ? (
+            <span className="sr-only">{interruptCard ? 'Out of turn' : 'Action'}</span>
+          ) : (
+            <span className="sticker bg-ink/20 text-current opacity-80">
+              {interruptCard ? 'Out of turn' : 'Action'}
+            </span>
+          )}
+          <ActionIcon kind={card.action} className={density === 'snug' ? 'h-8 w-8' : 'h-9 w-9'} />
           <span className="text-center font-display text-[0.7rem] leading-tight font-bold">{meta?.name}</span>
         </>
       )}

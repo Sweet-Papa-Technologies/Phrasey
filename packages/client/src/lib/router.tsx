@@ -34,6 +34,12 @@ export function parseRoute(pathname: string): Route {
 
 export function navigate(to: string, opts: { replace?: boolean } = {}): void {
   if (typeof window === 'undefined') return;
+  // Navigating to where we already are is a no-op rather than a history entry.
+  // `Room` redirects on a timer while it has no seat, so without this a tab
+  // that is mid-reconnect can stack duplicate entries and strand the back
+  // button behind a run of identical URLs.
+  const here = `${window.location.pathname}${window.location.search}`;
+  if (to === here || to === window.location.pathname) return;
   if (opts.replace) window.history.replaceState({}, '', to);
   else window.history.pushState({}, '', to);
   window.dispatchEvent(new Event(NAV_EVENT));

@@ -168,12 +168,29 @@ export function attachIo(http: HttpServer, deps: IoDeps): Server<ClientToServerE
         const now = Date.now();
 
         // §7 reconnect: the token reclaims the held seat, hand and score intact.
+        //
+        // This runs FIRST, before every guard below, because a returning phone
+        // is not a join attempt — it already proved membership when it was
+        // issued the token. It is also the hot path on mobile: a locked screen
+        // or a backgrounded tab drops the websocket within seconds, socket.io
+        // hands us a brand-new socket id, and the seat is bound to the OLD id
+        // until this call moves it. Reaching this line several times in a row
+        // is normal and must be free of side effects — see `Room.reclaim`.
         if (input.sessionToken) {
           const reclaimed = room.reclaim(input.sessionToken, socket.id, now);
           if (reclaimed) {
+            // A socket that had been bound elsewhere (it cannot normally be,
+            // but a resume racing a stale binding can) is re-pointed rather
+            // than rejected: `bindSocket` overwrites.
             manager.bindSocket(socket.id, room.code);
             room.resync(reclaimed, now);
+            // Coming back is proof of good faith, so it clears any lockout the
+            // address picked up while the connection was flapping.
+            joinGuard.succeed(probeAddr);
             log.info({ code: room.code, playerId: reclaimed }, 'seat reclaimed');
+            // The SAME token is returned, never a fresh one. Rotating it here
+            // would make the second reclaim of a flapping connection fail
+            // against a token the client had not stored yet.
             return { sessionToken: input.sessionToken, playerId: reclaimed, key: room.key, room: room.roomPublic() };
           }
         }

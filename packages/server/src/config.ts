@@ -8,6 +8,8 @@
  * locally).
  */
 
+import { BALANCE } from '@phrasey/shared';
+
 export interface ServerConfig {
   nodeEnv: 'development' | 'production' | 'test';
   /** Cloud Run injects this. Bind 0.0.0.0 — never localhost, or the probe fails. */
@@ -34,7 +36,11 @@ export interface ServerConfig {
   timerEmitMs: number;
   /** Pause between a round ending and the next one dealing. */
   intermissionMs: number;
-  /** §7 — seat held this long after a drop, then it converts to a bot. */
+  /**
+   * §7 — seat held this long after a drop, then it converts to a bot.
+   * Defaults to `balance.session.reconnectWindowSeconds`, which is the single
+   * place that number is tuned. `RECONNECT_GRACE_MS=off` disables the hold.
+   */
   reconnectGraceMs: number | null;
   /** A room with no connected humans this long is dropped from memory. */
   idleRoomMs: number;
@@ -74,7 +80,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     tickMs: num(env.TICK_MS, 200),
     timerEmitMs: num(env.TIMER_EMIT_MS, 1000),
     intermissionMs: num(env.INTERMISSION_MS, 6000),
-    reconnectGraceMs: env.RECONNECT_GRACE_MS === 'off' ? null : num(env.RECONNECT_GRACE_MS, 90_000),
+    reconnectGraceMs:
+      env.RECONNECT_GRACE_MS === 'off'
+        ? null
+        : num(env.RECONNECT_GRACE_MS, BALANCE.session.reconnectWindowSeconds * 1000),
     idleRoomMs: num(env.IDLE_ROOM_MS, 30 * 60_000),
     logLevel: env.LOG_LEVEL ?? (isProd ? 'info' : 'debug'),
   };

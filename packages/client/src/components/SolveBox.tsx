@@ -39,7 +39,7 @@ export function SolveBox({ open, hiddenLetters, locked, onSubmit, onCancel }: So
       initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: reduced ? 0.01 : 0.2, ease: [0.22, 1.2, 0.36, 1] }}
-      className="fixed inset-x-0 bottom-0 z-40 flex justify-center p-4"
+      className="fixed inset-x-0 bottom-0 z-40 flex justify-center p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-4"
       role="dialog"
       aria-modal="false"
       aria-label="Solve the puzzle"

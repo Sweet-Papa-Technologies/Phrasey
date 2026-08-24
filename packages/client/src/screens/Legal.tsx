@@ -23,7 +23,7 @@ export function Legal({ page }: { page: LegalPage }) {
   return (
     <div className="flex min-h-full flex-col">
       <header className="px-4 py-3">
-        <Link to="/" aria-label="Phrasey home">
+        <Link to="/" aria-label="Phrasey home" className="tap">
           <Logo />
         </Link>
       </header>
@@ -39,7 +39,7 @@ export function Legal({ page }: { page: LegalPage }) {
           >
             Manage your privacy choices
           </button>
-          <Link to="/" className="rounded-full border-2 border-ink bg-fanta px-5 py-2.5 text-sm font-bold text-ink shadow-pop">
+          <Link to="/" className="tap rounded-full border-2 border-ink bg-fanta px-5 py-2.5 text-sm font-bold text-ink shadow-pop">
             Back to the game
           </Link>
         </div>

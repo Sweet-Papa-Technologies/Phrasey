@@ -30,6 +30,16 @@ export interface BottleProps {
   erupting?: boolean;
   /** Cast view and the landing hero use a slimmer chrome. */
   compact?: boolean;
+  /**
+   * How much room the bottle has.
+   *
+   * `rail` is the §9 arrangement: a tall bottle down the side of the board.
+   * `perch` is the phone: there is no right rail on a 390px screen, so the
+   * bottle stands beside the turn indicator above the board instead — still a
+   * bottle, still the tallest thing on the screen after the board, and it
+   * costs the board no width at all. It is not a slim horizontal gauge.
+   */
+  size?: 'rail' | 'perch';
   className?: string;
 }
 
@@ -66,7 +76,26 @@ function scatter(n: number, seed: number): number[] {
   return out;
 }
 
-export function Bottle({ pressure, max, erupting = false, compact = false, className }: BottleProps) {
+/**
+ * How tall the glass is drawn. Every one of these is a viewport-relative
+ * clamp, because the bottle's job is to stay legible from across the room on a
+ * cast screen and from arm's length on a phone.
+ */
+const GLASS_HEIGHT: Record<'compact' | 'rail' | 'perch', string> = {
+  compact: 'h-[clamp(11rem,30vh,18rem)] w-auto',
+  rail: 'h-[clamp(10rem,34vh,26rem)] w-auto short-landscape:h-[clamp(8rem,56vh,12rem)] lg:h-[clamp(16rem,52vh,30rem)]',
+  // Phone: as tall as the turn card next to it allows, and no taller.
+  perch: 'h-[clamp(7.5rem,24vh,13rem)] w-auto',
+};
+
+export function Bottle({
+  pressure,
+  max,
+  erupting = false,
+  compact = false,
+  size = 'rail',
+  className,
+}: BottleProps) {
   const reduced = useReducedMotion();
   const safeMax = max > 0 ? max : 1;
   const fraction = Math.min(1, Math.max(0, pressure / safeMax));
@@ -124,17 +153,13 @@ export function Bottle({ pressure, max, erupting = false, compact = false, class
 
   return (
     <div
-      className={`flex flex-col items-center gap-2 ${className ?? ''}`}
+      className={`flex shrink-0 flex-col items-center gap-1 sm:gap-2 ${className ?? ''}`}
       role="img"
       aria-label={`Pressure gauge: ${Math.round(pressure)} of ${safeMax}. ${stateLabel.toLowerCase()}.`}
     >
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className={
-          compact
-            ? 'h-64 w-auto sm:h-72'
-            : 'h-[clamp(13rem,38vh,26rem)] w-auto lg:h-[clamp(16rem,52vh,30rem)]'
-        }
+        className={GLASS_HEIGHT[compact ? 'compact' : size]}
         aria-hidden="true"
         focusable="false"
       >
@@ -361,7 +386,11 @@ export function Bottle({ pressure, max, erupting = false, compact = false, class
 
       {/* The same number, as text. Never color alone (§10). */}
       <div className="flex flex-col items-center gap-0.5 select-none">
-        <div className="font-mono text-lg leading-none font-bold tabular-nums">
+        <div
+          className={`font-mono leading-none font-bold tabular-nums ${
+            size === 'perch' && !compact ? 'text-sm' : 'text-lg'
+          }`}
+        >
           {Math.round(pressure)}
           <span className="opacity-45">/{safeMax}</span>
         </div>

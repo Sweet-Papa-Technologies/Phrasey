@@ -43,7 +43,12 @@ export function MuteControl({
           )}
         </svg>
       </button>
-      <label className="flex items-center gap-1.5">
+      {/*
+        The sliders are a nicety; the mute button is the control that matters.
+        On a phone they hide rather than wrapping the top bar onto a third row —
+        the button still mutes, and both levels persist.
+      */}
+      <label className="hidden items-center gap-1.5 sm:flex">
         <span className="sr-only">Volume</span>
         <input
           type="range"
@@ -56,7 +61,7 @@ export function MuteControl({
         />
       </label>
       {typeof musicVolume === 'number' && onMusicVolume && (
-        <label className="flex items-center gap-1" title="Music volume">
+        <label className="hidden items-center gap-1 sm:flex" title="Music volume">
           <svg
             viewBox="0 0 24 24"
             className="h-3.5 w-3.5 opacity-55"

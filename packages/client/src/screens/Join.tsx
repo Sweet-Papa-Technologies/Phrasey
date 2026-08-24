@@ -117,7 +117,7 @@ export function Join({ code, routeKey }: { code: string; routeKey: string | null
         ) : (
           <div className="text-center">
             <p className="mb-3 text-lg">That is not a Phrasey room code.</p>
-            <Link to="/" className="rounded-full bg-fanta px-6 py-3 font-display font-bold text-ink shadow-pop">
+            <Link to="/" className="tap rounded-full bg-fanta px-6 py-3 font-display font-bold text-ink shadow-pop">
               Back to the front
             </Link>
           </div>

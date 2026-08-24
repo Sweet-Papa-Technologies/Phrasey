@@ -39,6 +39,7 @@ export function createMockTransport(opts: MockTransportOptions = {}): Transport 
   const latency = opts.latencyMs ?? (opts.demo ? 0 : 45);
 
   let game: MockGame | null = null;
+  let live = false;
 
   const emitToBus = <E extends keyof ServerToClientEvents>(
     event: E,
@@ -65,18 +66,32 @@ export function createMockTransport(opts: MockTransportOptions = {}): Transport 
     return new Promise((resolve) => setTimeout(() => resolve(value), latency));
   }
 
+  async function open(): Promise<void> {
+    stateBus.emit('state', 'connecting');
+    ensureGame();
+    await delay(null);
+    live = true;
+    stateBus.emit('state', 'connected');
+    if (opts.demo) {
+      // The demo needs no lobby: it starts playing the moment it connects.
+      ensureGame().startMatch();
+    }
+  }
+
   return {
     kind: 'mock',
 
-    async connect() {
-      stateBus.emit('state', 'connecting');
-      ensureGame();
-      await delay(null);
-      stateBus.emit('state', 'connected');
-      if (opts.demo) {
-        // The demo needs no lobby: it starts playing the moment it connects.
-        ensureGame().startMatch();
-      }
+    connect: open,
+
+    /** In-memory: the link is up the moment `connect()` has run. */
+    isHealthy() {
+      return live;
+    },
+
+    /** Nothing to reconnect to. Idempotent, like the socket one. */
+    async reconnect() {
+      if (live) return;
+      await open();
     },
 
     async emit<E extends keyof ClientToServerEvents>(
@@ -155,6 +170,7 @@ export function createMockTransport(opts: MockTransportOptions = {}): Transport 
     },
 
     disconnect() {
+      live = false;
       game?.dispose();
       game = null;
       bus.clear();
