@@ -89,11 +89,15 @@ describe('Board', () => {
     expect(tile.querySelector('[title="You peeked at this tile"]')).toBeTruthy();
   });
 
-  it('renders the dead-letter list from missedLetters', () => {
+  it('renders the misses list from missedLetters', () => {
     const board = { ...makeBoard(['O']), missedLetters: ['Q', 'Z'] };
     render(<Board board={board} />);
     expect(screen.getByText('Q')).toBeTruthy();
     expect(screen.getByText('Z')).toBeTruthy();
+    // The label is player-visible copy and the owner does not want "dead" in
+    // it. The internal field is still `missedLetters`; this is about the UI.
+    expect(screen.getByText('Misses')).toBeTruthy();
+    expect(screen.queryByText(/dead/i)).toBeNull();
   });
 });
 

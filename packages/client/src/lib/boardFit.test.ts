@@ -156,16 +156,88 @@ describe('fitBoard', () => {
     expect(rowsHeight(fit.rows, fit.tile)).toBeLessThanOrEqual(budget);
   });
 
-  it('prefers more rows over illegible tiles when the height budget is impossible', () => {
+  /*
+   * The height budget is a hard constraint, not a preference. On the game
+   * screen it is literally "what the top bar, the hand and the bottle did not
+   * take" of a fixed-height shell, so a fit that ignores it does not produce a
+   * slightly tall board — it produces the bug this whole pass exists to fix,
+   * a page that scrolls and a Solve button under the fold.
+   */
+  it('goes under the floor rather than overrun a height budget', () => {
+    const budget = 40; // room for one row at the floor, and it is not happening
     const fit = fitBoard({
       availableWidth: PHONE,
-      availableHeight: 40, // room for one row, and it is not going to happen
+      availableHeight: budget,
       wordUnits: unitsFor(VERY_LONG),
       minTile: 26,
       maxTile: 52,
     });
-    expect(fit.tile).toBe(26); // stops at the floor…
-    expect(fit.rows).toBeGreaterThan(1); // …and takes the rows instead
+    expect(fit.tile).toBeLessThan(26);
+    expect(fit.tile).toBeGreaterThanOrEqual(TILE_HARD_FLOOR);
+    expect(rowsHeight(fit.rows, fit.tile)).toBeLessThanOrEqual(budget);
+    expect(fit.clipped).toBe(false);
+  });
+
+  it('never goes under the floor when the budget does not force it', () => {
+    const fit = fitBoard({
+      availableWidth: PHONE,
+      availableHeight: 400,
+      wordUnits: unitsFor(VERY_LONG),
+      minTile: 26,
+      maxTile: 52,
+    });
+    expect(fit.tile).toBeGreaterThanOrEqual(26);
+  });
+
+  it('stops at the hard floor and reports clipped when no tile can fit the height', () => {
+    const budget = 18; // shorter than a single row of hard-floor tiles
+    const fit = fitBoard({
+      availableWidth: 120,
+      availableHeight: budget,
+      wordUnits: unitsFor(VERY_LONG),
+      minTile: 26,
+      maxTile: 52,
+    });
+    expect(fit.tile).toBeGreaterThanOrEqual(TILE_HARD_FLOOR);
+    expect(fit.clipped).toBe(true);
+    // Clipped is the board's own container scrolling, never the page — so the
+    // tiles stay legible rather than being ground down to fit.
+    expect(fit.tile).toBeGreaterThanOrEqual(TILE_HARD_FLOOR);
+  });
+
+  it('is not clipped whenever the rows actually fit the budget', () => {
+    for (const budget of [120, 200, 320, 640]) {
+      const fit = fitBoard({
+        availableWidth: PHONE,
+        availableHeight: budget,
+        wordUnits: unitsFor(LONG),
+        minTile: 26,
+        maxTile: 52,
+      });
+      expect(fit.clipped).toBe(false);
+      expect(rowsHeight(fit.rows, fit.tile)).toBeLessThanOrEqual(budget);
+    }
+  });
+
+  /*
+   * The shell hands the board a *measured* leftover rather than a share of the
+   * viewport, so the budget it gets is whatever the chrome happened to leave.
+   * Sweeping it catches any budget where the fit would silently overrun.
+   */
+  it('honours every budget a fixed-height shell could hand it', () => {
+    for (let budget = 60; budget <= 600; budget += 10) {
+      for (const phrase of [LONG, VERY_LONG, 'HOT DOG', 'A']) {
+        const fit = fitBoard({
+          availableWidth: PHONE,
+          availableHeight: budget,
+          wordUnits: unitsFor(phrase),
+          minTile: 26,
+          maxTile: 52,
+        });
+        if (fit.clipped) continue; // reported, and the board scrolls itself
+        expect(rowsHeight(fit.rows, fit.tile)).toBeLessThanOrEqual(budget);
+      }
+    }
   });
 
   it('goes under the floor only for a word wider than the board, and stops at the hard floor', () => {
@@ -216,7 +288,7 @@ describe('fitBoard', () => {
       minTile: 24,
       maxTile: 52,
     });
-    expect(fit).toEqual({ tile: 52, lines: [], rows: 0, overflows: false });
+    expect(fit).toEqual({ tile: 52, lines: [], rows: 0, overflows: false, clipped: false });
   });
 
   it('is monotonic: a wider board never gets a smaller tile', () => {

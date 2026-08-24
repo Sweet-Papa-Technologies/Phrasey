@@ -77,6 +77,13 @@ export interface BoardFitResult {
    * The board must then scroll inside its own container — never the page.
    */
   overflows: boolean;
+  /**
+   * True when the rows do not fit the height budget even at the hard floor.
+   * Same contract as {@link overflows}, on the other axis: the board scrolls
+   * inside its own container. The page never does — the game screen is a
+   * fixed-height shell and a vertical page scroll there is a bug.
+   */
+  clipped: boolean;
 }
 
 /**
@@ -164,17 +171,22 @@ const STEP = 0.5;
  *  - the wrapped rows fit the height budget, if one was given;
  *  - the lines are reasonably full, so the board reads as a phrase rather than
  *    as a column of orphaned words;
- *  - the tile never exceeds `maxTile`, and never drops below `minTile` for the
- *    sake of either — §9's legibility beats a tidy shape, so below the floor
- *    we take more rows instead of smaller tiles.
+ *  - the tile never exceeds `maxTile`, and prefers not to drop below `minTile`
+ *    for the sake of the fill target — §9's legibility beats a tidy shape, so
+ *    there we take more rows instead of smaller tiles.
  *
  * The search is a descending scan rather than a bisection: neither the row
  * count nor the fill ratio is monotonic in the tile size (one extra pixel can
  * tip a word onto the next line and change both), and at ~60 steps over a dozen
  * words the exact answer is cheaper than being clever about an approximate one.
  *
- * The only case that goes under `minTile` is a word too long for the board at
- * that size, and even then we stop at `hardFloor` and report `overflows`.
+ * Two things can push the tile under `minTile`, and both are hard constraints
+ * rather than preferences: a word too long for the board at that size, and a
+ * height budget too short for the rows at that size. The game screen is a
+ * fixed-height shell — whatever the chrome leaves is all the board gets — so
+ * "too tall" has to be absorbed here rather than handed to the page as a
+ * scrollbar. Either way the descent stops at `hardFloor` and the result says
+ * which axis gave out (`overflows` / `clipped`).
  */
 export function fitBoard(options: BoardFitOptions): BoardFitResult {
   const {
@@ -190,7 +202,7 @@ export function fitBoard(options: BoardFitOptions): BoardFitResult {
   } = options;
 
   if (wordUnits.length === 0) {
-    return { tile: maxTile, lines: [], rows: 0, overflows: false };
+    return { tile: maxTile, lines: [], rows: 0, overflows: false, clipped: false };
   }
 
   const width = Math.max(1, availableWidth);
@@ -198,17 +210,25 @@ export function fitBoard(options: BoardFitOptions): BoardFitResult {
   // The tile size at which the longest word exactly spans the board.
   const widthCap = widest > 0 ? width / widest : maxTile;
 
+  const heightBudget = availableHeight != null && availableHeight > 0 ? availableHeight : Infinity;
+  const fitsHeight = (tile: number, rows: number) => rowsHeight(rows, tile, rowGap) <= heightBudget;
+
   if (widthCap < minTile) {
     // No tile at or above the floor can hold the longest word. Go under the
     // floor, but only as far as the hard floor: past that the board scrolls in
     // its own container rather than becoming unreadable.
     const tile = round2(Math.max(hardFloor, widthCap));
     const lines = wrapWords(wordUnits, tile, width, wordGap);
-    return { tile, lines, rows: lines.length, overflows: widthCap < hardFloor };
+    return {
+      tile,
+      lines,
+      rows: lines.length,
+      overflows: widthCap < hardFloor,
+      clipped: !fitsHeight(tile, lines.length),
+    };
   }
 
   const ceiling = Math.min(maxTile, widthCap);
-  const heightBudget = availableHeight != null && availableHeight > 0 ? availableHeight : Infinity;
 
   let best: { tile: number; lines: number[][] } | null = null;
   // The best candidate that fits the height but not the fill target, used when
@@ -219,7 +239,7 @@ export function fitBoard(options: BoardFitOptions): BoardFitResult {
   for (let i = 0; i < steps; i++) {
     const tile = Math.max(minTile, ceiling - i * STEP);
     const lines = wrapWords(wordUnits, tile, width, wordGap);
-    if (rowsHeight(lines.length, tile, rowGap) > heightBudget) continue;
+    if (!fitsHeight(tile, lines.length)) continue;
     compromise ??= { tile, lines };
     if (lines.length <= 1 || fillRatio(wordUnits, tile, width, lines.length) >= minFill) {
       best = { tile, lines };
@@ -227,19 +247,40 @@ export function fitBoard(options: BoardFitOptions): BoardFitResult {
     }
   }
 
-  const chosen = best ??
-    compromise ?? {
-      // Nothing fits the height even at the floor: take the rows, keep the
-      // tiles legible, and let the board's own container do the scrolling.
-      tile: minTile,
-      lines: wrapWords(wordUnits, minTile, width, wordGap),
-    };
+  let chosen = best ?? compromise;
+
+  if (!chosen) {
+    /*
+     * Nothing at or above `minTile` fits the height. This is the phone case
+     * the fixed-height shell creates: a long puzzle, a short landscape
+     * viewport, and a board area that is whatever the status row, the hand and
+     * the bottle did not take. Keep descending — a 22px tile that is on screen
+     * beats a 26px one that is under the fold — and stop at the hard floor.
+     */
+    const tightSteps = Math.max(1, Math.ceil((minTile - hardFloor) / STEP) + 1);
+    for (let i = 1; i < tightSteps; i++) {
+      const tile = Math.max(hardFloor, minTile - i * STEP);
+      const lines = wrapWords(wordUnits, tile, width, wordGap);
+      if (fitsHeight(tile, lines.length)) {
+        chosen = { tile, lines };
+        break;
+      }
+      if (tile <= hardFloor) break;
+    }
+  }
+
+  if (!chosen) {
+    // Not even the hard floor fits. Keep the tiles legible, take the rows, and
+    // let the board's own container do the scrolling — never the page.
+    chosen = { tile: minTile, lines: wrapWords(wordUnits, minTile, width, wordGap) };
+  }
 
   return {
     tile: round2(chosen.tile),
     lines: chosen.lines,
     rows: chosen.lines.length,
     overflows: false,
+    clipped: !fitsHeight(round2(chosen.tile), chosen.lines.length),
   };
 }
 

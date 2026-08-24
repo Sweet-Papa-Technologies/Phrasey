@@ -45,7 +45,12 @@ const SIZING: Record<
   NonNullable<BoardProps['size']>,
   { minTile: number; maxTile: number; heightShare: number; minHeight: number }
 > = {
-  normal: { minTile: 26, maxTile: 52, heightShare: 0.4, minHeight: 140 },
+  // The ceiling went up with the fixed-height shell: the board now gets a
+  // measured budget rather than a guessed share of the viewport, and on a
+  // tablet or a desktop that budget was leaving a third of the slab empty
+  // because the tiles were not allowed to grow into it. Width and the budget
+  // still bind first, so a phone is unaffected.
+  normal: { minTile: 26, maxTile: 66, heightShare: 0.4, minHeight: 140 },
   cast: { minTile: 34, maxTile: 92, heightShare: 0.58, minHeight: 200 },
   demo: { minTile: 22, maxTile: 44, heightShare: 0.32, minHeight: 130 },
 };
@@ -53,8 +58,21 @@ const SIZING: Record<
 export function Board({ board, delays, peeks, size = 'normal', className }: BoardProps) {
   const reduced = useReducedMotion();
   const rowsRef = useRef<HTMLDivElement>(null);
-  // Width only: the parent owns it, so reading it cannot feed back into layout.
-  const { width } = useElementSize(rowsRef);
+  /*
+   * On the game screen (`normal` and `cast`) the board sits in a grid track
+   * that is `minmax(0, 1fr)` of a fixed-height shell, and the rows box is
+   * `flex-1 basis-0 min-h-0` inside it. Both axes are therefore owned by the
+   * parent: the rows box is exactly what the chrome left over, and its own
+   * content cannot push it. That makes reading the *height* safe here, which
+   * it would not be in an auto-height container — and it is the whole reason
+   * the board can absorb the leftover instead of guessing at a share of the
+   * viewport.
+   *
+   * `demo` (the landing hero) has no such budget, so it keeps the viewport
+   * estimate and the rows box keeps its content-driven minimum.
+   */
+  const constrained = size !== 'demo';
+  const { width, height } = useElementSize(rowsRef);
   const viewport = useViewportSize();
   // A landscape phone has to fit the board *and* the hand into 390px of
   // height; the board takes a smaller share of it than it would upright.
@@ -73,8 +91,12 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
     // board could ever be, so the tiles render at full size rather than at the
     // hard floor for one frame.
     const availableWidth = width > 0 ? width : widest * sizing.maxTile;
+    // The measured budget wins wherever there is one. The viewport share is
+    // the fallback for the first frame before the ResizeObserver has fired,
+    // for jsdom, and for the unconstrained landing hero.
     const share = shortLandscape && size !== 'cast' ? 0.3 : sizing.heightShare;
-    const availableHeight = viewport.height > 0 ? Math.max(sizing.minHeight, viewport.height * share) : null;
+    const estimate = viewport.height > 0 ? Math.max(sizing.minHeight, viewport.height * share) : null;
+    const availableHeight = constrained && height > 0 ? height : estimate;
     return fitBoard({
       availableWidth,
       availableHeight,
@@ -82,17 +104,23 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
       minTile: sizing.minTile,
       maxTile: sizing.maxTile,
     });
-  }, [width, viewport.height, wordUnits, sizing, shortLandscape, size]);
+  }, [width, height, constrained, viewport.height, wordUnits, sizing, shortLandscape, size]);
 
   const revealedCount = board.totalLetters - board.hiddenLetters;
 
   return (
     <section
       aria-label="Puzzle board"
-      className={`slab relative flex min-w-0 flex-col gap-3 px-3 py-4 sm:gap-4 sm:px-7 sm:py-7 ${className ?? ''}`}
+      className={[
+        // A landscape phone gives the board about 130px in total; the slab's own
+        // padding was taking a third of that, so it tightens there.
+        'slab relative flex min-w-0 flex-col gap-2 px-3 py-3 sm:gap-3 sm:px-6 sm:py-5 short-landscape:gap-1 short-landscape:px-3 short-landscape:py-2',
+        constrained ? 'min-h-0 overflow-hidden' : '',
+        className ?? '',
+      ].join(' ')}
       style={{ ['--tile' as string]: `${fit.tile}px` }}
     >
-      <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+      <header className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <p className="sticker bg-lime text-ink">{board.category}</p>
         <p className="font-mono text-[0.625rem] tracking-[0.14em] text-chill/55 uppercase">
           {revealedCount}/{board.totalLetters} revealed
@@ -108,9 +136,15 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
         ref={rowsRef}
         className={[
           'flex flex-1 flex-col items-center justify-center gap-[calc(var(--tile)*0.32)]',
+          // `basis-0` + `min-h-0` is what makes this box parent-sized rather
+          // than content-sized, which is what makes measuring its height safe.
+          constrained ? 'min-h-0 basis-0' : '',
           // A word wider than the hard floor allows is the one case that cannot
           // be wrapped away. It scrolls inside the board — never the page.
           fit.overflows ? 'rail-scroll items-start overflow-x-auto' : '',
+          // Same contract on the other axis, for a puzzle too tall for its
+          // budget even at the hard floor.
+          fit.clipped ? 'rail-scroll justify-start overflow-y-auto' : '',
         ].join(' ')}
       >
         {fit.lines.map((line, lineIndex) => (
@@ -137,15 +171,15 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
       </div>
 
       {board.hint && (
-        <p className="mx-auto max-w-prose text-center text-sm text-soda">
+        <p className="mx-auto max-w-prose shrink-0 text-center text-sm text-soda">
           <span className="sticker mr-2 bg-soda text-ink">Hint</span>
           {board.hint}
         </p>
       )}
 
       {board.missedLetters.length > 0 && (
-        <p className="flex flex-wrap items-center justify-center gap-1.5 font-mono text-[0.6875rem] text-chill/45">
-          <span className="tracking-[0.14em] uppercase">Dead letters</span>
+        <p className="flex shrink-0 flex-wrap items-center justify-center gap-1.5 font-mono text-[0.6875rem] text-chill/45">
+          <span className="tracking-[0.14em] uppercase">Misses</span>
           {board.missedLetters.map((l) => (
             <span key={l} className="rounded bg-cherry/18 px-1.5 py-0.5 text-cherry line-through">
               {l}

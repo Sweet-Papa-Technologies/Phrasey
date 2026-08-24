@@ -38,8 +38,10 @@ export interface BottleProps {
    * bottle stands beside the turn indicator above the board instead — still a
    * bottle, still the tallest thing on the screen after the board, and it
    * costs the board no width at all. It is not a slim horizontal gauge.
+   * `cast` is the shared-screen rail, which shares its column with the join
+   * QR — the bottle stays the boldest thing on it, but not the only one.
    */
-  size?: 'rail' | 'perch' | 'hero';
+  size?: 'rail' | 'perch' | 'hero' | 'cast';
   className?: string;
 }
 
@@ -84,13 +86,22 @@ function scatter(n: number, seed: number): number[] {
  * clamp, because the bottle's job is to stay legible from across the room on a
  * cast screen and from arm's length on a phone.
  */
-const GLASS_HEIGHT: Record<'compact' | 'rail' | 'perch' | 'hero', string> = {
+const GLASS_HEIGHT: Record<'compact' | 'rail' | 'perch' | 'hero' | 'cast', string> = {
   compact: 'h-[clamp(11rem,30vh,18rem)] w-auto',
   rail: 'h-[clamp(10rem,34vh,26rem)] w-auto short-landscape:h-[clamp(8rem,56vh,12rem)] lg:h-[clamp(16rem,52vh,30rem)]',
-  // Phone: as tall as the turn card next to it allows, and no taller.
-  perch: 'h-[clamp(7.5rem,24vh,13rem)] w-auto',
+  // Phone: as tall as the turn card next to it allows, and no taller. In a
+  // fixed-height shell every millimetre it takes is a millimetre of board, so
+  // this is smaller than it was — still unmistakably a bottle, still the
+  // second-tallest thing on the screen, and no longer a quarter of it.
+  perch: 'h-[clamp(6rem,18vh,10rem)] w-auto',
   // Landing hero: beside the demo board on a phone, on its rail from lg up.
   hero: 'h-[clamp(8rem,24vh,12rem)] w-auto lg:h-[clamp(13rem,34vh,18rem)]',
+  // Cast: shares its rail with the join QR, so it takes about a third of the
+  // screen rather than half of it.
+  // Cast: on a wide screen it is a rail beside the board; on a portrait tablet
+  // the whole join block turns into a band underneath, and a 34vh bottle there
+  // would leave the board a strip.
+  cast: 'h-[clamp(7rem,20vh,14rem)] w-auto lg:h-[clamp(9rem,34vh,21rem)]',
 };
 
 export function Bottle({ pressure, max, erupting = false, compact = false, size = 'rail', className }: BottleProps) {

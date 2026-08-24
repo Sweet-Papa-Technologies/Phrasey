@@ -11,11 +11,15 @@
  * Cards that need a decision before they can be played — WILD and VOWEL RUSH
  * need a letter, LOCKOUT needs a target — open a small chooser rather than
  * guessing for you.
+ *
+ * There is one way to spend a turn now: play a card. The "discard and draw"
+ * escape hatch is gone, because the thing it escaped from is gone — a letter
+ * already on the board is swapped out of every hand automatically, so a hand
+ * cannot hold a card it has no use for.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ACTION_CARD_META, ALPHABET, VOWELS, type Card, type PlayerPublic } from '@phrasey/shared';
-import { BALANCE } from '@phrasey/shared';
 import { useReducedMotion } from '../lib/motion';
 import { useMediaQuery } from '../lib/viewport';
 import { PlayingCard } from './PlayingCard';
@@ -28,9 +32,16 @@ export interface HandProps {
   myTurn: boolean;
   onPlayLetter: (cardId: string) => void;
   onPlayAction: (cardId: string, letter?: string, targetPlayerId?: string) => void;
-  onDiscard: (cardIds: string[]) => void;
   /** Flashed when a keystroke plays a card, so the keyboard path is visible. */
   highlightCardId?: string | null;
+  /**
+   * Turn controls — Solve and Pass — rendered at the head of the hand's own
+   * control row. They live here rather than up in the status bar because this
+   * is where the thumb already is: the playtest report was "play a piece and
+   * then SCROLL UP to see the pass or solve button", and putting them back on
+   * screen without putting them back within reach only fixes half of that.
+   */
+  controls?: ReactNode;
 }
 
 type Pending = {
@@ -47,38 +58,33 @@ export function Hand({
   myTurn,
   onPlayLetter,
   onPlayAction,
-  onDiscard,
   highlightCardId,
+  controls,
 }: HandProps) {
   const reduced = useReducedMotion();
   // A fan needs width for the spread *and* height for the lift. A landscape
   // phone has the first and none of the second, so it gets the flat tray too.
   const fanned = useMediaQuery('(min-width: 640px) and (min-height: 561px)');
-  const density = fanned ? 'roomy' : 'snug';
-  const [discardMode, setDiscardMode] = useState(false);
-  const [picked, setPicked] = useState<string[]>([]);
+  // A landscape phone has 390px of height for the board *and* the hand. The
+  // cards get their own step down rather than pushing the board off the screen.
+  const shortLandscape = useMediaQuery('(orientation: landscape) and (max-height: 560px)');
+  const density = fanned ? 'roomy' : shortLandscape ? 'tight' : 'snug';
   const [pending, setPending] = useState<Pending>(null);
 
   useEffect(() => {
-    if (!myTurn) {
-      setDiscardMode(false);
-      setPicked([]);
-      setPending(null);
-    }
+    if (!myTurn) setPending(null);
   }, [myTurn]);
 
-  // §10: Escape cancels. Applies to the chooser and to discard mode alike.
+  // §10: Escape cancels.
   useEffect(() => {
-    if (!pending && !discardMode) return;
+    if (!pending) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       setPending(null);
-      setDiscardMode(false);
-      setPicked([]);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [pending, discardMode]);
+  }, [pending]);
 
   const n = hand.length;
   const spread = Math.min(4.5 * Math.max(0, n - 1), 34);
@@ -90,16 +96,6 @@ export function Hand({
   }
 
   function activate(card: Card): void {
-    if (discardMode) {
-      setPicked((p) =>
-        p.includes(card.id)
-          ? p.filter((x) => x !== card.id)
-          : p.length >= BALANCE.turn.maxDiscard
-            ? p
-            : [...p, card.id],
-      );
-      return;
-    }
     if (!myTurn) return;
     if (card.kind === 'letter') {
       onPlayLetter(card.id);
@@ -115,7 +111,7 @@ export function Hand({
   const others = players.filter((p) => p.id !== selfId);
 
   return (
-    <div className="relative flex w-full min-w-0 flex-col items-center gap-1.5 sm:gap-3">
+    <div className="relative flex w-full min-w-0 flex-col items-center gap-1 sm:gap-2">
       <AnimatePresence>
         {pending && (
           <motion.div
@@ -190,36 +186,23 @@ export function Hand({
         )}
       </AnimatePresence>
 
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          disabled={!myTurn}
-          onClick={() => {
-            setDiscardMode((d) => !d);
-            setPicked([]);
-          }}
-          className={[
-            'rounded-full border-2 px-3 py-1.5 font-mono text-[0.625rem] tracking-[0.14em] uppercase',
-            discardMode ? 'border-cherry bg-cherry text-chill' : 'border-ink/15 hover:bg-ink/6',
-            !myTurn ? 'opacity-40' : '',
-          ].join(' ')}
-        >
-          {discardMode ? 'Choose 1–3 to toss' : 'Discard & draw'}
-        </button>
-        {discardMode && (
-          <button
-            type="button"
-            disabled={picked.length === 0}
-            onClick={() => {
-              onDiscard(picked);
-              setDiscardMode(false);
-              setPicked([]);
-            }}
-            className="rounded-full bg-fanta px-3 py-1.5 font-mono text-[0.625rem] tracking-[0.14em] text-ink uppercase shadow-pop disabled:opacity-40"
-          >
-            Toss {picked.length}
-          </button>
-        )}
+      {/*
+        Turn controls. There is no "discard and draw" any more: a hand can no
+        longer hold a card it cannot use, because a letter already on the board
+        is swapped out from every hand automatically. The button existed only to
+        escape that, and on a phone it was a permanent row directly under the
+        board. What is left here is Solve and Pass, and nothing when it is not
+        your turn — but the row keeps its height either way. In a fixed-height
+        shell an empty row that collapses would hand its pixels to the board,
+        re-fit every tile, and jolt the whole surface at the exact moment your
+        turn begins. A stable board is worth 44px of air.
+      */}
+      <div
+        className="flex min-h-[var(--tap)] flex-wrap items-center justify-center gap-2"
+        role="group"
+        aria-label="Turn controls"
+      >
+        {controls}
       </div>
 
       {/*
@@ -233,7 +216,7 @@ export function Hand({
       <div
         className={[
           'rail-scroll -mx-1 flex w-full overflow-x-auto overflow-y-hidden px-1',
-          fanned ? 'pt-10 pb-6' : 'snap-x snap-mandatory scroll-px-3 pt-3 pb-2',
+          fanned ? 'pt-10 pb-5' : 'snap-x snap-mandatory scroll-px-3 pt-2 pb-1',
         ].join(' ')}
         role="group"
         aria-label="Your hand"
@@ -267,8 +250,7 @@ export function Hand({
                     rotate={g.rotate}
                     lift={g.lift}
                     spent={spent}
-                    selected={picked.includes(card.id)}
-                    disabled={!discardMode && (!myTurn || spent)}
+                    disabled={!myTurn || spent}
                     reducedMotion={reduced}
                     onClick={() => activate(card)}
                   />

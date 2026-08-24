@@ -53,8 +53,17 @@ export function Room({ code }: { code: string }) {
     return undefined;
   }, [room, code]);
 
+  /*
+   * Mid-round the screen stops being a page and becomes a fixed-height shell
+   * (`app-shell`, styles/index.css): the viewport is the budget and the board
+   * absorbs the remainder, so Solve and Pass can never end up under the fold.
+   * The lobby is a normal scrolling page — it has a form on it, and a form that
+   * cannot scroll is a worse bug than the one being fixed.
+   */
+  const inPlay = !!room && room.status !== 'lobby';
+
   return (
-    <div className="flex min-h-full flex-col">
+    <div className={inPlay ? 'app-shell' : 'flex min-h-full flex-col'}>
       <TopBar
         room={room}
         connection={connection}
@@ -71,6 +80,7 @@ export function Room({ code }: { code: string }) {
         sameRoomIsHost={isHost}
         sameRoomFromRoomDefault={!isHost && sameRoomLocal === null && roomDefaultSameRoom}
         onSameRoom={setSameRoom}
+        dense={inPlay}
       />
 
       {!room ? (
@@ -92,7 +102,14 @@ export function Room({ code }: { code: string }) {
         <Game />
       )}
 
-      {!castView && <Footer />}
+      {/*
+        The privacy links belong on the landing page and the lobby, not
+        mid-round: on a phone the footer was three rows of legal copy competing
+        with the hand for the bottom of the screen. §8 is satisfied either way
+        — the consent manager is reachable from every screen a player arrives
+        on, and from the lobby they return to between rounds.
+      */}
+      {!castView && !inPlay && <Footer />}
     </div>
   );
 }

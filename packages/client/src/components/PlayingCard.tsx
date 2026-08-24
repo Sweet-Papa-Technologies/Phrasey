@@ -27,19 +27,26 @@ export interface PlayingCardProps {
   /**
    * A phone cannot show eight full-size cards, so it shows eight slightly
    * smaller ones. `snug` is still 68×104 — comfortably past the 44px touch
-   * minimum — and keeps the letter large enough to read at a glance.
+   * minimum — and keeps the letter large enough to read at a glance. `tight`
+   * is the landscape phone, which has 390px of height to hold a board and a
+   * hand: 60×76, still well past the touch minimum, and the smallest the
+   * letter can be and still be read at arm's length.
    */
-  density?: 'roomy' | 'snug';
+  density?: 'roomy' | 'snug' | 'tight';
 }
 
-const CARD_BOX: Record<'roomy' | 'snug', string> = {
+type Density = NonNullable<PlayingCardProps['density']>;
+
+const CARD_BOX: Record<Density, string> = {
   roomy: 'h-[7.5rem] w-[4.75rem] px-2 py-2.5',
   snug: 'h-[6.5rem] w-[4.25rem] px-1.5 py-2',
+  tight: 'h-[4.75rem] w-[3.75rem] px-1 py-1.5',
 };
 
-const CARD_LETTER: Record<'roomy' | 'snug', string> = {
+const CARD_LETTER: Record<Density, string> = {
   roomy: 'text-[2.1rem]',
   snug: 'text-[1.75rem]',
+  tight: 'text-[1.375rem]',
 };
 
 /** How common the letter is, as one to three pips. Cheap, readable, no numbers. */
@@ -123,21 +130,30 @@ export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(funct
       ) : (
         <>
           {/*
-            §9 asks for "a single bold icon and a short name". At snug density
-            there is no room for the extra sticker as well — it wraps to three
-            lines and squeezes the name out — so the small card is the §9 card
-            exactly, and the out-of-turn distinction stays where it always was:
-            in the colour, the title and the label.
+            §9 asks for "a single bold icon and a short name". At the smaller
+            densities there is no room for the extra sticker as well — it wraps
+            to three lines and squeezes the name out — so the small card is the
+            §9 card exactly, and the out-of-turn distinction stays where it
+            always was: in the colour, the title and the label.
           */}
-          {density === 'snug' ? (
+          {density !== 'roomy' ? (
             <span className="sr-only">{interruptCard ? 'Out of turn' : 'Action'}</span>
           ) : (
             <span className="sticker bg-ink/20 text-current opacity-80">
               {interruptCard ? 'Out of turn' : 'Action'}
             </span>
           )}
-          <ActionIcon kind={card.action} className={density === 'snug' ? 'h-8 w-8' : 'h-9 w-9'} />
-          <span className="text-center font-display text-[0.7rem] leading-tight font-bold">{meta?.name}</span>
+          <ActionIcon
+            kind={card.action}
+            className={density === 'roomy' ? 'h-9 w-9' : density === 'snug' ? 'h-8 w-8' : 'h-6 w-6'}
+          />
+          <span
+            className={`text-center font-display leading-tight font-bold ${
+              density === 'tight' ? 'text-[0.6rem]' : 'text-[0.7rem]'
+            }`}
+          >
+            {meta?.name}
+          </span>
         </>
       )}
     </motion.button>

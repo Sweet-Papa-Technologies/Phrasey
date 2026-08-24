@@ -26,7 +26,21 @@ export interface TopBarProps {
   sameRoomIsHost?: boolean;
   sameRoomFromRoomDefault?: boolean;
   onSameRoom?: (v: boolean) => void;
+  /**
+   * Mid-round. The bar is overhead on a screen with a fixed height budget, so
+   * everything that is a developer affordance or a nicety goes away and what
+   * is left is one short row.
+   */
+  dense?: boolean;
 }
+
+/**
+ * States worth a chip. "Live" and "Offline" are the two that tell a player
+ * nothing they did not already know from the game responding to them, and a
+ * green badge saying everything is fine is the definition of chrome. So the
+ * bar is silent while the connection is healthy and speaks up when it is not.
+ */
+const NOTEWORTHY = new Set<ConnectionState>(['connecting', 'reconnecting', 'closed', 'error']);
 
 const CONNECTION_COPY: Record<ConnectionState, { text: string; tone: string }> = {
   idle: { text: 'Offline', tone: 'bg-ink/12 text-ink' },
@@ -53,16 +67,30 @@ export function TopBar({
   sameRoomIsHost,
   sameRoomFromRoomDefault,
   onSameRoom,
+  dense = false,
 }: TopBarProps) {
   const conn = CONNECTION_COPY[connection];
+  /*
+   * A status chip only when the connection is doing something you would want
+   * to know about. Previously this bar carried a permanent "LIVE" badge and,
+   * on the mock, a permanent "DEMO SERVER" badge beside it — two stickers that
+   * never change, on the screen where every row costs the board a row of tiles.
+   */
+  const showConn = NOTEWORTHY.has(connection);
   return (
     /*
      * The top bar is overhead, and on a phone it was costing four wrapped rows
      * — a quarter of the screen — before the game even started. Everything
      * optional now collapses: the two volume sliders hide behind the mute
-     * button (which still works), and the labels shorten.
+     * button (which still works), and the labels shorten. `dense` (mid-round)
+     * goes one further and drops the developer affordances entirely.
      */
-    <header className="flex w-full flex-wrap items-center gap-x-2 gap-y-1 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 short-landscape:py-1">
+    <header
+      className={[
+        'flex w-full shrink-0 flex-wrap items-center gap-x-2 gap-y-1 px-3 sm:gap-3 sm:px-4 short-landscape:py-0.5',
+        dense ? 'py-1' : 'py-2 sm:py-3',
+      ].join(' ')}
+    >
       <Link to="/" aria-label="Phrasey home" className="tap">
         <Logo />
       </Link>
@@ -75,13 +103,16 @@ export function TopBar({
       )}
 
       <span className="ml-auto flex flex-wrap items-center gap-2">
-        {(room || connection !== 'idle') && (
+        {showConn && (
           <span className={`sticker ${conn.tone}`} role="status">
             {conn.text}
           </span>
         )}
-        {room && transportKind === 'mock' && (
-          <span className="sticker bg-grape text-chill" title="Playing against the built-in mock server">
+        {/* "Am I on the mock?" is a question a developer asks, on a desktop.
+            It is not worth a row of a phone's lobby, and it is not worth any
+            of the game screen. */}
+        {!dense && room && transportKind === 'mock' && (
+          <span className="sticker hidden bg-grape text-chill lg:inline-block" title="Playing against the built-in mock server">
             demo server
           </span>
         )}
@@ -119,6 +150,7 @@ export function TopBar({
           onVolume={onVolume}
           musicVolume={musicVolume}
           onMusicVolume={onMusicVolume}
+          sliders={!dense}
         />
       </span>
     </header>

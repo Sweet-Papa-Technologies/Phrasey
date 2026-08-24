@@ -66,7 +66,13 @@ export function SameRoomToggle({ on, isHost, onChange, fromRoomDefault }: SameRo
             ].join(' ')}
           />
         </span>
-        Same room
+        {/*
+          On a phone the words "Same room" are the widest thing in the top bar
+          and the reason it wraps onto an extra row. The label goes visually
+          quiet below `sm` — the switch, its state and its accessible name are
+          all unchanged, and the icon plus the `title` still say what it is.
+        */}
+        <span className="sr-only sm:not-sr-only">Same room</span>
         {/* Never state-by-styling alone: the switch's meaning is also words. */}
         <span className="sr-only">
           {state}

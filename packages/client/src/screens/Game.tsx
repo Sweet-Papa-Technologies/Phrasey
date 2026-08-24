@@ -12,6 +12,7 @@ import { BlowoutOverlay } from '../components/BlowoutOverlay';
 import { EventFeed } from '../components/EventFeed';
 import { Hand } from '../components/Hand';
 import { InterruptPrompt } from '../components/InterruptPrompt';
+import { JoinQr } from '../components/JoinQr';
 import { PlayerRail } from '../components/PlayerRail';
 import { SolveBox } from '../components/SolveBox';
 import { TurnRing } from '../components/TurnRing';
@@ -27,8 +28,12 @@ export function Game() {
   // These two mirror the breakpoints in `game-layout` (styles/index.css). They
   // exist because a couple of components need to change their *content*, not
   // just their box, when the arrangement changes.
-  const wideRails = useMediaQuery('(min-width: 1024px)');
+  // Matches the desktop branch of `game-layout` exactly — a wide-but-short
+  // window is not a desktop, and the feed has no rail to live on there.
+  const wideRails = useMediaQuery('(min-width: 1024px) and (min-height: 561px)');
   const bottleRail = useMediaQuery('(min-width: 768px), (orientation: landscape) and (max-height: 560px)');
+  // There is no "type a letter" on a touch screen, and the hint costs a row.
+  const hasKeyboard = useMediaQuery('(pointer: fine)');
   const room = useGameStore((s) => s.room);
   const board = useGameStore((s) => s.board);
   const hand = useGameStore((s) => s.hand);
@@ -48,15 +53,26 @@ export function Game() {
   const solveOpen = useGameStore((s) => s.solveOpen);
   const castView = useGameStore((s) => s.castView);
   const playerId = useGameStore((s) => s.playerId);
+  const roomKey = useGameStore((s) => s.roomKey);
 
   const me = useGameStore(selectMe);
   const myTurn = useGameStore(selectIsMyTurn);
   const awaitingSolve = myTurn && phase === 'awaiting-solve';
+  /*
+   * Solving is legal at any point during your turn — it is no longer gated on
+   * having played a card first. So the control is offered for the whole turn
+   * and is simply *absent* the rest of the time: the reported confusion was a
+   * greyed-out Solve sitting there saying "not your turn", and an absent
+   * button asks no questions. `solveLocked` is the one case that still shows a
+   * disabled control, because vanishing would leave the player wondering where
+   * their Solve went rather than telling them they burnt it.
+   */
+  const canOfferSolve = myTurn && !roundResult;
+  const solveLocked = !!me?.solveLocked;
   const isHost = useGameStore(selectIsHost);
 
   const playLetterCard = useGameStore((s) => s.playLetterCard);
   const playActionCard = useGameStore((s) => s.playActionCard);
-  const discard = useGameStore((s) => s.discard);
   const solve = useGameStore((s) => s.solve);
   const playInterrupt = useGameStore((s) => s.playInterrupt);
   const setSolveOpen = useGameStore((s) => s.setSolveOpen);
@@ -102,8 +118,9 @@ export function Game() {
     guessed: board?.guessedLetters ?? [],
     onPlay: onKeyPlay,
     onOpenSolve: () => {
-      if (!roundResult && !me?.solveLocked) setSolveOpen(true);
-      else if (me?.solveLocked) flash("You're locked out of solving this round.");
+      if (!canOfferSolve) return;
+      if (solveLocked) flash("You're locked out of solving this round.");
+      else setSolveOpen(true);
     },
     onCancel: () => {
       setSolveOpen(false);
@@ -129,11 +146,24 @@ export function Game() {
 
   // ---- Cast view (§7): designed for a shared screen on a call. ----
   if (castView) {
+    /*
+     * This is the screen an iPad casts to a TV, and the QR on it is what a
+     * phone on the other side of the room is pointed at. It gets the whole
+     * width of the rail and as much height as the bottle can spare — a code
+     * that cannot be scanned from the sofa is not a join path, it is decor.
+     */
+    const castUrl = joinUrl(room.code, roomKey);
     return (
-      <main id="main" className="mx-auto flex w-full max-w-[110rem] flex-1 flex-col gap-5 px-4 pb-6">
-        <div className="grid flex-1 gap-5 lg:grid-cols-[minmax(0,1fr)_14rem]">
-          <div className="flex min-w-0 flex-col gap-4">
-            <Board board={board} delays={reveal.delays} size="cast" className="flex-1" />
+      <main id="main" className="mx-auto flex w-full max-w-[110rem] min-h-0 flex-1 flex-col gap-4 px-4 pb-4">
+        {/*
+          One column on a portrait tablet, two on anything wide. The board row
+          is the `1fr`, so the bottle and the join block become a bounded band
+          underneath rather than a column tall enough to squeeze the board into
+          a strip — a cast screen with no board on it is not a cast screen.
+        */}
+        <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_auto] gap-4 lg:grid-cols-[minmax(0,1fr)_22rem] lg:grid-rows-[minmax(0,1fr)]">
+          <div className="flex min-h-0 min-w-0 flex-col gap-3">
+            <Board board={board} delays={reveal.delays} size="cast" className="min-h-0 flex-1" />
             <PlayerRail
               players={room.players}
               currentPlayerId={turnPlayerId}
@@ -143,12 +173,17 @@ export function Game() {
               compact
             />
           </div>
-          <aside className="flex flex-col items-center justify-between gap-4">
-            <Bottle pressure={pressure} max={pressureMax} erupting={blownOut} />
-            <div className="text-center">
-              <p className="font-mono text-[0.625rem] tracking-[0.16em] uppercase opacity-55">Join at</p>
-              <p className="font-mono text-sm break-all opacity-80">{joinUrl(room.code)}</p>
-              <p className="font-mono text-4xl font-extrabold tracking-[0.1em]">{room.code}</p>
+          <aside className="flex min-h-0 flex-row items-center justify-center gap-6 lg:flex-col lg:justify-between lg:gap-4">
+            <Bottle pressure={pressure} max={pressureMax} erupting={blownOut} size="cast" />
+            <div className="flex min-w-0 flex-col items-center gap-2 text-center lg:w-full">
+              <JoinQr
+                url={castUrl}
+                displayPx={352}
+                className="h-[clamp(9rem,26vh,22rem)] w-[clamp(9rem,26vh,22rem)] lg:h-[min(100%,clamp(11rem,34vh,22rem))] lg:w-[min(100%,clamp(11rem,34vh,22rem))]"
+              />
+              <p className="font-mono text-[0.6875rem] tracking-[0.16em] uppercase opacity-55">Scan, or join at</p>
+              <p className="font-mono text-5xl leading-none font-extrabold tracking-[0.1em]">{room.code}</p>
+              <p className="w-full truncate font-mono text-xs opacity-70">{castUrl}</p>
             </div>
           </aside>
         </div>
@@ -171,48 +206,68 @@ export function Game() {
   /*
    * The arrangement is `game-layout` in styles/index.css — grid areas, because
    * the phone, the landscape phone, the tablet and the desktop each want a
-   * genuinely different placement of the same six pieces, and ordering flex
+   * genuinely different placement of the same pieces, and ordering flex
    * children by breakpoint cannot express that without lying to a screen
-   * reader about the order things are in.
+   * reader about the order things are in. Every row of it is content-sized
+   * except the board, which takes the remainder of a viewport-height shell —
+   * so nothing here can ever push Solve or the hand under the fold.
    */
+  /*
+   * Solve and Pass, rendered into the hand's control row rather than up here
+   * in the status bar. Two things about them are deliberate:
+   *
+   *  - Solve is offered for the whole of your turn, not only after you have
+   *    played. It is absent — not disabled — when it is not your turn.
+   *  - Pass appears the instant a card lands, on the same row, already on
+   *    screen. That row is the last thing above the cards, so the hand you
+   *    just played from and the decision that follows it are the same reach.
+   */
+  const turnControls = (
+    <>
+      {canOfferSolve && (
+        <button
+          type="button"
+          onClick={() => (solveLocked ? flash("You're locked out of solving this round.") : setSolveOpen(true))}
+          disabled={solveLocked}
+          aria-label={solveLocked ? 'Solving is locked for you this round' : 'Solve the puzzle'}
+          className="rounded-full bg-grape px-5 py-2 text-sm font-bold text-chill shadow-pop disabled:opacity-40 disabled:shadow-none"
+        >
+          {solveLocked ? 'Locked' : 'Solve'}
+        </button>
+      )}
+      {/*
+        The optional-solve beat (§3.3). Without an explicit way to decline it,
+        every turn sits here until the turn clock runs out.
+      */}
+      {awaitingSolve && (
+        <button
+          type="button"
+          onClick={() => void passTurn()}
+          className="rounded-full border-2 border-ink/25 px-5 py-2 text-sm font-bold"
+        >
+          Pass
+        </button>
+      )}
+    </>
+  );
+
   return (
-    <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-3 pb-3 sm:px-4">
-      <div className="game-layout lg:min-h-full">
-        <div className="game-status flex flex-col gap-2">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-card border-2 border-ink/10 bg-white/65 px-3 py-2 short-landscape:py-1">
-            <TurnRing endsAt={turnEndsAt} totalSeconds={room.settings.turnSeconds} size={44} showOffState />
-            <p className="min-w-0 flex-1 font-display text-base leading-tight font-bold sm:text-lg" aria-live="polite">
-              {!myTurn ? `${turnName || 'Somebody'} is up` : awaitingSolve ? 'Solve it, or pass' : 'Your turn'}
-            </p>
-            <p className="hidden font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55 xl:block">
+    <main id="main" className="mx-auto min-h-0 w-full max-w-7xl flex-1 px-3 pb-1 sm:px-4">
+      <div className="game-layout">
+        <div className="game-status flex min-w-0 items-center gap-2.5 rounded-card border-2 border-ink/10 bg-white/65 px-2.5 py-1.5 short-landscape:py-1">
+          <TurnRing endsAt={turnEndsAt} totalSeconds={room.settings.turnSeconds} size={44} showOffState />
+          <p className="min-w-0 flex-1 truncate font-display text-base leading-tight font-bold sm:text-lg" aria-live="polite">
+            {!myTurn ? `${turnName || 'Somebody'} is up` : awaitingSolve ? 'Solve it, or pass' : 'Your turn'}
+          </p>
+          {/* Keyboard play is a desktop affordance (§10). On a touch screen the
+              hint is a line of copy describing keys nobody has. */}
+          {hasKeyboard && (
+            <p className="hidden shrink-0 font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55 xl:block">
               {awaitingSolve
                 ? 'enter to solve · esc to pass'
                 : 'type a letter you hold · enter to solve · esc to cancel'}
             </p>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setSolveOpen(true)}
-                disabled={!!me?.solveLocked}
-                className="rounded-full bg-grape px-4 py-2 text-sm font-bold text-chill shadow-pop disabled:opacity-40"
-              >
-                Solve
-              </button>
-              {/*
-                The optional-solve beat (§3.3). Without an explicit way to
-                decline it, every turn sits here until the turn clock runs out.
-              */}
-              {awaitingSolve && (
-                <button
-                  type="button"
-                  onClick={() => void passTurn()}
-                  className="rounded-full border-2 border-ink/20 px-4 py-2 text-sm font-bold"
-                >
-                  Pass
-                </button>
-              )}
-            </div>
-          </div>
+          )}
         </div>
 
         {/*
@@ -221,7 +276,7 @@ export function Game() {
           bottle, still the second-tallest thing on the screen, and it takes
           none of the board's width.
         */}
-        <aside className="game-bottle flex items-start justify-center md:sticky md:top-3 md:self-start">
+        <aside className="game-bottle flex min-h-0 items-start justify-center">
           <Bottle pressure={pressure} max={pressureMax} erupting={blownOut} size={bottleRail ? 'rail' : 'perch'} />
         </aside>
 
@@ -238,7 +293,14 @@ export function Game() {
 
         <Board board={board} delays={reveal.delays} peeks={peeks} className="game-board" />
 
-        <EventFeed items={feed} collapsible={!wideRails} className="game-feed lg:flex-1" />
+        {/*
+          The feed has a rail of its own on a desktop and no row at all below
+          it: on a phone it rides in the hand's control row as a chip and opens
+          over the board. That is one fewer band of chrome between the board
+          and the cards, and it is what the reserved control row is holding
+          space for on somebody else's turn.
+        */}
+        {wideRails && <EventFeed items={feed} className="game-feed lg:flex-1" />}
 
         <div className="game-hand">
           <Hand
@@ -249,8 +311,13 @@ export function Game() {
             myTurn={myTurn && !roundResult}
             onPlayLetter={(id) => void playLetterCard(id)}
             onPlayAction={(id, letter, target) => void playActionCard(id, letter, target)}
-            onDiscard={(ids) => void discard(ids)}
             highlightCardId={highlight}
+            controls={
+              <>
+                {turnControls}
+                {!wideRails && <EventFeed items={feed} collapsible className="shrink-0" />}
+              </>
+            }
           />
         </div>
       </div>

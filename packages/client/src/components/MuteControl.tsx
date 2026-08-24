@@ -14,9 +14,24 @@ export interface MuteControlProps {
   /** Music bus level, 0..1. Omit to hide the music slider. */
   musicVolume?: number;
   onMusicVolume?: (v: number) => void;
+  /**
+   * Whether the level sliders are offered at all. Mid-round they are not: the
+   * mute button is the control that matters on a phone, and on the game screen
+   * every pixel of the top bar is a pixel the board does not get. Both levels
+   * are still settable from the lobby, and both persist.
+   */
+  sliders?: boolean;
 }
 
-export function MuteControl({ muted, volume, onMuted, onVolume, musicVolume, onMusicVolume }: MuteControlProps) {
+export function MuteControl({
+  muted,
+  volume,
+  onMuted,
+  onVolume,
+  musicVolume,
+  onMusicVolume,
+  sliders = true,
+}: MuteControlProps) {
   return (
     <div className="flex items-center gap-2">
       <button
@@ -48,6 +63,7 @@ export function MuteControl({ muted, volume, onMuted, onVolume, musicVolume, onM
         On a phone they hide rather than wrapping the top bar onto a third row —
         the button still mutes, and both levels persist.
       */}
+      {sliders && (
       <label className="hidden items-center gap-1.5 sm:flex">
         <span className="sr-only">Volume</span>
         <input
@@ -60,7 +76,8 @@ export function MuteControl({ muted, volume, onMuted, onVolume, musicVolume, onM
           aria-label="Volume"
         />
       </label>
-      {typeof musicVolume === 'number' && onMusicVolume && (
+      )}
+      {sliders && typeof musicVolume === 'number' && onMusicVolume && (
         <label className="hidden items-center gap-1 lg:flex" title="Music volume">
           <svg
             viewBox="0 0 24 24"
