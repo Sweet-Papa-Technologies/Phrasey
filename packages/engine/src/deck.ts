@@ -11,7 +11,7 @@
  * Every proportion here comes from `balance.deck`. Nothing is hardcoded.
  */
 import type { ActionCardKind, Balance, Card, Letter, Puzzle } from '@phrasey/shared';
-import { ENGLISH_LETTER_FREQUENCY, VOWELS, letterStats, normalizePuzzleText } from '@phrasey/shared';
+import { ENGLISH_LETTER_FREQUENCY, VOWELS, letterStats, normalizePuzzleText, isInterruptKind } from '@phrasey/shared';
 import type { Rng } from './rng.js';
 
 const VOWEL_SET = new Set<string>(VOWELS);
@@ -62,9 +62,18 @@ export function noiseLetterPool(puzzle: Puzzle, balance: Balance): [Letter, numb
   return out;
 }
 
-export function actionPool(balance: Balance): [ActionCardKind, number][] {
+/**
+ * The action cards a deck may contain.
+ *
+ * When the host has interrupts switched off, SWIPE / BLOCK / BUZZ IN are left
+ * out entirely rather than dealt and ignored. They are playable only inside an
+ * interrupt window, so with windows disabled they are cards that can never be
+ * played — permanent dead weight in a hand, and the sweep cannot clear them
+ * because an action card is never "dead" in the letter sense.
+ */
+export function actionPool(balance: Balance, interruptsEnabled = true): [ActionCardKind, number][] {
   return (Object.entries(balance.deck.actionWeights) as [ActionCardKind, number][])
-    .filter(([, w]) => w > 0)
+    .filter(([kind, w]) => w > 0 && (interruptsEnabled || !isInterruptKind(kind)))
     .sort((a, b) => (a[0] < b[0] ? -1 : 1));
 }
 
@@ -81,6 +90,7 @@ export function buildDeck(
   balance: Balance,
   rng: Rng,
   idPrefix = 'd',
+  interruptsEnabled = true,
 ): Card[] {
   const size = deckSizeFor(playerCount, balance);
   const letterCount = Math.round(size * balance.deck.letterCardShare);
@@ -90,7 +100,7 @@ export function buildDeck(
 
   const puzzlePool = puzzleLetterPool(puzzle, balance);
   const noisePool = noiseLetterPool(puzzle, balance);
-  const actions = actionPool(balance);
+  const actions = actionPool(balance, interruptsEnabled);
 
   const cards: Card[] = [];
   let n = 0;

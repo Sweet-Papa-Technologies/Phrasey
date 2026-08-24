@@ -154,7 +154,9 @@ describe('turn timers', () => {
 describe('interrupt windows', () => {
   /** Force a SWIPE into the non-current player's hand and land a hit. */
   function riggedHit(room: Room, ids: string[]) {
-    room.start(ids[0]!, undefined, 0);
+    // Interrupts default OFF now, so this suite has to ask for them; without
+    // it no window can open and every assertion here would be vacuous.
+    room.start(ids[0]!, { interruptsEnabled: true }, 0);
     const round = room.state.round!;
     const answer = round.answer;
     const stats = letterStats(answer);

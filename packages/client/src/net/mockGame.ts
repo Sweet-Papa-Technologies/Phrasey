@@ -109,7 +109,8 @@ const DEFAULT_SETTINGS: RoomSettings = {
   turnSeconds: BALANCE.turn.defaultSeconds,
   botCount: BALANCE.setup.defaultBots,
   botTier: 'sharp',
-  interruptsEnabled: true,
+  // Match the engine: interrupts are off unless the host turns them on.
+  interruptsEnabled: BALANCE.interrupt.enabledByDefault,
 };
 
 export class MockGame {
@@ -328,7 +329,28 @@ export class MockGame {
     this.pushRoom();
   }
 
+  /**
+   * Mirror the engine's dead-card sweep: a card whose letter is already on the
+   * board can never score again, so it is replaced rather than left sitting in
+   * a hand wearing a "PLAYED" stamp. Called before every hand push, which is
+   * every point a reveal could have happened.
+   */
+  private sweepDeadCards(): void {
+    const played = new Set<string>([...this.revealed, ...this.missed]);
+    if (played.size === 0) return;
+    for (const [playerId, hand] of this.hands) {
+      const dead = hand.filter((c) => c.kind === 'letter' && played.has(c.letter));
+      if (dead.length === 0) continue;
+      for (const card of dead) hand.splice(hand.indexOf(card), 1);
+      this.hands.set(playerId, hand);
+      // Only draw what the deck can usefully give; handing back another dead
+      // card just means sweeping it again, which players saw as churn.
+      this.draw(playerId, dead.length);
+    }
+  }
+
   private pushHand(): void {
+    this.sweepDeadCards();
     // In demo mode there is no human seat, so show the first bot's hand: the
     // landing page hero wants a fan of real cards under the board.
     const owner = this.demo ? (this.players[0]?.id ?? this.selfId) : this.selfId;

@@ -441,7 +441,14 @@ export function startRound(state: GameState, puzzle: Puzzle, nowMs: number, even
   const rng = createRng(state.rngState);
   state.roundNumber += 1;
   const answer = normalizePuzzleText(puzzle.text);
-  const deck = buildDeck(puzzle, seated.length, state.balance, rng, `r${state.roundNumber}`);
+  const deck = buildDeck(
+    puzzle,
+    seated.length,
+    state.balance,
+    rng,
+    `r${state.roundNumber}`,
+    state.settings.interruptsEnabled,
+  );
 
   const round: RoundState = {
     roundNumber: state.roundNumber,

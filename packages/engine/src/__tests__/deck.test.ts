@@ -119,3 +119,44 @@ describe('buildDeck', () => {
     expect(puzzleLetterPool(bare, balance).length).toBe(puzzleLetterPool(puzzle, balance).length);
   });
 });
+
+describe('interrupt cards follow the host setting', () => {
+  /**
+   * Interrupts default off now. An interrupt card is playable only inside an
+   * interrupt window, so with windows disabled it is a card that can never be
+   * played — and the dead-card sweep cannot clear it, because an action card
+   * is never dead in the letter sense. So it must not be dealt at all.
+   */
+  const INTERRUPTS = ['SWIPE', 'BLOCK', 'BUZZ_IN'];
+  const PUZZLE = TEST_PUZZLES[0]!;
+
+  it('leaves SWIPE, BLOCK and BUZZ IN out when interrupts are off', () => {
+    for (let seed = 1; seed <= 40; seed++) {
+      const deck = buildDeck(PUZZLE, 4, defaultBalance(), createRng(seed), 'd', false);
+      const found = deck.filter((c) => c.kind === 'action' && INTERRUPTS.includes(c.action as string));
+      expect(found, `seed ${seed} dealt ${found.map((c) => (c as { action: string }).action).join(',')}`).toEqual([]);
+    }
+  });
+
+  it('still deals them when interrupts are on', () => {
+    let total = 0;
+    for (let seed = 1; seed <= 40; seed++) {
+      const deck = buildDeck(PUZZLE, 4, defaultBalance(), createRng(seed), 'd', true);
+      total += deck.filter((c) => c.kind === 'action' && INTERRUPTS.includes(c.action as string)).length;
+    }
+    expect(total).toBeGreaterThan(0);
+  });
+
+  it('keeps the deck the same size either way — the slice is redistributed', () => {
+    const on = buildDeck(PUZZLE, 4, defaultBalance(), createRng(7), 'd', true);
+    const off = buildDeck(PUZZLE, 4, defaultBalance(), createRng(7), 'd', false);
+    expect(off.length).toBe(on.length);
+  });
+
+  it('actionPool filters by the flag', () => {
+    const off = actionPool(defaultBalance(), false).map(([k]) => k);
+    expect(off).not.toContain('SWIPE');
+    expect(off).toContain('SKIP');
+    expect(actionPool(defaultBalance(), true).map(([k]) => k)).toContain('SWIPE');
+  });
+});

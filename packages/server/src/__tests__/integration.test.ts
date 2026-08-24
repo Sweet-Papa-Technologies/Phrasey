@@ -122,7 +122,9 @@ describe('create → join → start → play → reveal → solve', () => {
     expect(opening.board.hiddenLetters).toBe(opening.board.totalLetters);
 
     const result = await playUntilRoundEnd([host, guest]);
-    expect(['solved', 'blowout', 'deck-exhausted']).toContain(result.reason);
+    // 'revealed' is a real outcome now: every letter turned over with nobody
+    // solving. Before it existed the round simply never ended.
+    expect(['solved', 'blowout', 'deck-exhausted', 'revealed']).toContain(result.reason);
     expect(result.answer.length).toBeGreaterThan(0);
 
     // Reveals happened along the way.
