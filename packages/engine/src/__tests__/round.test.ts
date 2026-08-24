@@ -189,9 +189,34 @@ describe('solving (§3.3)', () => {
     expect(s.round!.currentPlayerId).toBe('p2');
   });
 
-  it('refuses a solve before the primary action', () => {
+  it('allows a solve before the primary action — it is your turn either way', () => {
+    // Changed after playtest: pressing Solve on your own turn used to answer
+    // "not your turn" until you had spent a card, with no way to discover why.
+    // Being unable to say an answer you can see is the opposite of the premise.
     const s = game();
-    expect(catchCode(() => act(s, { type: 'solve', playerId: 'p1', guess: PUZZLE.text }))).toBe('ALREADY_ACTED');
+    const { state, events } = applyAction(s, { type: 'solve', playerId: 'p1', guess: PUZZLE.text }, 0);
+    expect(events.some((e) => e.t === 'solve:success')).toBe(true);
+    expect(state.round?.endedReason).toBe('solved');
+  });
+
+  it('a wrong solve before acting keeps the turn you have not spent', () => {
+    const s = game();
+    const { state } = applyAction(s, { type: 'solve', playerId: 'p1', guess: 'DEFINITELY NOT IT' }, 0);
+    expect(state.round?.currentPlayerId).toBe('p1');
+    expect(state.round?.phase).toBe('turn');
+    expect(state.round?.turnActed).toBe(false);
+    // The price is still real: locked out of solving for the rest of the round.
+    expect(state.players.find((p) => p.id === 'p1')?.solveLocked).toBe(true);
+    expect(state.round?.pressure).toBe(3);
+  });
+
+  it('a wrong solve after acting ends the turn, as before', () => {
+    let s = game();
+    const card = s.players[0]!.hand[0]!;
+    s = applyAction(s, { type: 'playCard', playerId: 'p1', intent: { type: card.kind === 'letter' ? 'letter' : 'action', cardId: card.id } }, 0).state;
+    if (s.round?.phase !== 'awaiting-solve') return; // action card may end the turn itself
+    const after = applyAction(s, { type: 'solve', playerId: 'p1', guess: 'STILL NOT IT' }, 0).state;
+    expect(after.round?.currentPlayerId).not.toBe('p1');
   });
 });
 
@@ -202,7 +227,7 @@ describe('illegal actions never corrupt state', () => {
     const cases: [() => unknown, string][] = [
       [() => act(s, { type: 'playCard', playerId: 'p2', intent: { type: 'letter', cardId: 'x' } }), 'NOT_YOUR_TURN'],
       [() => act(s, { type: 'playCard', playerId: 'p1', intent: { type: 'letter', cardId: 'nope' } }), 'CARD_NOT_IN_HAND'],
-      [() => act(s, { type: 'solve', playerId: 'p1', guess: 'x' }), 'ALREADY_ACTED'],
+      [() => act(s, { type: 'solve', playerId: 'p2', guess: 'x' }), 'NOT_YOUR_TURN'],
       [() => act(s, { type: 'pass', playerId: 'p1' }), 'ROUND_NOT_ACTIVE'],
       [() => act(s, { type: 'passInterrupt', playerId: 'p2', windowId: 'w' }), 'NO_INTERRUPT_WINDOW'],
       [() => act(s, { type: 'playInterrupt', playerId: 'p2', cardId: 'c', windowId: 'w' }), 'NO_INTERRUPT_WINDOW'],

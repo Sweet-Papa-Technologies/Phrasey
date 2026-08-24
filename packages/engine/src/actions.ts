@@ -12,6 +12,7 @@
  * TURN SHAPE (§3.3): one primary action, then *optionally* a solve.
  *   phase 'turn'          -> playCard | discard | timeout
  *   phase 'awaiting-solve'-> solve | pass | timeout
+ *   solve is also legal in phase 'turn' — see doSolve
  *   phase 'interrupt'     -> playInterrupt | passInterrupt | tick
  *
  * The `awaiting-solve` step is deliberate: §3.3 offers the solve *after* the
@@ -386,10 +387,28 @@ function doDiscard(state: GameState, playerId: string, cardIds: string[], nowMs:
 
 function doSolve(state: GameState, playerId: string, guess: string, nowMs: number, events: GameEvent[]): void {
   const { round, player } = requireCurrent(state, playerId);
-  if (round.phase !== 'awaiting-solve') {
-    // Solving is offered after the primary action, not instead of it (§3.3).
-    throw new EngineError(round.phase === 'turn' ? 'ALREADY_ACTED' : 'ROUND_NOT_ACTIVE');
+
+  /*
+   * Solving is legal at ANY point in your own turn — before your primary
+   * action or after it.
+   *
+   * §3.3 lists the solve after the primary action, and this engine originally
+   * enforced that literally. Playtest killed it: a player who knew the answer
+   * pressed Solve, got told "not your turn" on their own turn, and had no way
+   * to work out that the game wanted them to spend a card first. §15 is
+   * explicit that fun wins over the letter of the doc, and being unable to say
+   * the answer you can see is the opposite of this game's premise.
+   *
+   * The solve stays *optional and additional*, exactly as §3.3 frames it — so
+   * a wrong solve before you have acted does not also eat your primary action.
+   * It still costs +3 pressure and locks you out of solving for the rest of
+   * the round, which is a heavy enough price that guessing early is a real
+   * gamble rather than a free roll.
+   */
+  if (round.phase !== 'turn' && round.phase !== 'awaiting-solve') {
+    throw new EngineError('ROUND_NOT_ACTIVE');
   }
+  const beforePrimaryAction = round.phase === 'turn' && !round.turnActed;
   if (player.solveLocked) throw new EngineError('SOLVE_LOCKED', 'wrong solve this round');
   if (player.lockedNextTurn) throw new EngineError('SOLVE_LOCKED', 'locked out by LOCKOUT');
 
@@ -416,6 +435,8 @@ function doSolve(state: GameState, playerId: string, guess: string, nowMs: numbe
     endRound(state, 'blowout', { blownBy: playerId }, events);
     return;
   }
+  // Guessed before playing: you keep the turn you have not spent yet.
+  if (beforePrimaryAction) return;
   endTurn(state, round, nowMs, events);
 }
 

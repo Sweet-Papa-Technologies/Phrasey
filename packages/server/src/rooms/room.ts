@@ -11,6 +11,10 @@
  * it time and intent:
  *
  *   turn ──playCard|discard──▶ awaiting-solve ──solve|pass|timeout──▶ (next seat)
+ *
+ * `solve` is additionally legal during `turn`, before the primary action —
+ * see the note in the engine's doSolve. A wrong solve there does not consume
+ * the turn, so the seat stays put and the timer keeps running.
  *     │                              │
  *     └──── interrupt ◀──────────────┘        (4s window, server-timed)
  *
