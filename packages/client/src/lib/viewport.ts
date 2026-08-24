@@ -66,11 +66,18 @@ export function useViewportSize(): Size {
  * Only ever read the axis the *parent* controls. Reading an axis the element's
  * own content determines would close a measure→render→measure loop.
  */
-export function useElementSize<T extends HTMLElement>(ref: React.RefObject<T | null>): Size {
+/**
+ * `active` exists for elements that are not always mounted. The effect's only
+ * other dependency is the ref object, which never changes identity — so an
+ * element that appears *after* mount (the solve box's field, which renders
+ * nothing until the box opens) would otherwise never be measured, and its
+ * caller would sit on the zero-width fallback forever.
+ */
+export function useElementSize<T extends HTMLElement>(ref: React.RefObject<T | null>, active = true): Size {
   const [size, setSize] = useState<Size>({ width: 0, height: 0 });
 
   useEffect(() => {
-    const el = ref.current;
+    const el = active ? ref.current : null;
     if (!el) return undefined;
 
     const read = () => {
@@ -93,7 +100,7 @@ export function useElementSize<T extends HTMLElement>(ref: React.RefObject<T | n
     const ro = new ResizeObserver(read);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [ref]);
+  }, [ref, active]);
 
   return size;
 }

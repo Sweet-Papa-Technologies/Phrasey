@@ -19,7 +19,6 @@ import { describe, expect, it } from 'vitest';
 import { checkInvariants, checkMonotonicReveal, scoresFromEvents } from '../invariants.js';
 import { randomPolicy } from '../policy.js';
 import { applyAction, createMatch } from '../index.js';
-import { TEST_PUZZLES } from '../testing/fixtures.js';
 import { deductionPolicy } from '../sim/policies.js';
 import { simulateMatch } from '../sim/simulate.js';
 import { TEST_PUZZLES } from '../testing/fixtures.js';

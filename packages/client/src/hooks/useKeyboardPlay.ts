@@ -11,6 +11,7 @@
 import { useEffect } from 'react';
 import type { Card, LetterCard } from '@phrasey/shared';
 import { isTypingTarget, resolveLetterKey, type KeyResolution } from '../lib/keyboard';
+import type { SolveLockReason } from '../lib/solveLock';
 
 export interface UseKeyboardPlayOptions {
   enabled: boolean;
@@ -19,6 +20,15 @@ export interface UseKeyboardPlayOptions {
   onPlay: (card: LetterCard) => void;
   onOpenSolve: () => void;
   onCancel: () => void;
+  /**
+   * Why Enter must not open the solve box, or null when it may. Gating this
+   * here rather than only on the button is the point: the button is not the
+   * only way in, and a keyboard player who is locked out was previously able to
+   * type a whole guess that the server was always going to throw out.
+   */
+  solveBlocked?: SolveLockReason | null;
+  /** Called instead of `onOpenSolve` when solving is barred. */
+  onSolveBlocked?: (reason: SolveLockReason) => void;
   /** Called for a keystroke that maps to a letter but cannot be played. */
   onBlocked?: (result: Extract<KeyResolution, { kind: 'blocked' }>) => void;
 }
@@ -30,6 +40,8 @@ export function useKeyboardPlay({
   onPlay,
   onOpenSolve,
   onCancel,
+  solveBlocked = null,
+  onSolveBlocked,
   onBlocked,
 }: UseKeyboardPlayOptions): void {
   useEffect(() => {
@@ -43,7 +55,8 @@ export function useKeyboardPlay({
 
       if (e.key === 'Enter') {
         e.preventDefault();
-        onOpenSolve();
+        if (solveBlocked) onSolveBlocked?.(solveBlocked);
+        else onOpenSolve();
         return;
       }
       if (!enabled) return;
@@ -59,5 +72,5 @@ export function useKeyboardPlay({
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [enabled, hand, guessed, onPlay, onOpenSolve, onCancel, onBlocked]);
+  }, [enabled, hand, guessed, onPlay, onOpenSolve, onCancel, solveBlocked, onSolveBlocked, onBlocked]);
 }

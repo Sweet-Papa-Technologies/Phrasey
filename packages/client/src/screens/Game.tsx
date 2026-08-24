@@ -19,6 +19,7 @@ import { TurnRing } from '../components/TurnRing';
 import { useKeyboardPlay } from '../hooks/useKeyboardPlay';
 import { useReducedMotion } from '../lib/motion';
 import { useMediaQuery } from '../lib/viewport';
+import { SOLVE_LOCK_COPY, solveLockReason } from '../lib/solveLock';
 import { joinUrl } from '../lib/format';
 import { selectIsHost, selectIsMyTurn, selectMe, selectPlayerName, useGameStore } from '../store/gameStore';
 import { RoundEnd } from './RoundEnd';
@@ -68,7 +69,17 @@ export function Game() {
    * their Solve went rather than telling them they burnt it.
    */
   const canOfferSolve = myTurn && !roundResult;
-  const solveLocked = !!me?.solveLocked;
+  /*
+   * There are two ways to lose the solve and the screen used to know about
+   * only one of them. `solveLocked` is the wrong-solve lockout (§3.3);
+   * `lockedNextTurn` is the LOCKOUT card (§3.5). The engine rejects a solve for
+   * either, so a live Solve button under a LOCKOUT meant typing a whole guess
+   * for nothing. `lib/solveLock.ts` decides which applies and owns the copy —
+   * "for this round" and "this turn" are very different pieces of news.
+   */
+  const lockReason = solveLockReason(me);
+  const solveLocked = lockReason !== null;
+  const lockCopy = lockReason ? SOLVE_LOCK_COPY[lockReason] : null;
   const isHost = useGameStore(selectIsHost);
 
   const playLetterCard = useGameStore((s) => s.playLetterCard);
@@ -119,9 +130,10 @@ export function Game() {
     onPlay: onKeyPlay,
     onOpenSolve: () => {
       if (!canOfferSolve) return;
-      if (solveLocked) flash("You're locked out of solving this round.");
-      else setSolveOpen(true);
+      setSolveOpen(true);
     },
+    solveBlocked: lockReason,
+    onSolveBlocked: (reason) => flash(SOLVE_LOCK_COPY[reason].toast),
     onCancel: () => {
       setSolveOpen(false);
       // During the optional-solve beat, backing out IS declining it.
@@ -227,12 +239,13 @@ export function Game() {
       {canOfferSolve && (
         <button
           type="button"
-          onClick={() => (solveLocked ? flash("You're locked out of solving this round.") : setSolveOpen(true))}
+          onClick={() => setSolveOpen(true)}
           disabled={solveLocked}
-          aria-label={solveLocked ? 'Solving is locked for you this round' : 'Solve the puzzle'}
+          aria-label={lockCopy ? lockCopy.detail : 'Solve the puzzle'}
+          title={lockCopy ? lockCopy.detail : undefined}
           className="rounded-full bg-grape px-5 py-2 text-sm font-bold text-chill shadow-pop disabled:opacity-40 disabled:shadow-none"
         >
-          {solveLocked ? 'Locked' : 'Solve'}
+          {lockCopy ? lockCopy.button : 'Solve'}
         </button>
       )}
       {/*
@@ -263,9 +276,12 @@ export function Game() {
               hint is a line of copy describing keys nobody has. */}
           {hasKeyboard && (
             <p className="hidden shrink-0 font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55 xl:block">
-              {awaitingSolve
-                ? 'enter to solve · esc to pass'
-                : 'type a letter you hold · enter to solve · esc to cancel'}
+              {/* Don't advertise a key that is going to be refused. */}
+              {solveLocked
+                ? 'type a letter you hold · solving is locked'
+                : awaitingSolve
+                  ? 'enter to solve · esc to pass'
+                  : 'type a letter you hold · enter to solve · esc to cancel'}
             </p>
           )}
         </div>
@@ -340,8 +356,9 @@ export function Game() {
 
       <SolveBox
         open={solveOpen}
+        board={board}
         hiddenLetters={board.hiddenLetters}
-        locked={!!me?.solveLocked}
+        lockReason={lockReason}
         onSubmit={(guess) => void solve(guess)}
         onCancel={() => setSolveOpen(false)}
       />
