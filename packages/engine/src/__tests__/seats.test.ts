@@ -33,7 +33,7 @@ describe('createMatch', () => {
   });
 
   it('projects public player state without the hand', () => {
-    const s = startGame({ players: 2 });
+    const s = startGame({ players: 2, settings: { interruptsEnabled: true } });
     const pub = toPublic(s.players[0]!);
     expect(pub.handCount).toBe(7);
     expect('hand' in pub).toBe(false);
@@ -59,16 +59,16 @@ describe('addPlayer (§7)', () => {
   });
 
   it('rejects a duplicate seat or a full room', () => {
-    const s = startGame({ players: 2 });
+    const s = startGame({ players: 2, settings: { interruptsEnabled: true } });
     expect(catchCode(() => act(s, { type: 'addPlayer', player: { id: 'p1', name: 'Clone' } }))).toBe('INVALID_TARGET');
-    let full = startGame({ players: 8, puzzle: PUZZLE });
+    let full = startGame({ players: 8, puzzle: PUZZLE, settings: { interruptsEnabled: true } });
     expect(catchCode(() => act(full, { type: 'addPlayer', player: { id: 'p9', name: 'Nine' } }))).toBe('INVALID_TARGET');
   });
 });
 
 describe('removePlayer (§7)', () => {
   it('returns their cards to the discard and moves the turn on', () => {
-    let s = startGame({ puzzle: PUZZLE, players: 3, settings: NO_INTERRUPTS });
+    let s = startGame({ puzzle: PUZZLE, players: 3, settings: { interruptsEnabled: true } });
     expect(s.round!.currentPlayerId).toBe('p1');
     s = act(s, { type: 'removePlayer', playerId: 'p1' });
     expect(s.round!.currentPlayerId).toBe('p2');
@@ -96,7 +96,7 @@ describe('removePlayer (§7)', () => {
   });
 
   it('closes an open interrupt window the leaver was holding up', () => {
-    let s = startGame({ puzzle: PUZZLE, players: 3, seed: 314 });
+    let s = startGame({ puzzle: PUZZLE, players: 3, seed: 314, settings: { interruptsEnabled: true } });
     for (const p of s.players) {
       p.hand = p.hand.map((c) =>
         c.kind === 'action' && ['SWIPE', 'BLOCK', 'BUZZ_IN'].includes(c.action) ? { id: c.id, kind: 'letter', letter: 'Q' } : c,
@@ -114,7 +114,7 @@ describe('removePlayer (§7)', () => {
   });
 
   it('is a no-op for the round when nobody is playing', () => {
-    let s = startGame({ players: 3, lobbyOnly: true });
+    let s = startGame({ players: 3, lobbyOnly: true, settings: { interruptsEnabled: true } });
     s = act(s, { type: 'removePlayer', playerId: 'p1' });
     expect(activePlayers(s)).toHaveLength(2);
     expect(s.hostId).toBe('p2');
@@ -123,7 +123,7 @@ describe('removePlayer (§7)', () => {
 
 describe('convertSeatToBot (§7)', () => {
   it('keeps the name and marks the seat as a converted human', () => {
-    let s = startGame({ puzzle: PUZZLE, players: 3 });
+    let s = startGame({ puzzle: PUZZLE, players: 3, settings: { interruptsEnabled: true } });
     const { state, events } = actWithEvents(s, { type: 'convertSeatToBot', playerId: 'p1', tier: 'ruthless', persona: 'Cold.' });
     s = state;
     const p1 = getPlayer(s, 'p1');
@@ -140,7 +140,7 @@ describe('convertSeatToBot (§7)', () => {
   });
 
   it('keeps playing that seat without interruption', () => {
-    let s = startGame({ puzzle: PUZZLE, players: 3, settings: NO_INTERRUPTS });
+    let s = startGame({ puzzle: PUZZLE, players: 3, settings: { interruptsEnabled: true } });
     s = act(s, { type: 'convertSeatToBot', playerId: 'p1' });
     expect(currentId(s)).toBe('p1');
     s = act(s, { type: 'timeout', playerId: 'p1' });
@@ -150,7 +150,7 @@ describe('convertSeatToBot (§7)', () => {
 
 describe('player lookup', () => {
   it('distinguishes present, removed and unknown', () => {
-    let s = startGame({ players: 3, lobbyOnly: true });
+    let s = startGame({ players: 3, lobbyOnly: true, settings: { interruptsEnabled: true } });
     s = act(s, { type: 'removePlayer', playerId: 'p3' });
     expect(findPlayer(s, 'p3')!.removed).toBe(true);
     expect(catchCode(() => getPlayer(s, 'p3'))).toBe('INVALID_TARGET');

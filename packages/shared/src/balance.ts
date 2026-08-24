@@ -37,6 +37,17 @@ export const BALANCE = {
     handMinimum: 5,
     /** Cannot draw at or above this; must play or discard (§3.3). */
     handCap: 8,
+    /**
+     * Keep at least this many playable LETTER cards in a hand when the deck
+     * can supply them.
+     *
+     * Not in the design doc, and it has to exist because of an interaction:
+     * dead letter cards are swept and replaced, but an action card is never
+     * dead, so over a round hands drift toward all-action. Measured at 46% of
+     * hands holding no letter at all before this floor. A hand with no letters
+     * cannot reveal anything, which is most of the game.
+     */
+    minLetterCards: 3,
   },
 
   /** §3.1 Match length. Host picks a mode at room creation. */
@@ -128,6 +139,13 @@ export const BALANCE = {
 
   /** §3.5 Interrupts */
   interrupt: {
+    /**
+     * Off by default. §3.5 designs interrupts as the anti-boredom mechanic for
+     * big tables, but playtest found them a lot to explain to someone learning
+     * the game — being interrupted out of turn before you understand the turn
+     * is disorienting. The host can switch them on in the lobby.
+     */
+    enabledByDefault: false,
     /** Milliseconds the out-of-turn window stays open. */
     windowMs: 4000,
     /** LIFO chain cap so BLOCK-on-BLOCK cannot stall the game. */

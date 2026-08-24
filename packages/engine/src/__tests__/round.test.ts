@@ -141,19 +141,38 @@ describe('solving (§3.3)', () => {
   });
 
   it('is worth almost nothing on a nearly-full board', () => {
+    // Stops one letter short on purpose: a board with NOTHING hidden now ends
+    // the round on its own (see checkBoardComplete), so the last solvable
+    // moment is with a single tile left. §3.3's point still stands — 55 versus
+    // the 150-odd a solve is worth on a dark board.
     let s = game({ rounds: 3 });
-    for (const l of ['A', 'W', 'T', 'C', 'H', 'E', 'D', 'P', 'O', 'N', 'V', 'R', 'B', 'I', 'L', 'S']) {
+    for (const l of ['A', 'W', 'T', 'C', 'H', 'E', 'D', 'P', 'O', 'N', 'V', 'R', 'B', 'I', 'L']) {
+      if (hiddenLetterCount(s.round!) <= 1) break;
       const id = plantLetter(s, currentId(s), l);
       s = act(s, { type: 'playCard', playerId: currentId(s), intent: { type: 'letter', cardId: id } });
       if (s.round!.endedReason !== null) break;
-      if (s.round!.phase === 'awaiting-solve') {
-        if (hiddenLetterCount(s.round!) === 0) break;
-        s = act(s, { type: 'pass', playerId: currentId(s) });
-      }
+      if (s.round!.phase === 'awaiting-solve') s = act(s, { type: 'pass', playerId: currentId(s) });
+    }
+    const hidden = hiddenLetterCount(s.round!);
+    expect(hidden).toBeGreaterThan(0);
+    expect(hidden).toBeLessThanOrEqual(2);
+    const { events } = actWithEvents(s, { type: 'solve', playerId: currentId(s), guess: PUZZLE.text });
+    expect(events.find((e) => e.t === 'solve:success')).toMatchObject({ points: 50 + 5 * hidden });
+  });
+
+  it('ends the round when every letter is up, instead of looping forever', () => {
+    // A live game hit this: all letters revealed, nobody solved, and the table
+    // kept taking turns with nothing left to guess.
+    let s = game({ rounds: 3 });
+    for (const l of ['A', 'W', 'T', 'C', 'H', 'E', 'D', 'P', 'O', 'N', 'V', 'R', 'B', 'I', 'L', 'S']) {
+      if (s.round!.endedReason !== null) break;
+      const id = plantLetter(s, currentId(s), l);
+      s = act(s, { type: 'playCard', playerId: currentId(s), intent: { type: 'letter', cardId: id } });
+      if (s.round!.endedReason !== null) break;
+      if (s.round!.phase === 'awaiting-solve') s = act(s, { type: 'pass', playerId: currentId(s) });
     }
     expect(hiddenLetterCount(s.round!)).toBe(0);
-    const { events } = actWithEvents(s, { type: 'solve', playerId: currentId(s), guess: PUZZLE.text });
-    expect(events.find((e) => e.t === 'solve:success')).toMatchObject({ points: 50 });
+    expect(s.round!.endedReason).toBe('revealed');
   });
 
   it('accepts a sloppy guess (case and punctuation)', () => {

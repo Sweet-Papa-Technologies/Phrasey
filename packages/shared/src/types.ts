@@ -262,7 +262,13 @@ export interface RoundPublic {
   idleCycles: number;
 }
 
-export type RoundEndReason = 'solved' | 'blowout' | 'deck-exhausted' | 'abandoned';
+/**
+ * `revealed` — every letter got turned over without anyone solving. The board
+ * is complete, so there is nothing left to guess and no reason to keep taking
+ * turns. Without this the round has no end condition and the table loops
+ * forever, which is exactly what happened in a live game.
+ */
+export type RoundEndReason = 'solved' | 'blowout' | 'deck-exhausted' | 'abandoned' | 'revealed';
 
 export interface RoundResult {
   roundNumber: number;

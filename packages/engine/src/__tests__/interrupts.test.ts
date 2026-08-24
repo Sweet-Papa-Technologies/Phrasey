@@ -20,8 +20,13 @@ function sanitize(state: GameState): GameState {
   return state;
 }
 
+/**
+ * Interrupts are OFF by default now (they were a lot to explain to a new
+ * player), so this whole suite has to switch them on explicitly. A test that
+ * silently relied on the default would pass for the wrong reason.
+ */
 function game(players = 3, settings: Record<string, unknown> = {}) {
-  return sanitize(startGame({ puzzle: PUZZLE, players, seed: 314, settings }));
+  return sanitize(startGame({ puzzle: PUZZLE, players, seed: 314, settings: { interruptsEnabled: true, ...settings } }));
 }
 
 /** p1 plays a hitting letter; returns the state with the window open. */

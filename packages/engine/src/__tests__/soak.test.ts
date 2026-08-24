@@ -18,6 +18,8 @@ import type { GameEvent } from '@phrasey/shared';
 import { describe, expect, it } from 'vitest';
 import { checkInvariants, checkMonotonicReveal, scoresFromEvents } from '../invariants.js';
 import { randomPolicy } from '../policy.js';
+import { applyAction, createMatch } from '../index.js';
+import { TEST_PUZZLES } from '../testing/fixtures.js';
 import { deductionPolicy } from '../sim/policies.js';
 import { simulateMatch } from '../sim/simulate.js';
 import { TEST_PUZZLES } from '../testing/fixtures.js';
@@ -101,6 +103,41 @@ describe('soak: 200 seeded matches', () => {
     // grind out clean solves.
     for (const reason of ['solved', 'blowout', 'deck-exhausted']) {
       expect(reasons[reason] ?? 0, `no round ended in ${reason}`).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe('a round can always end', () => {
+  /**
+   * The live bug this guards: every letter got revealed without anyone
+   * solving, and the round had no end condition, so the table looped forever.
+   * The soak above did not catch it because its policies solve often enough
+   * that a fully-revealed board is rare — so this drives the board to complete
+   * on purpose.
+   */
+  it('ends the round once the last letter is up, never loops', () => {
+    for (let seed = 1; seed <= 40; seed++) {
+      const puzzle = TEST_PUZZLES[seed % TEST_PUZZLES.length]!;
+      let st = createMatch({
+        seed,
+        players: ['p1', 'p2', 'p3'].map((id) => ({ id, name: id, color: '#fff' })),
+        settings: { rounds: 1 },
+        nowMs: 0,
+      });
+      st = applyAction(st, { type: 'startRound', puzzle }, 0).state;
+
+      // Reveal letters as fast as the rules allow; never solve.
+      let guard = 0;
+      while (st.round && st.round.endedReason === null) {
+        if (++guard > 800) break;
+        try {
+          st = applyAction(st, { type: 'timeout' }, guard * 1000).state;
+        } catch {
+          break;
+        }
+      }
+      expect(guard, `seed ${seed} never terminated`).toBeLessThanOrEqual(800);
+      expect(st.round?.endedReason, `seed ${seed}`).not.toBeNull();
     }
   });
 });

@@ -209,7 +209,7 @@ export function defaultSettings(balance: Balance): RoomSettings {
     turnSeconds: balance.turn.defaultSeconds,
     botCount: balance.setup.defaultBots,
     botTier: 'sharp',
-    interruptsEnabled: true,
+    interruptsEnabled: balance.interrupt.enabledByDefault,
   };
 }
 
@@ -338,12 +338,41 @@ export function deadLettersFor(round: RoundState, hand: readonly Card[]): Set<Le
  * top card is taken anyway: a hand that cannot be filled would deadlock the
  * round, and a dead card can still be discarded.
  */
-export function drawCards(round: RoundState, n: number, avoid?: ReadonlySet<Letter>): Card[] {
+export interface DrawOptions {
+  /** Letters that would be dead or duplicate in the destination hand. */
+  avoid?: ReadonlySet<Letter>;
+  /**
+   * Draw letter cards until the hand holds this many. Action cards are never
+   * dead, so without this a hand steadily fills with them as letters are
+   * revealed and swept — see `balance.setup.minLetterCards`.
+   */
+  letterFloor?: number;
+  /** Live letter cards the hand already holds, for the floor above. */
+  heldLetters?: number;
+}
+
+export function drawCards(round: RoundState, n: number, opts: DrawOptions | ReadonlySet<Letter> = {}): Card[] {
+  const o: DrawOptions = opts instanceof Set ? { avoid: opts } : (opts as DrawOptions);
   const out: Card[] = [];
-  const taken = new Set<Letter>(avoid ?? []);
+  const taken = new Set<Letter>(o.avoid ?? []);
+  let letters = o.heldLetters ?? 0;
+  const floor = o.letterFloor ?? 0;
+
   for (let i = 0; i < n && round.deck.length > 0; i++) {
-    let idx = round.deck.length - 1;
-    if (taken.size > 0) {
+    const wantLetter = letters < floor;
+    let idx = -1;
+
+    // First choice: a usable card of the kind we want.
+    for (let j = round.deck.length - 1; j >= 0; j--) {
+      const c = round.deck[j] as Card;
+      const usable = c.kind !== 'letter' || !taken.has(c.letter);
+      if (usable && (!wantLetter || c.kind === 'letter')) {
+        idx = j;
+        break;
+      }
+    }
+    // Second: any usable card, even if it is the wrong kind.
+    if (idx < 0) {
       for (let j = round.deck.length - 1; j >= 0; j--) {
         const c = round.deck[j] as Card;
         if (c.kind !== 'letter' || !taken.has(c.letter)) {
@@ -352,11 +381,32 @@ export function drawCards(round: RoundState, n: number, avoid?: ReadonlySet<Lett
         }
       }
     }
+    // Last: the top card. Never deadlock a hand that has to be filled.
+    if (idx < 0) idx = round.deck.length - 1;
+
     const [card] = round.deck.splice(idx, 1) as [Card];
-    if (card.kind === 'letter') taken.add(card.letter);
+    if (card.kind === 'letter') {
+      taken.add(card.letter);
+      letters++;
+    }
     out.push(card);
   }
   return out;
+}
+
+/** Live letter cards in a hand — the ones that could still reveal something. */
+export function liveLetterCount(round: RoundState, hand: readonly Card[]): number {
+  const played = new Set<Letter>([...round.revealed, ...round.missed]);
+  return hand.filter((c) => c.kind === 'letter' && !played.has(c.letter)).length;
+}
+
+/** Draw for a specific player, honouring both the dead-letter and letter-floor rules. */
+export function drawForPlayer(round: RoundState, player: PlayerState, n: number, balance: Balance): Card[] {
+  return drawCards(round, n, {
+    avoid: deadLettersFor(round, player.hand),
+    letterFloor: balance.setup.minLetterCards,
+    heldLetters: liveLetterCount(round, player.hand),
+  });
 }
 
 /**
@@ -367,7 +417,7 @@ export function drawUp(round: RoundState, player: PlayerState, balance: Balance)
   const target = Math.min(balance.setup.handMinimum, balance.setup.handCap);
   const want = target - player.hand.length;
   if (want <= 0) return 0;
-  const cards = drawCards(round, want, deadLettersFor(round, player.hand));
+  const cards = drawForPlayer(round, player, want, balance);
   player.hand.push(...cards);
   return cards.length;
 }

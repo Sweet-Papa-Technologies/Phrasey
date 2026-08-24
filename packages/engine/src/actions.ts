@@ -22,6 +22,7 @@
  */
 import type {
   ActionCard,
+  Balance,
   BotTier,
   Card,
   GameEvent,
@@ -60,6 +61,7 @@ import {
   activePlayers,
   deadLettersFor,
   drawCards,
+  drawForPlayer,
   drawUp,
   getPlayer,
   makePlayer,
@@ -97,9 +99,30 @@ export function applyAction(state: GameState, action: EngineAction, nowMs: numbe
   const draft = structuredClone(state) as GameState;
   const events: GameEvent[] = [];
   dispatch(draft, action, nowMs, events);
+  checkBoardComplete(draft, events);
   refreshDeadCards(draft, events);
   pushLog(draft, events);
   return { state: draft, events };
+}
+
+/**
+ * End the round once every letter is on the board.
+ *
+ * A round previously ended only on a solve, a blowout, or an exhausted deck.
+ * But letters can all be revealed without anyone solving — plays, VOWEL RUSH
+ * and the anti-stall breath all reveal — and at that point there is nothing
+ * left to guess, no solve is possible or meaningful, and the table just keeps
+ * taking turns forever. That is not theoretical: it happened in a live game.
+ *
+ * Nobody gets the solve bonus, because nobody solved. Everyone keeps the
+ * reveal points they banked, exactly as at a blowout but without the penalty.
+ */
+function checkBoardComplete(state: GameState, events: GameEvent[]): void {
+  const round = state.round;
+  if (!round || round.endedReason !== null) return;
+  if (hiddenLetterCount(round) > 0) return;
+  events.push({ t: 'notice', message: 'Every letter is up — the board is complete.' });
+  endRound(state, 'revealed', {}, events);
 }
 
 /**
@@ -136,9 +159,17 @@ function refreshDeadCards(state: GameState, events: GameEvent[]): void {
       player.hand.splice(player.hand.indexOf(card), 1);
       round.discard.push(card);
     }
-    // One-for-one, so a hand keeps its size rather than being topped up to the
-    // minimum — a player holding eight cards should stay holding eight.
-    const fresh = drawCards(round, dead.length, deadLettersFor(round, player.hand));
+    /*
+     * One-for-one, so a hand keeps its size rather than being topped up to the
+     * minimum — a player holding eight cards should stay holding eight.
+     *
+     * Only draw what the deck can usefully give. Handing back another dead
+     * card just means sweeping it again next action, which players saw as
+     * their hand endlessly reshuffling itself. A slightly short hand is much
+     * better than a hand that visibly churns.
+     */
+    const usable = countUsable(round, player);
+    const fresh = usable > 0 ? drawForPlayer(round, player, Math.min(dead.length, usable), state.balance) : [];
     player.hand.push(...fresh);
     if (fresh.length > 0) events.push({ t: 'draw', playerId: player.id, count: fresh.length });
   }
@@ -249,8 +280,14 @@ function beginTurn(
   round.turnEndsAt = state.settings.turnSeconds === null ? null : nowMs + state.settings.turnSeconds * 1000;
   // A player with nothing in hand cannot act; top them up if the deck allows.
   if (player.hand.length === 0 && round.deck.length > 0) drawUp(round, player, state.balance);
-  ensurePlayable(round, player, events);
+  ensurePlayable(round, player, state.balance, events);
   events.push({ t: 'turn:begin', playerId: player.id, endsAt: round.turnEndsAt });
+}
+
+/** How many cards in the deck would actually be worth giving this player. */
+function countUsable(round: RoundState, player: PlayerState): number {
+  const dead = deadLettersFor(round, player.hand);
+  return round.deck.reduce((n, c) => n + (c.kind !== 'letter' || !dead.has(c.letter) ? 1 : 0), 0);
 }
 
 /** Any card this player could legally lead with right now. */
@@ -274,15 +311,22 @@ function hasLegalPlay(round: RoundState, player: PlayerState): boolean {
  * still cannot produce a live card there is nothing left to play, and
  * `checkDeckExhausted` ends the round on the next pass.
  */
-function ensurePlayable(round: RoundState, player: PlayerState, events: GameEvent[]): void {
+function ensurePlayable(round: RoundState, player: PlayerState, balance: Balance, events: GameEvent[]): void {
   if (hasLegalPlay(round, player)) return;
+  // Nothing live to recycle into — shuffling the same dead cards around is the
+  // churn players complained about. Leave it; the round is ending anyway.
+  if (countUsable(round, player) === 0) return;
 
   const dead = [...player.hand];
   player.hand.length = 0;
   // Back to the bottom, not the discard pile: these are still real cards and
   // a later reshuffle-free round should not lose them.
   round.deck.unshift(...dead);
-  const fresh = drawCards(round, dead.length, deadLettersFor(round, []));
+  const fresh = drawCards(round, dead.length, {
+    avoid: deadLettersFor(round, []),
+    letterFloor: balance.setup.minLetterCards,
+    heldLetters: 0,
+  });
   player.hand.push(...fresh);
   if (fresh.length > 0) events.push({ t: 'draw', playerId: player.id, count: fresh.length });
 }

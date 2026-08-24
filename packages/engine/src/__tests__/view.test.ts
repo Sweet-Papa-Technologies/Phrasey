@@ -56,7 +56,7 @@ describe('playerView never carries the answer', () => {
     const rng = createRng(4242);
     for (const puzzle of TEST_PUZZLES) {
       for (let trial = 0; trial < 4; trial++) {
-        const state = startGame({ puzzle, seed: rng.int(100000), players: 4 });
+        const state = startGame({ puzzle, seed: rng.int(100000), players: 4, settings: { interruptsEnabled: true } });
         const round = state.round!;
         for (const l of hiddenDistinctLetters(round)) if (rng.bool(0.4)) revealLetter(round, l);
         if (rng.bool(0.5)) round.hintRevealed = true;
@@ -100,7 +100,7 @@ describe('playerView never carries the answer', () => {
   });
 
   it('shows a player only their own hand and peeks', () => {
-    const state = startGame({ puzzle: PUZZLE, players: 3 });
+    const state = startGame({ puzzle: PUZZLE, players: 3, settings: { interruptsEnabled: true } });
     state.players[1]!.peeks = { 3: 'X' };
     const view = playerView(state, 'p1');
     expect(view.hand.map((c) => c.id).sort()).toEqual(state.players[0]!.hand.map((c) => c.id).sort());
@@ -143,7 +143,7 @@ describe('playerView state reporting', () => {
   });
 
   it('exposes an open interrupt window only to eligible players', () => {
-    const s = startGame({ puzzle: PUZZLE, players: 3, seed: 314 });
+    const s = startGame({ puzzle: PUZZLE, players: 3, seed: 314, settings: { interruptsEnabled: true } });
     for (const p of s.players) {
       p.hand = p.hand.map((c) =>
         c.kind === 'action' && ['SWIPE', 'BLOCK', 'BUZZ_IN'].includes(c.action) ? { id: c.id, kind: 'letter', letter: 'Q' } : c,
@@ -158,14 +158,14 @@ describe('playerView state reporting', () => {
   });
 
   it('degrades gracefully in the lobby', () => {
-    const lobby = startGame({ lobbyOnly: true, players: 3 });
+    const lobby = startGame({ lobbyOnly: true, players: 3, settings: { interruptsEnabled: true } });
     const view = playerView(lobby, 'p1');
     expect(view).toMatchObject({ phase: null, board: null, round: null, boardPattern: null, canAct: false });
     expect(roundPublic(lobby)).toBeNull();
   });
 
   it('roundPublic mirrors the masked board and gauge', () => {
-    const s = startGame({ puzzle: PUZZLE, players: 3 });
+    const s = startGame({ puzzle: PUZZLE, players: 3, settings: { interruptsEnabled: true } });
     const rp = roundPublic(s)!;
     expect(rp).toMatchObject({ roundNumber: 1, pressure: 0, pressureMax: 12, currentPlayerId: 'p1', direction: 1 });
     expect(rp.deckRemaining).toBe(s.round!.deck.length);
@@ -173,7 +173,7 @@ describe('playerView state reporting', () => {
   });
 
   it('throws for an unknown player', () => {
-    const s = startGame({ players: 2 });
+    const s = startGame({ players: 2, settings: { interruptsEnabled: true } });
     expect(() => playerView(s, 'ghost')).toThrow();
   });
 });
@@ -181,7 +181,7 @@ describe('playerView state reporting', () => {
 describe('reference policies', () => {
   it('randomPolicy always returns a legal action', () => {
     const rng = createRng(9);
-    let s: GameState = startGame({ puzzle: PUZZLE, players: 4, seed: 55 });
+    let s: GameState = startGame({ puzzle: PUZZLE, players: 4, seed: 55, settings: { interruptsEnabled: true } });
     for (let i = 0; i < 300 && s.status !== 'match-end'; i++) {
       if (!s.round || s.round.endedReason !== null) {
         s = act(s, { type: 'startRound', puzzle: TEST_PUZZLES[i % TEST_PUZZLES.length]! });
@@ -206,7 +206,7 @@ describe('reference policies', () => {
   });
 
   it('randomPolicy falls back to a timeout with an empty hand', () => {
-    const s = startGame({ puzzle: PUZZLE, players: 2 });
+    const s = startGame({ puzzle: PUZZLE, players: 2, settings: { interruptsEnabled: true } });
     s.players[0]!.hand = [];
     const view = playerView(s, 'p1');
     expect(randomPolicy.chooseTurnAction(view, createRng(1)).type).toBe('timeout');

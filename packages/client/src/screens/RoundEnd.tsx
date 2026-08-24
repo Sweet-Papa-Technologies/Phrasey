@@ -12,6 +12,9 @@ const REASON_COPY: Record<RoundResult['reason'], { title: string; tone: string }
   blowout: { title: 'Blowout', tone: 'bg-cherry text-chill' },
   'deck-exhausted': { title: 'Deck ran dry', tone: 'bg-soda text-ink' },
   abandoned: { title: 'Round abandoned', tone: 'bg-ink/15 text-ink' },
+  // Every letter got turned over and nobody called it. No solve bonus —
+  // nobody solved — but everyone keeps what they revealed.
+  revealed: { title: 'Board cleared', tone: 'bg-soda text-ink' },
 };
 
 export interface RoundEndProps {
