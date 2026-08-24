@@ -73,11 +73,7 @@ export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(funct
     ? `Letter ${card.letter}${spent ? ' — already played this round' : ''}`
     : `${meta?.name ?? ''} — ${meta?.blurb ?? ''}`;
 
-  const surface = isLetter
-    ? 'bg-chill text-ink'
-    : interruptCard
-      ? 'bg-fanta text-ink'
-      : 'bg-grape text-chill';
+  const surface = isLetter ? 'bg-chill text-ink' : interruptCard ? 'bg-fanta text-ink' : 'bg-grape text-chill';
 
   return (
     <motion.button
@@ -104,7 +100,10 @@ export const PlayingCard = forwardRef<HTMLButtonElement, PlayingCardProps>(funct
       whileHover={disabled || inert || reducedMotion ? undefined : { y: lift - 18, rotate: rotate * 0.35, scale: 1.06 }}
       whileFocus={disabled || inert || reducedMotion ? undefined : { y: lift - 18, scale: 1.06 }}
       whileTap={disabled || inert || reducedMotion ? undefined : { y: lift - 6, scale: 0.98 }}
-      transition={{ duration: reducedMotion ? 0.01 : DUR.settle, ease: EASE.settle }}
+      transition={{
+        duration: reducedMotion ? 0.01 : DUR.settle,
+        ease: EASE.settle,
+      }}
     >
       {spent && (
         <span className="sticker absolute -top-1.5 left-1/2 -translate-x-1/2 rotate-[-6deg] bg-ink text-chill">

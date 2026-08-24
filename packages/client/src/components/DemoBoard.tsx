@@ -39,7 +39,13 @@ export function DemoBoard({ className }: { className?: string }) {
         setCurrent(round.currentPlayerId);
         const positions = collectRevealPositions(events);
         if (positions.length > 0) {
-          setDelays(cascadeDelayMap(planRevealCascade(positions, { reducedMotion: reducedRef.current })));
+          setDelays(
+            cascadeDelayMap(
+              planRevealCascade(positions, {
+                reducedMotion: reducedRef.current,
+              }),
+            ),
+          );
         }
         if (events.some((e) => e.t === 'blowout')) {
           setErupting(true);
@@ -72,7 +78,14 @@ export function DemoBoard({ className }: { className?: string }) {
   const fan = useMemo(() => hand.slice(0, 5), [hand]);
 
   return (
-    <div className={`grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-stretch ${className ?? ''}`}>
+    /*
+     * The bottle sits beside the board at every width, not just on desktop.
+     * Stacked, it cost a phone 250px of hero and pushed "Start a room" a whole
+     * screen down; beside the board it costs the board nothing measurable —
+     * the fit lands on the same tile size either way, because the binding
+     * constraint on a phone is the height budget, not the width.
+     */
+    <div className={`grid grid-cols-[minmax(0,1fr)_auto] gap-3 sm:gap-4 lg:items-stretch ${className ?? ''}`}>
       <div className="flex min-w-0 flex-col gap-3">
         <ul className="flex flex-wrap items-center justify-center gap-2" aria-hidden="true">
           {players.map((p) => (
@@ -115,7 +128,7 @@ export function DemoBoard({ className }: { className?: string }) {
       </div>
 
       <div className="flex items-center justify-center lg:w-48">
-        <Bottle pressure={pressure} max={pressureMax} erupting={erupting} compact />
+        <Bottle pressure={pressure} max={pressureMax} erupting={erupting} size="hero" />
       </div>
     </div>
   );

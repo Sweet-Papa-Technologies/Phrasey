@@ -19,13 +19,7 @@ import { useKeyboardPlay } from '../hooks/useKeyboardPlay';
 import { useReducedMotion } from '../lib/motion';
 import { useMediaQuery } from '../lib/viewport';
 import { joinUrl } from '../lib/format';
-import {
-  selectIsHost,
-  selectIsMyTurn,
-  selectMe,
-  selectPlayerName,
-  useGameStore,
-} from '../store/gameStore';
+import { selectIsHost, selectIsMyTurn, selectMe, selectPlayerName, useGameStore } from '../store/gameStore';
 import { RoundEnd } from './RoundEnd';
 
 export function Game() {
@@ -34,9 +28,7 @@ export function Game() {
   // exist because a couple of components need to change their *content*, not
   // just their box, when the arrangement changes.
   const wideRails = useMediaQuery('(min-width: 1024px)');
-  const bottleRail = useMediaQuery(
-    '(min-width: 768px), (orientation: landscape) and (max-height: 560px)',
-  );
+  const bottleRail = useMediaQuery('(min-width: 768px), (orientation: landscape) and (max-height: 560px)');
   const room = useGameStore((s) => s.room);
   const board = useGameStore((s) => s.board);
   const hand = useGameStore((s) => s.hand);
@@ -88,9 +80,12 @@ export function Game() {
     dismissError();
   }, [lastError, flash, dismissError]);
 
-  useEffect(() => () => {
-    if (toastTimer.current) clearTimeout(toastTimer.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    },
+    [],
+  );
 
   const onKeyPlay = useCallback(
     (card: LetterCard) => {
@@ -117,9 +112,7 @@ export function Game() {
     },
     onBlocked: (r) =>
       flash(
-        r.reason === 'already-guessed'
-          ? `${r.letter} is already on the board.`
-          : `You aren't holding a ${r.letter}.`,
+        r.reason === 'already-guessed' ? `${r.letter} is already on the board.` : `You aren't holding a ${r.letter}.`,
       ),
   });
 
@@ -189,11 +182,7 @@ export function Game() {
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-card border-2 border-ink/10 bg-white/65 px-3 py-2 short-landscape:py-1">
             <TurnRing endsAt={turnEndsAt} totalSeconds={room.settings.turnSeconds} size={44} showOffState />
             <p className="min-w-0 flex-1 font-display text-base leading-tight font-bold sm:text-lg" aria-live="polite">
-              {!myTurn
-                ? `${turnName || 'Somebody'} is up`
-                : awaitingSolve
-                  ? 'Solve it, or pass'
-                  : 'Your turn'}
+              {!myTurn ? `${turnName || 'Somebody'} is up` : awaitingSolve ? 'Solve it, or pass' : 'Your turn'}
             </p>
             <p className="hidden font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55 xl:block">
               {awaitingSolve
@@ -233,12 +222,7 @@ export function Game() {
           none of the board's width.
         */}
         <aside className="game-bottle flex items-start justify-center md:sticky md:top-3 md:self-start">
-          <Bottle
-            pressure={pressure}
-            max={pressureMax}
-            erupting={blownOut}
-            size={bottleRail ? 'rail' : 'perch'}
-          />
+          <Bottle pressure={pressure} max={pressureMax} erupting={blownOut} size={bottleRail ? 'rail' : 'perch'} />
         </aside>
 
         <div className="game-players">

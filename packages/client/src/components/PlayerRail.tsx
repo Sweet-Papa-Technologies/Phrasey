@@ -87,7 +87,8 @@ export function PlayerRail({
                 <span className="sr-only">
                   {p.isBot ? 'bot. ' : ''}
                   {p.id === selfId ? 'you. ' : ''}
-                  {p.handCount} cards in hand.{p.solveLocked ? ' Locked out of solving.' : ''}
+                  {p.handCount} cards in hand.
+                  {p.solveLocked ? ' Locked out of solving.' : ''}
                 </span>
               </span>
             ) : (

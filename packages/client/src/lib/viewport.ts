@@ -42,9 +42,7 @@ export function useMediaQuery(query: string): boolean {
  */
 export function useViewportSize(): Size {
   const [size, setSize] = useState<Size>(() =>
-    typeof window === 'undefined'
-      ? { width: 0, height: 0 }
-      : { width: window.innerWidth, height: window.innerHeight },
+    typeof window === 'undefined' ? { width: 0, height: 0 } : { width: window.innerWidth, height: window.innerHeight },
   );
 
   useEffect(() => {

@@ -21,14 +21,12 @@ function letters(n: number): FitCellKind[] {
 
 /** Word widths, in tile units, for a phrase written as plain words. */
 function unitsFor(phrase: string): number[] {
-  return phrase.split(' ').map((w) =>
-    wordWidthUnits([...w].map((ch) => (/[A-Za-z]/.test(ch) ? 'letter' : 'punct'))),
-  );
+  return phrase.split(' ').map((w) => wordWidthUnits([...w].map((ch) => (/[A-Za-z]/.test(ch) ? 'letter' : 'punct'))));
 }
 
 const PHONE = 358; // 390px viewport less the board's own padding
 const LONG = 'MILK EGGS AND SOMETHING FOR YOUR FATHER'; // 39 characters
-const VERY_LONG = "DO NOT PUT THE AIR FRYER BASKET IN THE DISHWASHER"; // 48 characters
+const VERY_LONG = 'DO NOT PUT THE AIR FRYER BASKET IN THE DISHWASHER'; // 48 characters
 
 describe('wordWidthUnits', () => {
   it('is the cells plus the gaps between them', () => {
@@ -40,7 +38,10 @@ describe('wordWidthUnits', () => {
     const withApostrophe = wordWidthUnits(['letter', 'punct', 'letter']);
     const allLetters = wordWidthUnits(letters(3));
     expect(withApostrophe).toBeLessThan(allLetters);
-    expect(withApostrophe).toBeCloseTo(2 * BOARD_METRICS.letterWidth + BOARD_METRICS.punctWidth + 2 * BOARD_METRICS.letterGap, 6);
+    expect(withApostrophe).toBeCloseTo(
+      2 * BOARD_METRICS.letterWidth + BOARD_METRICS.punctWidth + 2 * BOARD_METRICS.letterGap,
+      6,
+    );
   });
 
   it('is zero for an empty word', () => {
@@ -64,8 +65,7 @@ describe('wrapWords', () => {
     const lines = wrapWords(units, tile, PHONE);
     for (const line of lines) {
       const width =
-        line.reduce((sum, i) => sum + (units[i] ?? 0) * tile, 0) +
-        (line.length - 1) * tile * BOARD_METRICS.wordGap;
+        line.reduce((sum, i) => sum + (units[i] ?? 0) * tile, 0) + (line.length - 1) * tile * BOARD_METRICS.wordGap;
       expect(width).toBeLessThanOrEqual(PHONE + 0.5);
     }
   });
@@ -170,7 +170,12 @@ describe('fitBoard', () => {
 
   it('goes under the floor only for a word wider than the board, and stops at the hard floor', () => {
     const units = unitsFor('CONGRATULATIONS');
-    const fit = fitBoard({ availableWidth: 300, wordUnits: units, minTile: 26, maxTile: 52 });
+    const fit = fitBoard({
+      availableWidth: 300,
+      wordUnits: units,
+      minTile: 26,
+      maxTile: 52,
+    });
     expect(fit.tile).toBeLessThan(26);
     expect(fit.tile).toBeGreaterThanOrEqual(TILE_HARD_FLOOR);
     expect(fit.overflows).toBe(false);
@@ -205,7 +210,12 @@ describe('fitBoard', () => {
   });
 
   it('handles a board with no words at all', () => {
-    const fit = fitBoard({ availableWidth: 358, wordUnits: [], minTile: 24, maxTile: 52 });
+    const fit = fitBoard({
+      availableWidth: 358,
+      wordUnits: [],
+      minTile: 24,
+      maxTile: 52,
+    });
     expect(fit).toEqual({ tile: 52, lines: [], rows: 0, overflows: false });
   });
 
@@ -213,7 +223,12 @@ describe('fitBoard', () => {
     const units = unitsFor(VERY_LONG);
     let previous = 0;
     for (const width of [280, 320, 360, 420, 640, 900, 1200]) {
-      const { tile } = fitBoard({ availableWidth: width, wordUnits: units, minTile: 24, maxTile: 52 });
+      const { tile } = fitBoard({
+        availableWidth: width,
+        wordUnits: units,
+        minTile: 24,
+        maxTile: 52,
+      });
       expect(tile).toBeGreaterThanOrEqual(previous);
       previous = tile;
     }

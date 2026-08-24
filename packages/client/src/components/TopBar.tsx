@@ -96,7 +96,10 @@ export function TopBar({
               castView ? 'border-fanta bg-fanta text-ink' : 'border-ink/15 hover:bg-ink/6',
             ].join(' ')}
           >
-            Cast view
+            {/* "Cast view" is the second-longest thing in this bar; on anything
+                narrower than a desktop the short form keeps the bar to one row. */}
+            <span className="lg:hidden">Cast</span>
+            <span className="hidden lg:inline">Cast view</span>
           </button>
         )}
 

@@ -42,7 +42,10 @@ export function useInterruptCountdown(expiresAt: number, reduced = false): { fra
     };
   }, [expiresAt, reduced]);
 
-  return { fraction: interruptFraction(expiresAt, now), seconds: interruptSecondsLeft(expiresAt, now) };
+  return {
+    fraction: interruptFraction(expiresAt, now),
+    seconds: interruptSecondsLeft(expiresAt, now),
+  };
 }
 
 export function InterruptPrompt({
@@ -85,9 +88,7 @@ export function InterruptPrompt({
     >
       <div className="w-full max-w-md overflow-hidden rounded-slab border-2 border-fanta bg-ink text-chill shadow-slab">
         <div className="flex items-center justify-between gap-3 px-4 pt-3">
-          <p className="font-display text-base font-bold">
-            {sourceName} just hit. Steal it?
-          </p>
+          <p className="font-display text-base font-bold">{sourceName} just hit. Steal it?</p>
           <span
             className="font-mono text-xl font-extrabold tabular-nums text-fanta"
             aria-label={`${seconds} seconds left`}

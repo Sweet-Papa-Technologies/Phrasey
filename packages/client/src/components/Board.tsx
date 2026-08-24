@@ -47,7 +47,7 @@ const SIZING: Record<
 > = {
   normal: { minTile: 26, maxTile: 52, heightShare: 0.4, minHeight: 140 },
   cast: { minTile: 34, maxTile: 92, heightShare: 0.58, minHeight: 200 },
-  demo: { minTile: 20, maxTile: 44, heightShare: 0.34, minHeight: 120 },
+  demo: { minTile: 22, maxTile: 44, heightShare: 0.32, minHeight: 130 },
 };
 
 export function Board({ board, delays, peeks, size = 'normal', className }: BoardProps) {
@@ -74,8 +74,7 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
     // hard floor for one frame.
     const availableWidth = width > 0 ? width : widest * sizing.maxTile;
     const share = shortLandscape && size !== 'cast' ? 0.3 : sizing.heightShare;
-    const availableHeight =
-      viewport.height > 0 ? Math.max(sizing.minHeight, viewport.height * share) : null;
+    const availableHeight = viewport.height > 0 ? Math.max(sizing.minHeight, viewport.height * share) : null;
     return fitBoard({
       availableWidth,
       availableHeight,
@@ -115,10 +114,7 @@ export function Board({ board, delays, peeks, size = 'normal', className }: Boar
         ].join(' ')}
       >
         {fit.lines.map((line, lineIndex) => (
-          <div
-            key={lineIndex}
-            className="flex shrink-0 items-center justify-center gap-[calc(var(--tile)*0.62)]"
-          >
+          <div key={lineIndex} className="flex shrink-0 items-center justify-center gap-[calc(var(--tile)*0.62)]">
             {line.map((wordIndex) => {
               const word = words[wordIndex];
               if (!word) return null;

@@ -401,11 +401,33 @@ export class MockGame {
     return a;
   }
 
+  /**
+   * Mirrors the engine's rule: never deal a letter the player already holds, or
+   * one already played this round. A duplicate is dead weight — a hit reveals
+   * every occurrence at once, so the second copy can never score — and the deck
+   * is built from the puzzle's letter multiset, which makes duplicates common
+   * rather than rare.
+   *
+   * The mock has to match, not just the engine: it drives the landing page demo
+   * and local development, so a hand of two L's here reads as a real bug.
+   */
   private draw(playerId: string, n: number): number {
     const hand = this.hands.get(playerId) ?? [];
     let drawn = 0;
     while (drawn < n && hand.length < BALANCE.setup.handCap) {
-      const card = this.deck.pop();
+      const dead = new Set<string>([...this.revealed, ...this.missed]);
+      for (const c of hand) if (c.kind === 'letter') dead.add(c.letter);
+
+      // Prefer a usable card; fall back to the top so a hand can always fill.
+      let idx = this.deck.length - 1;
+      for (let j = this.deck.length - 1; j >= 0; j--) {
+        const c = this.deck[j]!;
+        if (c.kind !== 'letter' || !dead.has(c.letter)) {
+          idx = j;
+          break;
+        }
+      }
+      const card = this.deck.splice(idx, 1)[0];
       if (!card) break;
       hand.push(card);
       drawn++;

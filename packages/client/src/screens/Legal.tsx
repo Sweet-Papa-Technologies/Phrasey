@@ -13,7 +13,11 @@ import privacyMd from '../content/legal/privacy.md?raw';
 import cookiesMd from '../content/legal/cookies.md?raw';
 import termsMd from '../content/legal/terms.md?raw';
 
-const DOCS = { privacy: privacyMd, cookies: cookiesMd, terms: termsMd } as const;
+const DOCS = {
+  privacy: privacyMd,
+  cookies: cookiesMd,
+  terms: termsMd,
+} as const;
 
 export type LegalPage = keyof typeof DOCS;
 
@@ -39,7 +43,10 @@ export function Legal({ page }: { page: LegalPage }) {
           >
             Manage your privacy choices
           </button>
-          <Link to="/" className="tap rounded-full border-2 border-ink bg-fanta px-5 py-2.5 text-sm font-bold text-ink shadow-pop">
+          <Link
+            to="/"
+            className="tap rounded-full border-2 border-ink bg-fanta px-5 py-2.5 text-sm font-bold text-ink shadow-pop"
+          >
             Back to the game
           </Link>
         </div>

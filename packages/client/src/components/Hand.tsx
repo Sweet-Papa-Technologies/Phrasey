@@ -33,7 +33,11 @@ export interface HandProps {
   highlightCardId?: string | null;
 }
 
-type Pending = { cardId: string; need: 'letter' | 'vowel' | 'target'; name: string } | null;
+type Pending = {
+  cardId: string;
+  need: 'letter' | 'vowel' | 'target';
+  name: string;
+} | null;
 
 export function Hand({
   hand,
@@ -167,7 +171,9 @@ export function Hand({
                       disabled={used}
                       className={[
                         'h-9 w-9 rounded-tile border-2 font-mono text-sm font-bold',
-                        used ? 'cursor-not-allowed border-ink/8 opacity-30' : 'border-ink/15 hover:bg-grape hover:text-chill',
+                        used
+                          ? 'cursor-not-allowed border-ink/8 opacity-30'
+                          : 'border-ink/15 hover:bg-grape hover:text-chill',
                       ].join(' ')}
                       onClick={() => {
                         onPlayAction(pending.cardId, l);
@@ -232,7 +238,12 @@ export function Hand({
         role="group"
         aria-label="Your hand"
       >
-        <div className={`m-auto flex w-max items-end ${fanned ? 'gap-2' : 'gap-1.5 px-2'}`}>
+        {/*
+          The fan's tilt is a transform, so it sticks out past the row's own
+          width; without the padding the outermost card gets its corner shaved
+          off by the scroller.
+        */}
+        <div className={`m-auto flex w-max items-end ${fanned ? 'gap-2 px-6' : 'gap-1.5 px-2'}`}>
           <AnimatePresence initial={false}>
             {hand.map((card, i) => {
               const g = geometry(i);
@@ -244,10 +255,11 @@ export function Hand({
                   initial={reduced ? { opacity: 0 } : { opacity: 0, y: 60, scale: 0.85 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={reduced ? { opacity: 0 } : { opacity: 0, y: -160, scale: 0.7 }}
-                  transition={{ duration: reduced ? 0.01 : 0.35, ease: [0.22, 1.2, 0.36, 1] }}
-                  className={
-                    highlightCardId === card.id ? 'drop-shadow-[0_0_18px_rgba(184,255,60,0.9)]' : undefined
-                  }
+                  transition={{
+                    duration: reduced ? 0.01 : 0.35,
+                    ease: [0.22, 1.2, 0.36, 1],
+                  }}
+                  className={highlightCardId === card.id ? 'drop-shadow-[0_0_18px_rgba(184,255,60,0.9)]' : undefined}
                 >
                   <PlayingCard
                     card={card}

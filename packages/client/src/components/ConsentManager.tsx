@@ -88,7 +88,11 @@ export function ConsentManager() {
           >
             Reject all
           </button>
-          <button type="button" onClick={close} className="ml-auto px-3 py-2 text-sm underline underline-offset-4 opacity-70">
+          <button
+            type="button"
+            onClick={close}
+            className="ml-auto px-3 py-2 text-sm underline underline-offset-4 opacity-70"
+          >
             Close
           </button>
         </div>

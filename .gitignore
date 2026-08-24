@@ -30,3 +30,6 @@ service-account*.json
 
 # Agent scratch dirs
 .scratch/
+
+# Layout audit screenshots
+.playwright-mcp/

@@ -146,12 +146,7 @@ export function rowsHeight(rows: number, tile: number, rowGap: number = BOARD_ME
  * line scores badly here even though it "fits", which is exactly the outcome
  * the fit needs to be able to reject.
  */
-export function fillRatio(
-  wordUnits: readonly number[],
-  tile: number,
-  availableWidth: number,
-  rows: number,
-): number {
+export function fillRatio(wordUnits: readonly number[], tile: number, availableWidth: number, rows: number): number {
   if (rows <= 0 || availableWidth <= 0) return 0;
   const ink = wordUnits.reduce((sum, u) => sum + u, 0) * tile;
   return ink / (rows * availableWidth);
@@ -232,8 +227,7 @@ export function fitBoard(options: BoardFitOptions): BoardFitResult {
     }
   }
 
-  const chosen =
-    best ??
+  const chosen = best ??
     compromise ?? {
       // Nothing fits the height even at the floor: take the rows, keep the
       // tiles legible, and let the board's own container do the scrolling.

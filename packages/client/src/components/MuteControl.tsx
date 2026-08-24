@@ -16,14 +16,7 @@ export interface MuteControlProps {
   onMusicVolume?: (v: number) => void;
 }
 
-export function MuteControl({
-  muted,
-  volume,
-  onMuted,
-  onVolume,
-  musicVolume,
-  onMusicVolume,
-}: MuteControlProps) {
+export function MuteControl({ muted, volume, onMuted, onVolume, musicVolume, onMusicVolume }: MuteControlProps) {
   return (
     <div className="flex items-center gap-2">
       <button
@@ -34,7 +27,14 @@ export function MuteControl({
         title={muted ? 'Unmute' : 'Mute'}
         className="grid h-9 w-9 place-items-center rounded-full border-2 border-current/15 hover:bg-current/8"
       >
-        <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          aria-hidden="true"
+        >
           <path d="M4 9v6h4l5 4V5L8 9H4z" strokeLinejoin="round" />
           {muted ? (
             <path d="M17 9l4 6M21 9l-4 6" strokeLinecap="round" />
@@ -61,7 +61,7 @@ export function MuteControl({
         />
       </label>
       {typeof musicVolume === 'number' && onMusicVolume && (
-        <label className="hidden items-center gap-1 sm:flex" title="Music volume">
+        <label className="hidden items-center gap-1 lg:flex" title="Music volume">
           <svg
             viewBox="0 0 24 24"
             className="h-3.5 w-3.5 opacity-55"

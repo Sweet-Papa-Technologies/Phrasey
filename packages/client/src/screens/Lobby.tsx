@@ -18,7 +18,11 @@ export interface LobbyProps {
 const TIERS: { value: BotTier; label: string; blurb: string }[] = [
   { value: 'chill', label: 'Chill', blurb: 'Guesses politely. Solves rarely.' },
   { value: 'sharp', label: 'Sharp', blurb: 'Reads the board. Takes its shot.' },
-  { value: 'ruthless', label: 'Ruthless', blurb: 'Optimal, and it uses interrupts.' },
+  {
+    value: 'ruthless',
+    label: 'Ruthless',
+    blurb: 'Optimal, and it uses interrupts.',
+  },
 ];
 
 function Segmented<T extends string | number | null>({
@@ -98,10 +102,15 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
           />
         </section>
 
-        <section aria-label="Match settings" className="flex flex-col gap-5 rounded-slab border-2 border-ink/10 bg-white/65 p-5">
+        <section
+          aria-label="Match settings"
+          className="flex flex-col gap-5 rounded-slab border-2 border-ink/10 bg-white/65 p-5"
+        >
           <div className="flex items-baseline justify-between gap-3">
             <h2 className="font-display text-xl font-bold">Settings</h2>
-            {!isHost && <p className="font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55">Host decides</p>}
+            {!isHost && (
+              <p className="font-mono text-[0.625rem] tracking-[0.14em] uppercase opacity-55">Host decides</p>
+            )}
           </div>
 
           <Segmented<MatchMode>
@@ -121,7 +130,10 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
               value={s.rounds}
               disabled={!isHost}
               onChange={(rounds) => onSettings({ rounds })}
-              options={[3, 5, 7, 10].map((v) => ({ value: v, label: String(v) }))}
+              options={[3, 5, 7, 10].map((v) => ({
+                value: v,
+                label: String(v),
+              }))}
             />
           ) : (
             <Segmented<number>
@@ -129,7 +141,10 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
               value={s.targetScore}
               disabled={!isHost}
               onChange={(targetScore) => onSettings({ targetScore })}
-              options={[150, 300, 500, 800].map((v) => ({ value: v, label: String(v) }))}
+              options={[150, 300, 500, 800].map((v) => ({
+                value: v,
+                label: String(v),
+              }))}
             />
           )}
 
@@ -151,7 +166,10 @@ export function Lobby({ room, selfId, isHost, onSettings, onStart }: LobbyProps)
             value={s.botCount}
             disabled={!isHost}
             onChange={(botCount) => onSettings({ botCount })}
-            options={Array.from({ length: maxBots + 1 }, (_, i) => ({ value: i, label: String(i) }))}
+            options={Array.from({ length: maxBots + 1 }, (_, i) => ({
+              value: i,
+              label: String(i),
+            }))}
           />
 
           <div className="flex flex-col gap-1.5">

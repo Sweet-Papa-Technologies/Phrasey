@@ -39,7 +39,7 @@ export interface BottleProps {
    * bottle, still the tallest thing on the screen after the board, and it
    * costs the board no width at all. It is not a slim horizontal gauge.
    */
-  size?: 'rail' | 'perch';
+  size?: 'rail' | 'perch' | 'hero';
   className?: string;
 }
 
@@ -58,7 +58,10 @@ export function pressureStateLabel(fraction: number): string {
  * label has to stay readable, because under §10 it is one of the non-color
  * encodings of the gauge.
  */
-export function stateStickerStyle(fraction: number): { background: string; color: string } {
+export function stateStickerStyle(fraction: number): {
+  background: string;
+  color: string;
+} {
   if (fraction >= 0.83) return { background: '#FF2E63', color: '#14121F' };
   if (fraction >= 0.58) return { background: '#FF5C1A', color: '#14121F' };
   if (fraction >= 0.3) return { background: '#FFC93C', color: '#14121F' };
@@ -81,21 +84,16 @@ function scatter(n: number, seed: number): number[] {
  * clamp, because the bottle's job is to stay legible from across the room on a
  * cast screen and from arm's length on a phone.
  */
-const GLASS_HEIGHT: Record<'compact' | 'rail' | 'perch', string> = {
+const GLASS_HEIGHT: Record<'compact' | 'rail' | 'perch' | 'hero', string> = {
   compact: 'h-[clamp(11rem,30vh,18rem)] w-auto',
   rail: 'h-[clamp(10rem,34vh,26rem)] w-auto short-landscape:h-[clamp(8rem,56vh,12rem)] lg:h-[clamp(16rem,52vh,30rem)]',
   // Phone: as tall as the turn card next to it allows, and no taller.
   perch: 'h-[clamp(7.5rem,24vh,13rem)] w-auto',
+  // Landing hero: beside the demo board on a phone, on its rail from lg up.
+  hero: 'h-[clamp(8rem,24vh,12rem)] w-auto lg:h-[clamp(13rem,34vh,18rem)]',
 };
 
-export function Bottle({
-  pressure,
-  max,
-  erupting = false,
-  compact = false,
-  size = 'rail',
-  className,
-}: BottleProps) {
+export function Bottle({ pressure, max, erupting = false, compact = false, size = 'rail', className }: BottleProps) {
   const reduced = useReducedMotion();
   const safeMax = max > 0 ? max : 1;
   const fraction = Math.min(1, Math.max(0, pressure / safeMax));
@@ -149,7 +147,8 @@ export function Bottle({
   const rattleAmp = (0.25 + fraction * fraction * 3.4).toFixed(2);
   const rattleDur = Math.max(70, 460 - fraction * 380);
   const stateLabel = pressureStateLabel(fraction);
-  const uid = compact ? 'c' : 'g';
+  // SVG def ids must not collide when two bottles share a page (cast view).
+  const uid = compact ? 'c' : size;
 
   return (
     <div
@@ -215,14 +214,7 @@ export function Bottle({
         <g clipPath={`url(#${uid}-cavity)`}>
           <motion.g style={{ y: liquidShift }}>
             <rect x="0" y={LIQ_TOP} width={W} height={LIQ_H + 60} fill={`url(#${uid}-liquid)`} />
-            <motion.rect
-              x="0"
-              y={LIQ_TOP}
-              width={W}
-              height={LIQ_H + 60}
-              fill="#FF2E63"
-              style={{ opacity: heat }}
-            />
+            <motion.rect x="0" y={LIQ_TOP} width={W} height={LIQ_H + 60} fill="#FF2E63" style={{ opacity: heat }} />
 
             {/* Surface: a meniscus and a head of foam sitting on it */}
             <path
@@ -294,15 +286,7 @@ export function Bottle({
         {/* Condensation on the glass. The tiled map does the fine work; the
             hand-placed beads below give it a few larger, catchable droplets. */}
         <g clipPath={`url(#${uid}-cavity)`} pointerEvents="none">
-          <rect
-            x="16"
-            y="80"
-            width="108"
-            height="304"
-            fill="#ffffff"
-            opacity="0.5"
-            mask={`url(#${uid}-cond)`}
-          />
+          <rect x="16" y="80" width="108" height="304" fill="#ffffff" opacity="0.5" mask={`url(#${uid}-cond)`} />
           {beads.map((b, i) => (
             <ellipse key={i} cx={b.cx} cy={b.cy} rx={b.rx} ry={b.rx * 1.25} fill="#ffffff" opacity={b.o} />
           ))}
@@ -316,7 +300,9 @@ export function Bottle({
                 ry="2.6"
                 fill="#ffffff"
                 opacity="0"
-                style={{ animation: `phrasey-drip ${d.dur}s ease-in ${d.delay}s infinite` }}
+                style={{
+                  animation: `phrasey-drip ${d.dur}s ease-in ${d.delay}s infinite`,
+                }}
               />
             ))}
           </g>
@@ -377,7 +363,11 @@ export function Bottle({
                 fill={i % 2 ? '#FFE3D6' : '#FF5C1A'}
                 initial={{ y: 0, opacity: 0.95, scale: 0.6 }}
                 animate={{ y: -110 - i * 16, opacity: 0, scale: 1.9 }}
-                transition={{ duration: 0.85, delay: i * 0.035, ease: 'easeOut' }}
+                transition={{
+                  duration: 0.85,
+                  delay: i * 0.035,
+                  ease: 'easeOut',
+                }}
               />
             ))}
           </g>
@@ -388,7 +378,7 @@ export function Bottle({
       <div className="flex flex-col items-center gap-0.5 select-none">
         <div
           className={`font-mono leading-none font-bold tabular-nums ${
-            size === 'perch' && !compact ? 'text-sm' : 'text-lg'
+            !compact && (size === 'perch' || size === 'hero') ? 'text-sm sm:text-lg' : 'text-lg'
           }`}
         >
           {Math.round(pressure)}

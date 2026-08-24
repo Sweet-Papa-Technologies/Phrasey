@@ -66,7 +66,7 @@ function renderScreen(route: Route) {
           <div>
             <p className="font-display text-6xl font-extrabold">404</p>
             <p className="mb-4 opacity-70">Nothing at {route.name === 'notfound' ? route.path : 'that address'}.</p>
-            <Link to="/" className="rounded-full bg-fanta px-5 py-2.5 font-bold text-ink shadow-pop">
+            <Link to="/" className="tap rounded-full bg-fanta px-5 py-2.5 font-bold text-ink shadow-pop">
               Back to the front
             </Link>
           </div>
