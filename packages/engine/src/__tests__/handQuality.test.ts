@@ -8,7 +8,7 @@
  * occurrence at once, so the second copy can never score.
  */
 import { describe, expect, it } from 'vitest';
-import { applyAction, createMatch } from '../index.js';
+import { applyAction, checkInvariants, createMatch } from '../index.js';
 import { drawCards, deadLettersFor, type RoundState } from '../state.js';
 import { TEST_PUZZLES } from '../testing/fixtures.js';
 import type { Card, Letter } from '@phrasey/shared';
@@ -52,31 +52,32 @@ describe('hands never hold dead letters', () => {
     }
   });
 
-  it('only ever holds a duplicate when the deck had nothing else to give', () => {
-    // Late in a round the deck can be down to nothing but duplicates. Taking
-    // one is correct — refusing would stall the round, and a dead card can
-    // still be discarded. What must never happen is dealing a duplicate while
-    // a usable card was sitting right there.
-    let dupObservations = 0;
-    let deckHadAlternative = 0;
-
+  it('never holds a dead card while the deck can replace it', () => {
+    // The strong property: a card whose letter is already on the board is
+    // swept out and replaced after every action, so a hand is always playable.
+    // This is what lets Discard & Draw disappear from the UI — it existed to
+    // escape exactly this situation.
+    let sweeps = 0;
     for (let seed = 1; seed <= 60; seed++) {
       let st = playedMatch(seed);
       for (let step = 0; step < 80 && st.round && !st.round.endedReason; step++) {
         const round = st.round;
+        const played = new Set<Letter>([...round.revealed, ...round.missed]);
+        if (played.size > 0) sweeps++;
+
         for (const p of st.players) {
-          const d = dupes(p.hand);
-          if (d.length === 0) continue;
-          dupObservations++;
-          const dead = deadLettersFor(round, p.hand);
-          const alternative = round.deck.some((c) => c.kind !== 'letter' || !dead.has(c.letter));
-          if (alternative) {
-            deckHadAlternative++;
-            expect.fail(
-              `seed ${seed} step ${step}: ${p.id} holds duplicate ${d.join(',')} ` +
-                `while the deck still had ${round.deck.length} cards including a usable one`,
-            );
-          }
+          const deadHeld = lettersIn(p.hand).filter((l) => played.has(l));
+          const dupeHeld = dupes(p.hand);
+          if (deadHeld.length === 0 && dupeHeld.length === 0) continue;
+
+          // The only excuse is a deck with no live card left to give — late in
+          // a round every remaining card can be a letter already on the board.
+          const deckHasLive = round.deck.some((c) => c.kind !== 'letter' || !played.has(c.letter));
+          expect(
+            deckHasLive,
+            `seed ${seed} step ${step}: ${p.id} holds dead ${deadHeld.join(',')} ` +
+              `dupes ${dupeHeld.join(',')} while the deck still had a usable card`,
+          ).toBe(false);
         }
         try {
           st = applyAction(st, { type: 'timeout' }, step * 1000).state;
@@ -85,10 +86,8 @@ describe('hands never hold dead letters', () => {
         }
       }
     }
-    expect(deckHadAlternative).toBe(0);
-    // Sanity: if this is 0 the test proved nothing, so make the exhausted-deck
-    // path visible rather than silently vacuous.
-    expect(dupObservations).toBeGreaterThan(0);
+    // Guard against a vacuous pass: rounds really did have letters on the board.
+    expect(sweeps).toBeGreaterThan(100);
   });
 
   it('does not deal a letter that has already been played this round', () => {
@@ -167,5 +166,60 @@ describe('deadLettersFor', () => {
     const round = { revealed: ['E'], missed: ['Q'] } as unknown as RoundState;
     const dead = deadLettersFor(round, [{ id: 'x', kind: 'letter', letter: 'T' }]);
     expect([...dead].sort()).toEqual(['E', 'Q', 'T']);
+  });
+});
+
+describe('a player always has something they can play', () => {
+  /**
+   * Removing Discard & Draw from the UI means a hand of nothing but dead
+   * cards is no longer escapable by the player. The engine has to guarantee
+   * it cannot happen while the deck can still help.
+   */
+  it('never starts a turn with no legal play while a live card exists', () => {
+    let turnsChecked = 0;
+    for (let seed = 1; seed <= 80; seed++) {
+      let st = playedMatch(seed);
+      for (let step = 0; step < 100 && st.round && !st.round.endedReason; step++) {
+        const round = st.round;
+        const cur = round.currentPlayerId;
+        if (cur) {
+          const me = st.players.find((p) => p.id === cur)!;
+          const played = new Set<Letter>([...round.revealed, ...round.missed]);
+          const canPlay = me.hand.some((c) => c.kind !== 'letter' || !played.has(c.letter));
+          const deckHasLive = round.deck.some((c) => c.kind !== 'letter' || !played.has(c.letter));
+          turnsChecked++;
+          if (!canPlay) {
+            expect(
+              deckHasLive,
+              `seed ${seed} step ${step}: ${cur} has no legal play but the deck still had one`,
+            ).toBe(false);
+          }
+        }
+        try {
+          st = applyAction(st, { type: 'timeout' }, step * 1000).state;
+        } catch {
+          break;
+        }
+      }
+    }
+    expect(turnsChecked).toBeGreaterThan(500);
+  });
+
+  it('conserves cards through a dead-hand recycle', () => {
+    // ensurePlayable puts a whole hand back into the deck and redraws. Use the
+    // engine's own invariant checker rather than a hand-rolled count — cards
+    // can legitimately be in flight on the interrupt stack, which a naive
+    // deck+discard+hands sum misses.
+    for (let seed = 1; seed <= 40; seed++) {
+      let st = playedMatch(seed);
+      for (let step = 0; step < 60 && st.round && !st.round.endedReason; step++) {
+        try {
+          st = applyAction(st, { type: 'timeout' }, step * 1000).state;
+        } catch {
+          break;
+        }
+        expect(checkInvariants(st), `seed ${seed} step ${step}`).toEqual([]);
+      }
+    }
   });
 });

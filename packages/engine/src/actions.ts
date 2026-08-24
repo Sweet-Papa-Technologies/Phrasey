@@ -26,6 +26,7 @@ import type {
   Card,
   GameEvent,
   InterruptActionKind,
+  Letter,
   PlayCardIntent,
   Puzzle,
 } from '@phrasey/shared';
@@ -57,6 +58,7 @@ import { createRng, type Rng } from './rng.js';
 import { award, solvePoints } from './scoring.js';
 import {
   activePlayers,
+  deadLettersFor,
   drawCards,
   drawUp,
   getPlayer,
@@ -95,8 +97,51 @@ export function applyAction(state: GameState, action: EngineAction, nowMs: numbe
   const draft = structuredClone(state) as GameState;
   const events: GameEvent[] = [];
   dispatch(draft, action, nowMs, events);
+  refreshDeadCards(draft, events);
   pushLog(draft, events);
   return { state: draft, events };
+}
+
+/**
+ * Replace any card in any hand whose letter has already been played.
+ *
+ * A hit reveals every occurrence at once, so once a letter is on the board a
+ * card for it can never score again — it is a dead card taking up one of your
+ * five to eight slots. Combined with `drawCards` refusing to deal a letter you
+ * already hold or one already played, this makes a dead or duplicate card
+ * unrepresentable in a hand.
+ *
+ * That is what lets the player-facing Discard & Draw action go away: it existed
+ * to escape exactly this, and there is now nothing to escape. Every hand is
+ * always playable, so "play a card" can be the only primary action.
+ *
+ * Runs after every action rather than at the specific points where letters get
+ * revealed — a reveal can come from a letter play, VOWEL RUSH, a SWIPE
+ * resolution, or the anti-stall breath, and one idempotent sweep is much
+ * harder to get wrong than four call sites. Cards conserve: the dead one goes
+ * to the discard pile, the replacement comes off the deck.
+ */
+function refreshDeadCards(state: GameState, events: GameEvent[]): void {
+  const round = state.round;
+  if (!round || round.endedReason !== null) return;
+
+  const played = new Set<Letter>([...round.revealed, ...round.missed]);
+  if (played.size === 0) return;
+
+  for (const player of state.players) {
+    const dead = player.hand.filter((c) => c.kind === 'letter' && played.has(c.letter));
+    if (dead.length === 0) continue;
+
+    for (const card of dead) {
+      player.hand.splice(player.hand.indexOf(card), 1);
+      round.discard.push(card);
+    }
+    // One-for-one, so a hand keeps its size rather than being topped up to the
+    // minimum — a player holding eight cards should stay holding eight.
+    const fresh = drawCards(round, dead.length, deadLettersFor(round, player.hand));
+    player.hand.push(...fresh);
+    if (fresh.length > 0) events.push({ t: 'draw', playerId: player.id, count: fresh.length });
+  }
 }
 
 /** Convenience: run a list of actions in order, accumulating events. */
@@ -204,7 +249,42 @@ function beginTurn(
   round.turnEndsAt = state.settings.turnSeconds === null ? null : nowMs + state.settings.turnSeconds * 1000;
   // A player with nothing in hand cannot act; top them up if the deck allows.
   if (player.hand.length === 0 && round.deck.length > 0) drawUp(round, player, state.balance);
+  ensurePlayable(round, player, events);
   events.push({ t: 'turn:begin', playerId: player.id, endsAt: round.turnEndsAt });
+}
+
+/** Any card this player could legally lead with right now. */
+function hasLegalPlay(round: RoundState, player: PlayerState): boolean {
+  const played = new Set<Letter>([...round.revealed, ...round.missed]);
+  return player.hand.some((c) => c.kind !== 'letter' || !played.has(c.letter));
+}
+
+/**
+ * Guarantee the player whose turn is starting has something they can actually
+ * do.
+ *
+ * `refreshDeadCards` handles the normal case, but late in a round the deck can
+ * run out of *live* cards — every card left is a letter already on the board —
+ * and then a swept hand refills with more dead cards. Before Discard & Draw was
+ * removed from the UI a human could bail out; now there is no button, so a hand
+ * of nothing but dead cards would be a genuine softlock until the turn timer
+ * expired.
+ *
+ * So: cycle the dead cards back through the deck and redraw once. If the deck
+ * still cannot produce a live card there is nothing left to play, and
+ * `checkDeckExhausted` ends the round on the next pass.
+ */
+function ensurePlayable(round: RoundState, player: PlayerState, events: GameEvent[]): void {
+  if (hasLegalPlay(round, player)) return;
+
+  const dead = [...player.hand];
+  player.hand.length = 0;
+  // Back to the bottom, not the discard pile: these are still real cards and
+  // a later reshuffle-free round should not lose them.
+  round.deck.unshift(...dead);
+  const fresh = drawCards(round, dead.length, deadLettersFor(round, []));
+  player.hand.push(...fresh);
+  if (fresh.length > 0) events.push({ t: 'draw', playerId: player.id, count: fresh.length });
 }
 
 /**
